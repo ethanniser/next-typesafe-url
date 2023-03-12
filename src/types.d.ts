@@ -33,8 +33,8 @@ type HandleUndefined<T extends z.AnyZodObject | undefined> =
 
 type DynamicRouteOptions<T extends DynamicRoutes> = {
   path: T;
-  searchParams: SearchParams<T>;
-  routeParams: RouteParams<T>;
+  searchParams?: SearchParams<T>;
+  routeParams?: RouteParams<T>;
 };
 
 type StaticPathOptions<T extends StaticRoutes> = {
