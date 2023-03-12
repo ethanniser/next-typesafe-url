@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 0.0.10
+
+### Patch Changes
+
+- 25e9aa1: fixed minor typo that left out type keyword
+
 ## 0.0.9
 
 ### Patch Changes
