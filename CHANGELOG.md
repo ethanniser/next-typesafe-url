@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 0.0.11
+
+### Patch Changes
+
+- 30bdc53: updated npm script advice
+
 ## 0.0.10
 
 ### Patch Changes
