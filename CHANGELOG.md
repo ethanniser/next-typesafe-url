@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 0.0.13
+
+### Patch Changes
+
+- ffa5972: FIXED CI!
+
 ## 0.0.12
 
 ### Patch Changes
