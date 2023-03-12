@@ -80,7 +80,7 @@ export function generateTypesFile(
     .join("\n");
 
   const additionalTypeDeclarations = `
-type AppRouter = StaticRouter & DynamicRouter;
+export type AppRouter = StaticRouter & DynamicRouter;
 
 type StaticRoutes = keyof StaticRouter;
 type DynamicRoutes = keyof DynamicRouter;

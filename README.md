@@ -100,14 +100,14 @@ export const Route = {
 **Note:** Catch all and optional catch all routes are interepted as arrays or tuples.
 
 ```ts
-// pages/product/[...productIDs].tsx
+// pages/dashboard/[...options].tsx
 export const Route = {
   routeParams: z.object({
-    productIDs: z.tuple([z.string(), z.number()]),
+    options: z.tuple([z.string(), z.number()]),
   }),
 };
 
-// /product/boats/2 will match and return { productIDs: ["boats", 2] }
+// /dashboard/deployments/2 will match and return { options: ["deployments", 2] }
 ```
 
 ## Path
@@ -182,6 +182,19 @@ function DeeperComponent() {
   const routeParams = useAtomValue(productRouteParamsAtom);
   return <div>{routeParams.productID}</div>;
 }
+```
+
+## AppRouter Type
+
+`next-typesafe-url` exports a `AppRouter` type that you can use to get the type of the valid search params and route params for any given route in your app.
+
+```tsx
+import { AppRouter } from "next-typesafe-url";
+
+type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
+// type ProductIDRouteParams = {
+//     productID: number;
+// }
 ```
 
 ## Command Line Options
