@@ -1,8 +1,21 @@
 {
   "name": "next-typesafe-url",
+  "description": "JSON serializable, fully typesafe, and zod validated URL search params, dynamic route params, and routing for NextJS",
   "license": "MIT",
   "version": "0.0.1",
   "author": "Ethan Niser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ethanniser/next-typesafe-url"
+  },
+  "keywords": [
+    "next",
+    "nextjs",
+    "urlSearchParams",
+    "typesafe",
+    "typescript",
+    "zod"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
