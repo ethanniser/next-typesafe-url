@@ -20,6 +20,9 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": "dist/cli.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/cli.ts src/index.ts --format cjs,esm --dts",
     "lint": "tsc"
