@@ -1,6 +1,6 @@
 # next-typesafe-url
 
-JSON serializable, fully typesafe, and [zod](https://www.npmjs.com/package/zod) validated URL search params, dynamic route params, and routing for NextJS
+JSON serializable, fully typesafe, and [zod](https://www.npmjs.com/package/zod) validated URL search params, dynamic route params, and routing for NextJS pages directory.
 
 **Big shoutout to [tanstack/router](https://github.com/tanstack/router) and [yesmeck/remix-routes](https://github.com/yesmeck/remix-routes) for inspiration and ideas.**
 
@@ -99,6 +99,10 @@ export const Route = {
 // /dashboard/deployments/2 will match and return { options: ["deployments", 2] }
 ```
 
+Keep in mind that `next-typesafe-url` assumes your exported `Route` is correct. If you for example, have a route param that is a different name than the file name, it will cause silent errors.
+
+**Double check your `Route` objects to make sure they are correct.**
+
 ## Path
 
 `next-typesafe-url` exports a `$path` function that generates a path that can be passed to `next/link` or `next/router`.
@@ -153,9 +157,11 @@ const Page: NextPage = () => {
   const params = useRouteParams(Route.routeParams);
   const { data, isError, isReady } = params;
 
-  if (isReady && !isError) {
-    setRouteParams(data);
-  }
+  useEffect(() => {
+    if (isReady && !isError) {
+      setRouteParams(data);
+    }
+  }, [route, setRouteParams]);
 
   return (
     <div>
@@ -197,3 +203,4 @@ type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
 # TODO
 
 - add tests
+- `app` directory support
