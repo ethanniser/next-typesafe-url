@@ -196,5 +196,4 @@ type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
 
 # TODO
 
-- fix ci
 - add tests
