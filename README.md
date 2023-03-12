@@ -46,27 +46,16 @@ pnpm add next-typesafe-url
 
 Add `next-typesafe-url` to your dev and build script in package.json.
 
-You can either run it seperately in a 2nd terminal:
-
-```json
-{
-  "scripts": {
-    "url:build": "next-typesafe-url",
-    "url:watch": "next-typesafe-url -w"
-  }
-}
-```
-
-Or use [`concurrently`](https://www.npmjs.com/package/concurrently) to run it in parallel with your next script:
-
 ```json
 {
   "scripts": {
     "build": "next-typesafe-url && next build",
-    "dev": "concurrently \"next dev\" \"next-typesafe-url -w\""
+    "dev": "next dev && next-typesafe-url -w"
   }
 }
 ```
+
+**Note:** Using the dev script like this causes the `next-typesafe-url` script to run after the `next dev` script, which will hide any output/errors that occur during the build. If you run into issues, you can run `next-typesafe-url` in a separate terminal window to see its output.
 
 # Usage
 
