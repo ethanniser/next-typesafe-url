@@ -189,7 +189,7 @@ function DeeperComponent() {
 `next-typesafe-url` exports a `AppRouter` type that you can use to get the type of the valid search params and route params for any given route in your app.
 
 ```tsx
-import { AppRouter } from "next-typesafe-url";
+import { type AppRouter } from "next-typesafe-url";
 
 type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
 // type ProductIDRouteParams = {
