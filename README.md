@@ -57,7 +57,7 @@ You can either run it seperately in a 2nd terminal:
 }
 ```
 
-Or use [`concurrently`](https://www.npmjs.com/package/concurrently) to run it in parallel with your dev script:
+Or use [`concurrently`](https://www.npmjs.com/package/concurrently) to run it in parallel with your next script:
 
 ```json
 {
