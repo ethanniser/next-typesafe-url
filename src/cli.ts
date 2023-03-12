@@ -32,7 +32,7 @@ function build() {
 
 function watch() {
   chokidar
-    .watch([path.join(process.cwd(), "/pages/**/*.{ts,tsx}")])
+    .watch([path.join(process.cwd(), "/src/pages/**/*.{ts,tsx}")])
     .on("change", () => {
       build();
     });

@@ -1,7 +1,7 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
 import { useRouter } from "next/router";
-import { type z } from "zod";
+import { z } from "zod";
 import { useState, useEffect } from "react";
 import {
   parseObjectFromParamString,
@@ -34,6 +34,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
@@ -45,16 +46,22 @@ export function useRouteParams<T extends z.AnyZodObject>(
         setData(validatedDynamicRouteParams.data);
       } else {
         setIsError(true);
+        setError(validatedDynamicRouteParams.error);
       }
     }
   }, [router, validator]);
 
   if (isError && isReady) {
-    return { data: undefined, isReady: true, isError: true };
+    return { data: undefined, isReady: true, isError: true, error: error };
   } else if (data !== undefined && isReady) {
-    return { data: data, isReady: true, isError: false };
+    return { data: data, isReady: true, isError: false, error: undefined };
   } else {
-    return { data: undefined, isReady: false, isError: false };
+    return {
+      data: undefined,
+      isReady: false,
+      isError: false,
+      error: undefined,
+    };
   }
 }
 
@@ -65,6 +72,7 @@ export function useSearchParams<T extends z.AnyZodObject>(
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
@@ -80,16 +88,22 @@ export function useSearchParams<T extends z.AnyZodObject>(
         setData(validatedSearchParams.data);
       } else {
         setIsError(true);
+        setError(validatedSearchParams.error);
       }
     }
   }, [router, searchValidator]);
 
   if (isError && isReady) {
-    return { data: undefined, isReady: true, isError: true };
+    return { data: undefined, isReady: true, isError: true, error: error };
   } else if (data !== undefined && isReady) {
-    return { data: data, isReady: true, isError: false };
+    return { data: data, isReady: true, isError: false, error: undefined };
   } else {
-    return { data: undefined, isReady: false, isError: false };
+    return {
+      data: undefined,
+      isReady: false,
+      isError: false,
+      error: undefined,
+    };
   }
 }
 
@@ -98,14 +112,17 @@ type UseParamsResult<T extends z.AnyZodObject> =
       data: z.infer<T>;
       isReady: true;
       isError: false;
+      error: undefined;
     }
   | {
       data: undefined;
       isReady: true;
       isError: true;
+      error: z.ZodError<T>;
     }
   | {
       data: undefined;
       isReady: false;
       isError: false;
+      error: undefined;
     };
