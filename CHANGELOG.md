@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.0
+
+### Major Changes
+
+- d7e4983: ship it.
+
 ## 0.0.13
 
 ### Patch Changes
