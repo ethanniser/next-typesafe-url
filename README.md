@@ -74,7 +74,7 @@ Or use [`concurrently`](https://www.npmjs.com/package/concurrently) to run it in
 
 `next-typesafe-url` is powered by exporting a special `Route` object from each route in your `pages` directory.
 
-**Note: `Route` should only ever contain the keys `routeParams` or `searchParams`, or both, and they should only even be Zod objects.**
+**Note: `Route` should only ever contain the keys of either `routeParams` or `searchParams`, or both, and they should only ever be Zod objects.**
 
 _If a route doesn't need any route params or search params, you dont need to export a `Route` object_
 
