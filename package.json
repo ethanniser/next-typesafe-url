@@ -25,7 +25,8 @@
   ],
   "scripts": {
     "build": "tsup src/cli.ts src/index.ts --format cjs,esm --dts",
-    "lint": "tsc"
+    "lint": "tsc",
+    "release": "npm run build && changeset version && changeset publish"
   },
   "dependencies": {
     "meow": "9.0.0",
