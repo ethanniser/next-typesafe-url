@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.1
+
+### Patch Changes
+
+- 7e8055b: docs: clarify pages dir, add useEffect to jotai example and clarify a possible silent error source
+
 ## 1.0.0
 
 ### Major Changes
