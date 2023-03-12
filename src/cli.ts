@@ -21,7 +21,7 @@ const cli = meow(helpText, {
 });
 
 function build() {
-  const pagesPath = path.join(process.cwd(), "/pages");
+  const pagesPath = path.join(process.cwd(), "/src/pages");
 
   const { exportedRoutes, filesWithoutExportedRoutes } =
     getRoutesWithExportedRoute(pagesPath, pagesPath);

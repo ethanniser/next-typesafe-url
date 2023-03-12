@@ -85,10 +85,29 @@ type AppRouter = StaticRouter & DynamicRouter;
 type StaticRoutes = keyof StaticRouter;
 type DynamicRoutes = keyof DynamicRouter;
 
+import { type z } from "zod";
+
+type StaticRoute = {
+  searchParams: undefined;
+  routeParams: undefined;
+};
+
+type DynamicRoute = {
+  searchParams: z.AnyZodObject | undefined;
+  routeParams: z.AnyZodObject | undefined;
+};
+
+type InferRoute<T extends DynamicRoute> = {
+  searchParams: HandleUndefined<T["searchParams"]>;
+  routeParams: HandleUndefined<T["routeParams"]>;
+};
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
   : DynamicRouteOptions<T>;
+
+type HandleUndefined<T extends z.AnyZodObject | undefined> =
+  T extends z.AnyZodObject ? z.infer<T> : undefined;
 
 type DynamicRouteOptions<T extends DynamicRoutes> = {
   path: T;
@@ -107,26 +126,40 @@ type AllRoutes = keyof AppRouter;
 type SearchParams<T extends AllRoutes> = AppRouter[T]["searchParams"];
 type RouteParams<T extends AllRoutes> = AppRouter[T]["routeParams"];
 
-declare function $path<T extends AllRoutes>({ path, searchParams, routeParams, }: PathOptions<T>): string;
-declare function useRouteParams<T extends z.AnyZodObject>(validator: T): UseParamsResult<T>;
-declare function useSearchParams<T extends z.AnyZodObject>(searchValidator: T): UseParamsResult<T>;
-type UseParamsResult<T extends z.AnyZodObject> = {
-    data: z.infer<T>;
-    isReady: true;
-    isError: false;
-} | {
-    data: undefined;
-    isReady: true;
-    isError: true;
-} | {
-    data: undefined;
-    isReady: false;
-    isError: false;
-};
+declare function $path<T extends AllRoutes>({
+  path,
+  searchParams,
+  routeParams,
+}: PathOptions<T>): string;
+declare function useRouteParams<T extends z.AnyZodObject>(
+  validator: T
+): UseParamsResult<T>;
+declare function useSearchParams<T extends z.AnyZodObject>(
+  searchValidator: T
+): UseParamsResult<T>;
+type UseParamsResult<T extends z.AnyZodObject> =
+  | {
+      data: z.infer<T>;
+      isReady: true;
+      isError: false;
+    }
+  | {
+      data: undefined;
+      isReady: true;
+      isError: true;
+    }
+  | {
+      data: undefined;
+      isReady: false;
+      isError: false;
+    };
 
 export { $path, useRouteParams, useSearchParams };`;
 
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
-  fs.writeFileSync("index.d.ts", fileContentString);
+  fs.writeFileSync(
+    "node_modules/next-typesafe-url/dist/index.d.ts",
+    fileContentString
+  );
 }
