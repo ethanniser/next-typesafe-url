@@ -160,14 +160,23 @@ $path({ path: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=tr
 
 ```tsx
 const params = useSearchParams(Route.searchParams);
-const { data, isReady, isError, error } = params;
+const { 
+  data, 
+  isValid, 
+  isReady, 
+  isError, 
+  error 
+} = params;
 
-// if isReady is true, and isError is false, then data will be in the shape of Route.searchParams
+// if isReady is true, and isError is false (isValid is true), then data *will* be in the shape of Route.searchParams
 // in this case, data will be { userInfo: { name: string, age: number } }
 
-if (isError) {
-  return <div>Invalid search params</div>;
+if (!isReady) {
+  return <div>loading...</div>;
+} else if (isError) {
+  return <div>Invalid search params {error.message}</div>;
 } else {
+  // isValid === true
   return <div>{data.userInfo.name}</div>;
 }
 ```
@@ -175,6 +184,8 @@ if (isError) {
 `isReady` is the internal state of next/router, and `isError` is a boolean that is true if the params do not match the schema. If `isError` is true, then `error` will be a zod error object you can use to get more information about the error. (_also check out [zod-validation-error](https://github.com/causaly/zod-validation-error) to get a nice error message_)
 
 **If `isReady` is true and `isError` is false, then `data` will always be valid and match the schema.**
+
+*For convenience, instead of needing checking `isReady && !isError`, I have added the `isValid` flag which is only true when `isReady` is `true` and and `isError` is false.*
 
 ## Reccomended Usage
 

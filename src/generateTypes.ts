@@ -143,18 +143,21 @@ declare function useSearchParams<T extends z.AnyZodObject>(
 type UseParamsResult<T extends z.AnyZodObject> =
   | {
       data: z.infer<T>;
+      isValid: true;
       isReady: true;
       isError: false;
       error: undefined;
     }
   | {
       data: undefined;
+      isValid: false;
       isReady: true;
       isError: true;
       error: z.ZodError<T>;
     }
   | {
       data: undefined;
+      isValid: false;
       isReady: false;
       isError: false;
       error: undefined;

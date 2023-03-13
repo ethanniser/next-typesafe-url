@@ -57,12 +57,13 @@ export function useRouteParams<T extends z.AnyZodObject>(
   }, [router, validator]);
 
   if (isError && isReady) {
-    return { data: undefined, isReady: true, isError: true, error: error };
+    return { data: undefined, isValid: false, isReady: true, isError: true, error: error };
   } else if (data !== undefined && isReady) {
-    return { data: data, isReady: true, isError: false, error: undefined };
+    return { data: data, isValid: true, isReady: true, isError: false, error: undefined };
   } else {
     return {
       data: undefined,
+      isValid: false,
       isReady: false,
       isError: false,
       error: undefined,
@@ -99,12 +100,13 @@ export function useSearchParams<T extends z.AnyZodObject>(
   }, [router, searchValidator]);
 
   if (isError && isReady) {
-    return { data: undefined, isReady: true, isError: true, error: error };
+    return { data: undefined, isValid: false, isReady: true, isError: true, error: error };
   } else if (data !== undefined && isReady) {
-    return { data: data, isReady: true, isError: false, error: undefined };
+    return { data: data, isValid: true, isReady: true, isError: false, error: undefined };
   } else {
     return {
       data: undefined,
+      isValid: false,
       isReady: false,
       isError: false,
       error: undefined,
