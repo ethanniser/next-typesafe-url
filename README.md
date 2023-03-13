@@ -48,20 +48,23 @@ pnpm add next-typesafe-url
 
 Add `next-typesafe-url` to your dev and build script in package.json.
 
+For dev mode, you can either run it in a seperate shell, or in one with the [concurrently](https://www.npmjs.com/package/concurrently) package.
+
 ```json
 {
   "scripts": {
     "build": "next-typesafe-url && next build",
-    "dev": "next dev && next-typesafe-url -w"
+
+    "dev": "concurrently  \"next-typesafe-url -w\" \"next dev\"",
+    // OR
+    "dev:url": "next-typesafe-url -w"
   }
 }
 ```
 
-**Note:** Using the dev script like this causes the `next-typesafe-url` script to run after the `next dev` script, which will hide any output/errors that occur during the build. If you run into issues, you can run `next-typesafe-url` in a separate terminal window to see its output.
-
 ### IMPORTANT NOTE
 
-The cli is probably the most likely part to *slightly* break. If you run into issues just run a quick `npx next-typesafe-url` and it should generate the types. If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can wake the ts server up much faster.
+The cli is probably the most likely part to _slightly_ break. If you run into issues just run a quick `npx next-typesafe-url` and it should generate the types. If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster.
 
 # Usage
 
@@ -160,13 +163,7 @@ $path({ path: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=tr
 
 ```tsx
 const params = useSearchParams(Route.searchParams);
-const { 
-  data, 
-  isValid, 
-  isReady, 
-  isError, 
-  error 
-} = params;
+const { data, isValid, isReady, isError, error } = params;
 
 // if isReady is true, and isError is false (isValid is true), then data *will* be in the shape of Route.searchParams
 // in this case, data will be { userInfo: { name: string, age: number } }
@@ -185,7 +182,7 @@ if (!isReady) {
 
 **If `isReady` is true and `isError` is false, then `data` will always be valid and match the schema.**
 
-*For convenience, instead of needing checking `isReady && !isError`, I have added the `isValid` flag which is only true when `isReady` is `true` and and `isError` is false.*
+_For convenience, instead of needing checking `isReady && !isError`, I have added the `isValid` flag which is only true when `isReady` is `true` and and `isError` is false._
 
 ## Reccomended Usage
 
