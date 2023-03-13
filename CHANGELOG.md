@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.4
+
+### Patch Changes
+
+- 6d90758: fix: $path now correctly passes path even if routeParams is undefined
+
 ## 1.0.3
 
 ### Patch Changes
