@@ -9,7 +9,7 @@ import {
   generateParamStringFromObject,
   fillPath,
 } from "./utils";
-import type { AllRoutes, PathOptions } from "./types";
+import type { AllRoutes, PathOptions, UseParamsResult } from "./types";
 
 export function $path<T extends AllRoutes>({
   path,
@@ -106,23 +106,3 @@ export function useSearchParams<T extends z.AnyZodObject>(
     };
   }
 }
-
-type UseParamsResult<T extends z.AnyZodObject> =
-  | {
-      data: z.infer<T>;
-      isReady: true;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isReady: true;
-      isError: true;
-      error: z.ZodError<T>;
-    }
-  | {
-      data: undefined;
-      isReady: false;
-      isError: false;
-      error: undefined;
-    };

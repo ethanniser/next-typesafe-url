@@ -131,27 +131,33 @@ declare function $path<T extends AllRoutes>({
   searchParams,
   routeParams,
 }: PathOptions<T>): string;
+
 declare function useRouteParams<T extends z.AnyZodObject>(
   validator: T
 ): UseParamsResult<T>;
+
 declare function useSearchParams<T extends z.AnyZodObject>(
   searchValidator: T
 ): UseParamsResult<T>;
+
 type UseParamsResult<T extends z.AnyZodObject> =
   | {
       data: z.infer<T>;
       isReady: true;
       isError: false;
+      error: undefined;
     }
   | {
       data: undefined;
       isReady: true;
       isError: true;
+      error: z.ZodError<T>;
     }
   | {
       data: undefined;
       isReady: false;
       isError: false;
+      error: undefined;
     };
 
 export { $path, useRouteParams, useSearchParams };`;
