@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.7
+
+### Patch Changes
+
+- 3c62ac9: feat: added isValid flag to prevent need to check isReady && !isError
+
 ## 1.0.6
 
 ### Patch Changes
