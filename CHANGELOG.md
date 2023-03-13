@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.6
+
+### Patch Changes
+
+- 65f090b: docs: clarify cli breakpoint and how to fix
+
 ## 1.0.5
 
 ### Patch Changes
