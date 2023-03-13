@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.8
+
+### Patch Changes
+
+- 47815c2: docs: added clarification on how to run dev script + reccomend concurrently
+
 ## 1.0.7
 
 ### Patch Changes
