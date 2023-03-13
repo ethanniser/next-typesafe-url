@@ -18,7 +18,8 @@ export function $path<T extends AllRoutes>({
 }: PathOptions<T>): string {
   let returnString = "";
   if (searchParams) {
-    returnString = generateParamStringFromObject(searchParams);
+    const searchString = generateParamStringFromObject(searchParams);
+    returnString = `${path}${searchString}`;
   }
   if (routeParams) {
     const dynamicParamString = fillPath(path, routeParams);
