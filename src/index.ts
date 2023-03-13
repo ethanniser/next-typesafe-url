@@ -16,16 +16,20 @@ export function $path<T extends AllRoutes>({
   searchParams,
   routeParams,
 }: PathOptions<T>): string {
-  let returnString = "";
-  if (searchParams) {
+  if (searchParams && routeParams) {
     const searchString = generateParamStringFromObject(searchParams);
-    returnString = `${path}${searchString}`;
+    const routeString = fillPath(path, routeParams);
+    return `${routeString}${searchString}`;
+  } else if (routeParams && !searchParams) {
+    const routeString = fillPath(path, routeParams);
+    return routeString;
+  } else if (searchParams && !routeParams) {
+    const searchString = generateParamStringFromObject(searchParams);
+    return `${path}${searchString}`;
+  } else {
+    //both are undefined
+    return path;
   }
-  if (routeParams) {
-    const dynamicParamString = fillPath(path, routeParams);
-    returnString = `${dynamicParamString}${returnString}`;
-  }
-  return returnString;
 }
 
 // ! Should only be used in top level route component or a component that you know will only be rendered in a certain route

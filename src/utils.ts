@@ -13,7 +13,8 @@ export function generateParamStringFromObject(
       params.push(`${key}=${encodeURIComponent(JSON.stringify(value))}`);
     }
   }
-  return `?${params.join("&")}`;
+  const finalString = `?${params.join("&")}`
+  return finalString === "?" ? "" : finalString;
 }
 
 export function parseObjectFromParamString(
