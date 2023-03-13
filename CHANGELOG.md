@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.3
+
+### Patch Changes
+
+- e44541b: removed duplicate and incorrect useParamsResult type
+
 ## 1.0.2
 
 ### Patch Changes
