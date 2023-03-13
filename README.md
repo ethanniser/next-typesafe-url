@@ -59,6 +59,10 @@ Add `next-typesafe-url` to your dev and build script in package.json.
 
 **Note:** Using the dev script like this causes the `next-typesafe-url` script to run after the `next dev` script, which will hide any output/errors that occur during the build. If you run into issues, you can run `next-typesafe-url` in a separate terminal window to see its output.
 
+### IMPORTANT NOTE
+
+The cli is probably the most likely part to *slightly* break. If you run into issues just run a quick `npx next-typesafe-url` and it should generate the types. If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can wake the ts server up much faster.
+
 # Usage
 
 ## Route
