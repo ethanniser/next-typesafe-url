@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.5
+
+### Patch Changes
+
+- a30a8d8: fix: $path now behaves as intended under specific combinations of inputs
+
 ## 1.0.4
 
 ### Patch Changes
