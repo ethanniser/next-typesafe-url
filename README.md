@@ -8,7 +8,7 @@ JSON serializable, fully typesafe, and [zod](https://www.npmjs.com/package/zod) 
 
 ### Routing
 
-Typesafe routing in NextJS is nonexistant. What we do have currently is a pain. You have to manually type out the route params and search params for each route, and if you make a mistake, you will get a runtime error.
+Next.js's non-typesafe routing can lead to runtime errors and make it difficult to catch routing-related issues during development, as it relies on string literals instead of type-safe constructs.
 
 ### Search Params
 
@@ -20,11 +20,13 @@ Traditional Search Param APIs usually assume a few things:
 - They are mostly flat
 - Serializing and deserializing using URLSearchParams is good enough (Spoiler alert: it's not, it sucks)
 
+## Typesafety Isn’t Optional
+
 ### How does `next-typesafe-url` solve these problems?
 
-- Fully typesafe routing, from the path to the route params to the search params
+- **Fully typesafe routing-** all the way from the path, to the route params, to the search params
 - Search params (and technically route params too) are JSON-first, so you can pass numbers, booleans, nulls, and even nested objects and arrays
-- Search and route params are validated at runtime using zod, so you can be sure that the data you are getting is valid
+- Search and route params are validated at runtime using zod, so you can be sure that the data you are getting matches the schema you expect
 
 ## Installation
 
@@ -123,6 +125,31 @@ import { $path } from "next-typesafe-url";
 
 If the path is not a valid route, or any of the route params or search params are missing or of the wrong type, it will throw a type error.
 
+---
+
+**Note:** Strings are passed to the url without quotes, so to provide support for booleans, nulls and numbers there are reserved keywords that are converted to their respective values.
+
+Those keywords are:
+
+- `"true"` -> `true`
+- `"false"` -> `false`
+- `"null"` -> `null`
+- `"<some_numberic_literal>"` -> `number`
+
+**`"undefined"` is not a special keyword**, and will be converted to a string if passed as the value of a search param. Passing undefined as the value of a search param will cause it to be left out of the path.
+
+```typescript
+
+$path({ path: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=true"
+
+// ------------------------
+
+// URL: /?bar=undefined
+// value of bar will be the string "undefined", not undefined
+```
+
+---
+
 ## Hooks
 
 `next-typesafe-url` exports a `useRouteParams` and `useSearchParams` hook that will return the route params / search params for the current route. They take one argument, the zod schema for either route params or search params from the Route object.
@@ -130,6 +157,15 @@ If the path is not a valid route, or any of the route params or search params ar
 ```tsx
 const params = useSearchParams(Route.searchParams);
 const { data, isReady, isError, error } = params;
+
+// if isReady is true, and isError is false, then data will be in the shape of Route.searchParams
+// in this case, data will be { userInfo: { name: string, age: number } }
+
+if (isError) {
+  return <div>Invalid search params</div>;
+} else {
+  return <div>{data.userInfo.name}</div>;
+}
 ```
 
 `isReady` is the internal state of next/router, and `isError` is a boolean that is true if the params do not match the schema. If `isError` is true, then `error` will be a zod error object you can use to get more information about the error. (_also check out [zod-validation-error](https://github.com/causaly/zod-validation-error) to get a nice error message_)
