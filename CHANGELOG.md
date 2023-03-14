@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.10
+
+### Patch Changes
+
+- 70f1fad: builds immediately, even in watch mode
+
 ## 1.0.9
 
 ### Patch Changes
