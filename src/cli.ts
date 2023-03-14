@@ -27,7 +27,7 @@ function build() {
     getRoutesWithExportedRoute(pagesPath, pagesPath);
 
   generateTypesFile(exportedRoutes, filesWithoutExportedRoutes);
-  console.log("Generated types.d.ts");
+  console.log("Generated route types");
 }
 
 function watch() {
@@ -36,7 +36,7 @@ function watch() {
     .on("change", () => {
       build();
     });
-  console.log("Watching for routes changes...");
+  console.log("Watching for route file changes...");
 }
 
 if (require.main === module) {
