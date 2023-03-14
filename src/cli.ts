@@ -41,6 +41,7 @@ function watch() {
 
 if (require.main === module) {
   if (cli.flags.watch) {
+    build();
     watch();
   } else {
     build();
