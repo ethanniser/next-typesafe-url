@@ -127,7 +127,8 @@ import { $path } from "next-typesafe-url";
   })}
 />;
 
-//this generates the following href: /product/23?userInfo=%7B"name"%3A"bob"%2C"age"%3A23%7D
+// this generates the following string:
+// "/product/23?userInfo=%7B%22name%22%3A%22bob%22%2C%22age%22%3A23%7D"
 ```
 
 If the path is not a valid route, or any of the route params or search params are missing or of the wrong type, it will throw a type error.
