@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.12
+
+### Patch Changes
+
+- 4cf1145: docs: $path example now shows correctly uri encoded url
+
 ## 1.0.11
 
 ### Patch Changes
