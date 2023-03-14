@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.9
+
+### Patch Changes
+
+- a603d2c: minor edits to docs, and change to the cli message after generating types
+
 ## 1.0.8
 
 ### Patch Changes
