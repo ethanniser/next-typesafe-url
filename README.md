@@ -171,9 +171,9 @@ const { data, isValid, isReady, isError, error } = params;
 
 if (!isReady) {
   return <div>loading...</div>;
-} else if (isError && isReady) {
+} else if (isError) {
   return <div>Invalid search params {error.message}</div>;
-} else if (isValid){
+} else if (isValid) {
   return <div>{data.userInfo.name}</div>;
 }
 ```
@@ -187,6 +187,8 @@ _For convenience, instead of needing checking `isReady && !isError`, I have adde
 ## Reccomended Usage
 
 **It is HIGHLY reccomended to only call `useSearchParams` and `useRouteParams` in the top level component of each route, and pass the data down to child components through props or context.**
+
+---
 
 If you are looking for a easier way to do globally this check out [Jotai](https://jotai.org/).
 
@@ -226,6 +228,8 @@ function DeeperComponent() {
   return <div>{routeParams.productID}</div>;
 }
 ```
+
+---
 
 ## AppRouter Type
 
