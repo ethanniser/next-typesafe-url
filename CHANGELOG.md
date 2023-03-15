@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.13
+
+### Patch Changes
+
+- f87230b: docs: remove redundant isReady check + seperate jotai section
+
 ## 1.0.12
 
 ### Patch Changes
