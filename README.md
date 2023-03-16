@@ -257,4 +257,5 @@ type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
 # TODO
 
 - add tests
-- `app` directory support
+- `app` router support
+- [`remix-routes` style typescript plugin](https://github.com/yesmeck/remix-routes/tree/master/packages/typescript-remix-routes-plugin) to improve autocomplete and add 'go to definition' to route string (would take you to the route file)
