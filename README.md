@@ -1,5 +1,3 @@
-# CURRENTLY BREAKS NEXT HMR I AM WORKING ON A FIX I AM SO SORRY
-
 # next-typesafe-url
 
 JSON serializable, fully typesafe, and [zod](https://www.npmjs.com/package/zod) validated URL search params, dynamic route params, and routing for NextJS pages directory.
