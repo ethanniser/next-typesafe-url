@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.2.0
+
+### Minor Changes
+
+- 02907e4: fix: now explicitly export seperate type so as to not break next HMR
+
 ## 1.1.3
 
 ### Patch Changes
