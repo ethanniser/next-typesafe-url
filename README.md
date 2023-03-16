@@ -40,9 +40,17 @@ pnpm add next-typesafe-url
 
 ## Setup
 
+### IMPORTANT NOTE
+
+**This package requires you to run your npm scripts from the root directory of your project, as well as your `pages` directory being in `root/src`.**
+
 ---
 
-**Note:** This package requires you to run your npm scripts from the root directory of your project, as well as your `pages` directory being in `root/src`.
+If you run into any issues it will most likely be the cli (*for me it works fine on my setup, but when using it in a github codespace the watch functionality wouldn't work*).
+
+**Assuming you have the correct directory structure as listed above**, a quick `npx next-typesafe-url` should generate the types and you'll be all set.
+
+*If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster.*
 
 ---
 
@@ -61,10 +69,6 @@ For dev mode, you can either run it in a seperate shell, or in one with the [con
   }
 }
 ```
-
-### IMPORTANT NOTE
-
-The cli is probably the most likely part to _slightly_ break. If you run into issues just run a quick `npx next-typesafe-url` and it should generate the types. If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster.
 
 # Usage
 
