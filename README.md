@@ -213,7 +213,7 @@ const Page: NextPage = () => {
     if (isReady && !isError) {
       setRouteParams(data);
     }
-  }, [route, setRouteParams]);
+  }, [isReady, isError, data, setRouteParams]);
 
   return (
     <div>
