@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.2.1
+
+### Patch Changes
+
+- 4ed285c: docs: forgot to remove broken message
+
 ## 1.2.0
 
 ### Minor Changes
