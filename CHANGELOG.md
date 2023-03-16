@@ -1,5 +1,18 @@
 # next-typesafe-url
 
+## 1.1.2
+
+### Patch Changes
+
+- 0bd683f: docs: rephrase how potential cli issues worded + presented
+
+## 1.1.1
+
+### Patch Changes
+
+- 351372d: docs: fix dependency array in jotai example
+- decd6c9: docs: clarify app router, add todo ts plugin, and clarify pages dir only in package desc
+
 ## 1.1.0
 
 ### Minor Changes
