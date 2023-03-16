@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.1.2
+
+### Patch Changes
+
+- 0bd683f: docs: rephrase how potential cli issues worded + presented
+
 ## 1.1.1
 
 ### Patch Changes
