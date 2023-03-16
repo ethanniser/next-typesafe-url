@@ -12,23 +12,23 @@ import {
 import type { AllRoutes, PathOptions, UseParamsResult } from "./types";
 
 export function $path<T extends AllRoutes>({
-  path,
+  route,
   searchParams,
   routeParams,
 }: PathOptions<T>): string {
   if (searchParams && routeParams) {
     const searchString = generateParamStringFromObject(searchParams);
-    const routeString = fillPath(path, routeParams);
+    const routeString = fillPath(route, routeParams);
     return `${routeString}${searchString}`;
   } else if (routeParams && !searchParams) {
-    const routeString = fillPath(path, routeParams);
+    const routeString = fillPath(route, routeParams);
     return routeString;
   } else if (searchParams && !routeParams) {
     const searchString = generateParamStringFromObject(searchParams);
-    return `${path}${searchString}`;
+    return `${route}${searchString}`;
   } else {
     //both are undefined
-    return path;
+    return route;
   }
 }
 
@@ -57,9 +57,21 @@ export function useRouteParams<T extends z.AnyZodObject>(
   }, [router, validator]);
 
   if (isError && isReady) {
-    return { data: undefined, isValid: false, isReady: true, isError: true, error: error };
+    return {
+      data: undefined,
+      isValid: false,
+      isReady: true,
+      isError: true,
+      error: error,
+    };
   } else if (data !== undefined && isReady) {
-    return { data: data, isValid: true, isReady: true, isError: false, error: undefined };
+    return {
+      data: data,
+      isValid: true,
+      isReady: true,
+      isError: false,
+      error: undefined,
+    };
   } else {
     return {
       data: undefined,
@@ -100,9 +112,21 @@ export function useSearchParams<T extends z.AnyZodObject>(
   }, [router, searchValidator]);
 
   if (isError && isReady) {
-    return { data: undefined, isValid: false, isReady: true, isError: true, error: error };
+    return {
+      data: undefined,
+      isValid: false,
+      isReady: true,
+      isError: true,
+      error: error,
+    };
   } else if (data !== undefined && isReady) {
-    return { data: data, isValid: true, isReady: true, isError: false, error: undefined };
+    return {
+      data: data,
+      isValid: true,
+      isReady: true,
+      isError: false,
+      error: undefined,
+    };
   } else {
     return {
       data: undefined,

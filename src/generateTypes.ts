@@ -110,13 +110,13 @@ type HandleUndefined<T extends z.AnyZodObject | undefined> =
   T extends z.AnyZodObject ? z.infer<T> : undefined;
 
 type DynamicRouteOptions<T extends DynamicRoutes> = {
-  path: T;
+  route: T;
   searchParams?: SearchParams<T>;
   routeParams?: RouteParams<T>;
 };
 
 type StaticPathOptions<T extends StaticRoutes> = {
-  path: T;
+  route: T;
   searchParams?: undefined;
   routeParams?: undefined;
 };
@@ -127,7 +127,7 @@ type SearchParams<T extends AllRoutes> = AppRouter[T]["searchParams"];
 type RouteParams<T extends AllRoutes> = AppRouter[T]["routeParams"];
 
 declare function $path<T extends AllRoutes>({
-  path,
+  route,
   searchParams,
   routeParams,
 }: PathOptions<T>): string;

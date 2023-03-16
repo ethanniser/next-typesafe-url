@@ -121,7 +121,7 @@ import { $path } from "next-typesafe-url";
 
 <Link
   href={$path({
-    path: "/product/[productID]",
+    route: "/product/[productID]",
     routeParams: { productID: 23 },
     searchParams: { userInfo: { name: "bob", age: 23 } },
   })}
@@ -131,7 +131,7 @@ import { $path } from "next-typesafe-url";
 // "/product/23?userInfo=%7B%22name%22%3A%22bob%22%2C%22age%22%3A23%7D"
 ```
 
-If the path is not a valid route, or any of the route params or search params are missing or of the wrong type, it will throw a type error.
+If the route is not a valid route, or any of the route params or search params are missing or of the wrong type, it will throw a type error.
 
 ---
 
@@ -150,7 +150,7 @@ In `$path`, passing undefined as the value of a search param will cause it to be
 
 ```typescript
 
-$path({ path: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=true"
+$path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=true"
 
 // ------------------------
 
