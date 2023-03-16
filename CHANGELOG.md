@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.1.3
+
+### Patch Changes
+
+- 259a057: my bad guys
+
 ## 1.1.2
 
 ### Patch Changes
