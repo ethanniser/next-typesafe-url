@@ -48,11 +48,11 @@ pnpm add next-typesafe-url
 
 ---
 
-If you run into any issues it will most likely be the cli (*for me it works fine on my setup, but when using it in a github codespace the watch functionality wouldn't work*).
+If you run into any issues it will most likely be the cli (_for me it works fine on my setup, but when using it in a github codespace the watch functionality wouldn't work_).
 
 **Assuming you have the correct directory structure as listed above**, a quick `npx next-typesafe-url` should generate the types and you'll be all set.
 
-*If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster.*
+_If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster._
 
 ---
 
@@ -76,18 +76,18 @@ For dev mode, you can either run it in a seperate shell, or in one with the [con
 
 ## Route
 
-`next-typesafe-url` is powered by exporting a special `Route` object from each route in your `pages` directory.
+`next-typesafe-url` is powered by exporting a special `RouteType` type from each route in your `pages` directory. It is derived from a special `Route` object, that defines the valid route params and search params for that route.
 
 **Note: `Route` should only ever contain the keys of either `routeParams` or `searchParams`, or both, and they should only ever be Zod objects.**
 
-_If a route doesn't need any route params or search params, you dont need to export a `Route` object_
+_If a route doesn't need any route params or search params, you dont need to define a `Route` object, or export a `RouteType` type_
 
-Any page that does not export a `Route` object will be classified as a `StaticRoute`, and will throw a type error if you try to link to it with any dynamic route params or search params.
+Any page that does not export a `RouteType` type will be classified as a `StaticRoute`, and will throw a type error if you try to link to it with any dynamic route params or search params.
 
 ```ts
 // pages/product/[productID].tsx
 
-export const Route = {
+const Route = {
   routeParams: z.object({
     productID: z.number(),
   }),
@@ -99,22 +99,24 @@ export const Route = {
     }),
   }),
 };
+export type RouteType = typeof Route;
 ```
 
 **Note:** Catch all and optional catch all routes are interepted as arrays or tuples.
 
 ```ts
 // pages/dashboard/[...options].tsx
-export const Route = {
+const Route = {
   routeParams: z.object({
     options: z.tuple([z.string(), z.number()]),
   }),
 };
+export type RouteType = typeof Route;
 
 // /dashboard/deployments/2 will match and return { options: ["deployments", 2] }
 ```
 
-Keep in mind that `next-typesafe-url` assumes your exported `Route` is correct. If you for example, have a route param that is a different name than the file name, it will cause silent errors.
+Keep in mind that `next-typesafe-url` assumes your `Route` and export `RouteType` is correct. If you for example, have a route param that is a different name than the file name, it will cause silent errors.
 
 **Double check your `Route` objects to make sure they are correct.**
 

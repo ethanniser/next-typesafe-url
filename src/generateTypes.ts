@@ -28,7 +28,9 @@ export function getRoutesWithExportedRoute(
       }
 
       const fileContent = fs.readFileSync(fullPath, "utf8");
-      const hasExportedRoute = /export\s+const\s+Route\b/.test(fileContent);
+      const hasExportedRouteType = /export\s+type\s+RouteType\b/.test(
+        fileContent
+      );
 
       let routePath = fullPath
         .replace(basePath, "")
@@ -44,7 +46,7 @@ export function getRoutesWithExportedRoute(
         }
       }
 
-      if (hasExportedRoute) {
+      if (hasExportedRouteType) {
         exportedRoutes.push(routePath);
       } else {
         filesWithoutExportedRoutes.push(routePath);
@@ -64,14 +66,13 @@ export function generateTypesFile(
 
   for (const route of hasRoute) {
     const routeVariableName = `Route_${routeCounter}`;
-    importStatements += `import { type Route as ${routeVariableName} } from "~/pages${route}";\n`;
+    importStatements += `import { type RouteType as ${routeVariableName} } from "~/pages${route}";\n`;
     routeCounter++;
   }
 
   const routeTypeDeclarations = hasRoute
     .map(
-      (route) =>
-        `  "${route}": InferRoute<typeof Route_${hasRoute.indexOf(route)}>;`
+      (route) => `  "${route}": InferRoute<Route_${hasRoute.indexOf(route)}>;`
     )
     .join("\n");
 
