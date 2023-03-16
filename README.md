@@ -24,7 +24,7 @@ Traditional Search Param APIs usually assume a few things:
 
 ### How does `next-typesafe-url` solve these problems?
 
-- **Fully typesafe routing-** all the way from the path, to the route params, to the search params
+- **Fully typesafe routing-** all the way from the route, to the route params, to the search params
 - Search params (and technically route params too) are JSON-first, so you can pass numbers, booleans, nulls, and even nested objects and arrays
 - Search and route params are validated at runtime using zod, so you can be sure that the data you are getting matches the schema you expect
 
