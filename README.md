@@ -144,7 +144,9 @@ Those keywords are:
 - `"null"` -> `null`
 - `"<some_numberic_literal>"` -> `number`
 
-**`"undefined"` is not a special keyword**, and will be converted to a string if passed as the value of a search param. Passing undefined as the value of a search param will cause it to be left out of the path.
+**`"undefined"` is not a special keyword**, and will be interpreted as a string if passed as the value of a search param in the URL.
+
+In `$path`, passing undefined as the value of a search param will cause it to be left out of the path.
 
 ```typescript
 
