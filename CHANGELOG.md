@@ -1,5 +1,15 @@
 # next-typesafe-url
 
+## 1.1.0
+
+### Minor Changes
+
+- 42d1457: semantic change from "path" to "route". The 'path' is the final string generated from the $path function. The 'route' is a route representing a file.
+
+### Patch Changes
+
+- fd26603: docs: fix line path -> route
+
 ## 1.0.14
 
 ### Patch Changes
