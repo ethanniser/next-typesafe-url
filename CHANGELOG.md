@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.0.14
+
+### Patch Changes
+
+- 44c2c1e: docs: minor clarification on behavior of passing undefined to path/url
+
 ## 1.0.13
 
 ### Patch Changes
