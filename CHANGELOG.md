@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.2.2
+
+### Patch Changes
+
+- 7e105b8: fix deprecate please im sorry npm
+
 ## 1.2.1
 
 ### Patch Changes
