@@ -25,8 +25,8 @@ Traditional Search Param APIs usually assume a few things:
 ### How does `next-typesafe-url` solve these problems?
 
 - **Fully typesafe routing-** all the way from the route, to the route params, to the search params
-- Search params (and technically route params too) are JSON-first, so you can pass numbers, booleans, nulls, and even nested objects and arrays
-- Search and route params are validated at runtime using zod, so you can be sure that the data you are getting matches the schema you expect
+- Search params are JSON-first, so you can pass strings, numbers, booleans, nulls, **and even nested objects and arrays**
+- Search and route params are validated at runtime using zod, so you can be sure that **the data you get matches the schema you expect**
 
 ## Installation
 
@@ -76,11 +76,15 @@ For dev mode, you can either run it in a seperate shell, or in one with the [con
 
 `next-typesafe-url` is powered by exporting a special `RouteType` type from each route in your `pages` directory. It is derived from a special `Route` object, that defines the valid route params and search params for that route.
 
-**Note: `Route` should only ever contain the keys of either `routeParams` or `searchParams`, or both, and they should only ever be Zod objects.**
+**Note: `Route` should exclusively include the keys of either `routeParams` or `searchParams`, or both, and they must be Zod objects without exception.**
+
+---
 
 _If a route doesn't need any route params or search params, you dont need to define a `Route` object, or export a `RouteType` type_
 
 Any page that does not export a `RouteType` type will be classified as a `StaticRoute`, and will throw a type error if you try to link to it with any dynamic route params or search params.
+
+---
 
 ```ts
 // pages/product/[productID].tsx
@@ -99,6 +103,12 @@ const Route = {
 };
 export type RouteType = typeof Route;
 ```
+
+---
+
+Search params support all valid JSON types. However, **route params are not JSON serializable, so you can only pass strings, numbers, and/or booleans.** _You may also pass an array (of strings, numbers and/or booleans) for catch all routes as shown below._
+
+---
 
 **Note:** Catch all and optional catch all routes are interepted as arrays or tuples.
 
