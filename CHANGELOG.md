@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.2.3
+
+### Patch Changes
+
+- 7772eb8: docs: clarify route params can only be passed strings, numbers or booleans
+
 ## 1.2.2
 
 ### Patch Changes
