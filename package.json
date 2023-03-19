@@ -2,7 +2,7 @@
   "name": "next-typesafe-url",
   "description": "JSON serializable, fully typesafe, and zod validated URL search params, dynamic route params, and routing for NextJS pages directory",
   "license": "MIT",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "Ethan Niser",
   "repository": {
     "type": "git",
