@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.3.1
+
+### Patch Changes
+
+- 6c34180: feat: now allows searchparams to be undefined if all properities are optional
+
 ## 1.3.0
 
 ### Minor Changes
