@@ -187,6 +187,18 @@ type UseParamsResult<T extends z.AnyZodObject> =
       error: undefined;
     };
 
+type ServerParseParamsResult<T extends z.AnyZodObject> =
+  | {
+      data: z.infer<T>;
+      isError: false;
+      error: undefined;
+    }
+  | {
+      data: undefined;
+      isError: true;
+      error: z.ZodError<T>;
+    };
+
 declare function $path<T extends AllRoutes>({ route, searchParams, routeParams, }: PathOptions<T>): string;
 declare function useRouteParams<T extends z.AnyZodObject>(validator: T): UseParamsResult<T>;
 declare function useSearchParams<T extends z.AnyZodObject>(searchValidator: T): UseParamsResult<T>;
@@ -194,11 +206,11 @@ declare function useSearchParams<T extends z.AnyZodObject>(searchValidator: T): 
 declare function parseServerSideSearchParams<T extends z.AnyZodObject>({ context, validator, }: {
     context: GetServerSidePropsContext;
     validator: T;
-}): z.infer<T>;
+}): ServerParseParamsResult<T>;
 declare function parseServerSideRouteParams<T extends z.AnyZodObject>({ context, validator, }: {
     context: GetServerSidePropsContext;
     validator: T;
-}): z.infer<T>;
+}): ServerParseParamsResult<T>;
 
 export { $path, parseServerSideRouteParams, parseServerSideSearchParams, useRouteParams, useSearchParams };`;
 

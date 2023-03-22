@@ -122,4 +122,16 @@ export type UseParamsResult<T extends z.AnyZodObject> =
       error: undefined;
     };
 
+export type ServerParseParamsResult<T extends z.AnyZodObject> =
+  | {
+      data: z.infer<T>;
+      isError: false;
+      error: undefined;
+    }
+  | {
+      data: undefined;
+      isError: true;
+      error: z.ZodError<T>;
+    };
+
 export { $path, useRouteParams, useSearchParams };

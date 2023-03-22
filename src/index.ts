@@ -11,7 +11,12 @@ import {
   parse2,
   parse3,
 } from "./utils";
-import type { AllRoutes, PathOptions, UseParamsResult } from "./types";
+import type {
+  AllRoutes,
+  PathOptions,
+  UseParamsResult,
+  ServerParseParamsResult,
+} from "./types";
 
 export function $path<T extends AllRoutes>({
   route,
@@ -142,41 +147,83 @@ export function useSearchParams<T extends z.AnyZodObject>(
 
 import type { GetServerSidePropsContext } from "next";
 
-//! CAN THROW
 export function parseServerSideSearchParams<T extends z.AnyZodObject>({
   context,
   validator,
 }: {
   context: GetServerSidePropsContext;
   validator: T;
-}): z.infer<T> {
+}): ServerParseParamsResult<T> {
   if (!context.query) {
-    throw new Error("No params found");
+    return {
+      data: undefined,
+      isError: true,
+      error: new z.ZodError([
+        {
+          path: [],
+          code: "custom",
+          message: "No query context found",
+        },
+      ]),
+    };
   }
   const parsedParams = Object.fromEntries(
     Object.entries(context.query).map(([key, value]) => [key, parse3(value)])
   );
 
-  const validatedDynamicRouteParams = validator.parse(parsedParams);
-  return validatedDynamicRouteParams;
+  const validatedDynamicSearchParams = validator.safeParse(parsedParams);
+  if (validatedDynamicSearchParams.success) {
+    return {
+      data: validatedDynamicSearchParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicSearchParams.error as z.ZodError,
+    };
+  }
 }
 
-//! CAN THROW
 export function parseServerSideRouteParams<T extends z.AnyZodObject>({
   context,
   validator,
 }: {
   context: GetServerSidePropsContext;
   validator: T;
-}): z.infer<T> {
+}): ServerParseParamsResult<T> {
   if (!context.params) {
-    throw new Error("No params found");
+    return {
+      data: undefined,
+      isError: true,
+      error: new z.ZodError([
+        {
+          path: [],
+          code: "custom",
+          message: "No param context found",
+        },
+      ]),
+    };
   }
 
   const parsedParams = Object.fromEntries(
     Object.entries(context.params).map(([key, value]) => [key, parse2(value)])
   );
 
-  const validatedDynamicRouteParams = validator.parse(parsedParams);
-  return validatedDynamicRouteParams;
+  const validatedDynamicRouteParams = validator.safeParse(parsedParams);
+  if (validatedDynamicRouteParams.success) {
+    return {
+      data: validatedDynamicRouteParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicRouteParams.error as z.ZodError,
+    };
+  }
 }
