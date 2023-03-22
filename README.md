@@ -52,6 +52,8 @@ If you run into any issues it will most likely be the cli (_for me it works fine
 
 _If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster._
 
+Worst case senario, you may have to restart your editor. If you are still having issues, please open an issue.
+
 ---
 
 Add `next-typesafe-url` to your dev and build script in package.json.
@@ -204,50 +206,97 @@ _For convenience, instead of needing checking `isReady && !isError`, I have adde
 
 ## Reccomended Usage
 
-**It is HIGHLY reccomended to only call `useSearchParams` and `useRouteParams` in the top level component of each route, and pass the data down to child components through props or context.**
+### **It is _HIGHLY_ reccomended to only call `useSearchParams` and `useRouteParams` in the top level component of each route, and pass the data down to child components through props or context.**
+
+Feel free to use your state management library of choice to pass the data down to child components.
+
+## Static/SeverSide Props
+
+`next-typesafe-url` provides full support for validating route params and search params in `getStaticProps` and `getServerSideProps`.
+
+Use the `InferServerSideParamsType` to get the type of the route params and search params for the current route, we can pass that type as a generic to `NextPage` and `GetStaticProps` or `GetServerSideProps`.
+
+If you are passing other props in `getStaticProps` or `getServerSideProps`, just create a union type with the `InferServerSideParamsType` type.
+
+The `parseServerSideRouteParams` and `parseServerSideSearchParams` functions are used to parse the route params and search params. They take the same schema from your `Route` object as the `useRouteParams` and `useSearchParams` hooks, as well as the `context` object from `getStaticProps` or `getServerSideProps`.
+
+### Errors
+
+Like the hooks, `parseServerSideRouteParams` and `parseServerSideSearchParams` have an `isError` flag, and if it is true, then `error` will be a zod error object you can use to get more information about the error. Otherwise, `data` will be the parsed route params or search params.
 
 ---
 
-If you are looking for a easier way to do globally this check out [Jotai](https://jotai.org/).
+This is an example of how to use `next-typesafe-url` with `getServerSideProps`, but the same pattern can be used with `getStaticProps`.
 
 ```tsx
-import { atom, useSetAtom, useAtomValue } from "jotai";
+import type {
+  InferGetServerSidePropsType,
+  NextPage,
+  GetServerSideProps,
+} from "next";
+import { z } from "zod";
+import {
+  $path,
+  parseServerSideRouteParams,
+  parseServerSideSearchParams,
+  type InferServerSideParamsType,
+} from "next-typesafe-url";
 
-// In route file in pages directory
+const Route = {
+  routeParams: z.object({
+    productID: z.number(),
+  }),
+  searchParams: z.object({
+    location: z.enum(["us", "eu"]).optional(),
+    userInfo: z.object({
+      name: z.string(),
+      age: z.number(),
+    }),
+  }),
+};
+export type RouteType = typeof Route;
 
-const productRouteParamsAtom = atom<z.infer<typeof Route.routeParams>>({
-  productID: 1,
-});
+type ServerSideProps = InferServerSideParamsType<RouteType>;
 
-const Page: NextPage = () => {
-  const setRouteParams = useSetAtom(productRouteParamsAtom);
+export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
+  context
+) => {
+  const routeParams = parseServerSideRouteParams({
+    context,
+    validator: Route.routeParams,
+  });
 
-  const params = useRouteParams(Route.routeParams);
-  const { data, isError, isReady } = params;
+  const searchParams = parseServerSideSearchParams({
+    context,
+    validator: Route.searchParams,
+  });
 
-  useEffect(() => {
-    if (isReady && !isError) {
-      setRouteParams(data);
-    }
-  }, [isReady, isError, data, setRouteParams]);
+  if (routeParams.isError || searchParams.isError) {
+    console.log(routeParams.error?.message, searchParams.error?.message);
+    throw new Error("Invalid route or search params");
+  } else {
+    return {
+      props: {
+        ...routeParams.data,
+        ...searchParams.data,
+      },
+    };
+  }
+};
 
+type PageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const Page: NextPage<PageProps> = (props) => {
   return (
-    <div>
-      <DeeperComponent />
-    </div>
+    <>
+      <div>slug: {props.slug}</div>
+      <div>search: {`${props.userInfo.name} - ${props.userInfo.age}`}</div>
+      <div>location: {props.location}</div>
+    </>
   );
 };
 export default Page;
-
-//anwhere in the tree
-
-function DeeperComponent() {
-  const routeParams = useAtomValue(productRouteParamsAtom);
-  return <div>{routeParams.productID}</div>;
-}
 ```
-
----
 
 ## AppRouter Type
 
