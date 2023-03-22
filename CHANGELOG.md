@@ -5,7 +5,6 @@
 ### Patch Changes
 
 - 2130e27: remove inferSSParams, docs suggest use of approuter type. also clarify example is not only way to use params
-- 91daa75: ci work please
 
 ## 1.3.1
 
