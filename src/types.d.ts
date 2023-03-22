@@ -32,10 +32,41 @@ export type PathOptions<T extends AllRoutes> = T extends StaticRoutes
 type HandleUndefined<T extends z.AnyZodObject | undefined> =
   T extends z.AnyZodObject ? z.infer<T> : undefined;
 
-type DynamicRouteOptions<T extends DynamicRoutes> = {
+type DynamicRouteOptions<T extends DynamicRoutes> =
+  RouteParams<T> extends undefined
+    ? SearchParams<T> extends undefined
+      ? // Both are undefined
+        Option4<T>
+      : // Only routeParams is undefined
+        Option2<T>
+    : SearchParams<T> extends undefined
+    ? // Only searchParams is undefined
+      Option3<T>
+    : // Neither are undefined
+      Option1<T>;
+
+type Option1<T extends DynamicRoutes> = {
   route: T;
-  searchParams?: SearchParams<T>;
-  routeParams?: RouteParams<T>;
+  searchParams: SearchParams<T>;
+  routeParams: RouteParams<T>;
+};
+
+type Option2<T extends DynamicRoutes> = {
+  route: T;
+  searchParams: SearchParams<T>;
+  routeParams?: undefined;
+};
+
+type Option3<T extends DynamicRoutes> = {
+  route: T;
+  searchParams?: undefined;
+  routeParams: RouteParams<T>;
+};
+
+type Option4<T extends DynamicRoutes> = {
+  route: T;
+  searchParams?: undefined;
+  routeParams?: undefined;
 };
 
 type StaticPathOptions<T extends StaticRoutes> = {
