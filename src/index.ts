@@ -8,6 +8,8 @@ import {
   getDynamicRouteParams,
   generateParamStringFromObject,
   fillPath,
+  parse2,
+  parse3,
 } from "./utils";
 import type { AllRoutes, PathOptions, UseParamsResult } from "./types";
 
@@ -136,4 +138,45 @@ export function useSearchParams<T extends z.AnyZodObject>(
       error: undefined,
     };
   }
+}
+
+import type { GetServerSidePropsContext } from "next";
+
+//! CAN THROW
+export function parseServerSideSearchParams<T extends z.AnyZodObject>({
+  context,
+  validator,
+}: {
+  context: GetServerSidePropsContext;
+  validator: T;
+}): z.infer<T> {
+  if (!context.query) {
+    throw new Error("No params found");
+  }
+  const parsedParams = Object.fromEntries(
+    Object.entries(context.query).map(([key, value]) => [key, parse3(value)])
+  );
+
+  const validatedDynamicRouteParams = validator.parse(parsedParams);
+  return validatedDynamicRouteParams;
+}
+
+//! CAN THROW
+export function parseServerSideRouteParams<T extends z.AnyZodObject>({
+  context,
+  validator,
+}: {
+  context: GetServerSidePropsContext;
+  validator: T;
+}): z.infer<T> {
+  if (!context.params) {
+    throw new Error("No params found");
+  }
+
+  const parsedParams = Object.fromEntries(
+    Object.entries(context.params).map(([key, value]) => [key, parse2(value)])
+  );
+
+  const validatedDynamicRouteParams = validator.parse(parsedParams);
+  return validatedDynamicRouteParams;
 }

@@ -13,7 +13,7 @@ export function generateParamStringFromObject(
       params.push(`${key}=${encodeURIComponent(JSON.stringify(value))}`);
     }
   }
-  const finalString = `?${params.join("&")}`
+  const finalString = `?${params.join("&")}`;
   return finalString === "?" ? "" : finalString;
 }
 
@@ -141,6 +141,30 @@ function reservedParse(value: string): unknown {
         parsedValue = value;
       }
     }
+  }
+  return parsedValue;
+}
+
+export function parse3(value: string | string[] | undefined) {
+  let parsedValue: unknown;
+  if (value === undefined) {
+    parsedValue = undefined;
+  } else if (Array.isArray(value)) {
+    parsedValue = value.map((x) => parse2(x));
+  } else {
+    parsedValue = parse2(value);
+  }
+  return parsedValue;
+}
+
+export function parse2(value: string | string[] | undefined) {
+  let parsedValue: unknown;
+  if (value === undefined) {
+    parsedValue = undefined;
+  } else if (Array.isArray(value)) {
+    parsedValue = value.map((x) => reservedParse(x));
+  } else {
+    parsedValue = reservedParse(value);
   }
   return parsedValue;
 }

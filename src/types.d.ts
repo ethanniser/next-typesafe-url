@@ -8,6 +8,7 @@ type StaticRoutes = keyof StaticRouter;
 type DynamicRoutes = keyof DynamicRouter;
 
 import { type z } from "zod";
+import { type GetServerSidePropsContext } from "next";
 
 type StaticRoute = {
   searchParams: undefined;
