@@ -75,6 +75,11 @@ type StaticPathOptions<T extends StaticRoutes> = {
   routeParams?: undefined;
 };
 
+export type InferServerSideParamsType<T extends DynamicRoute> = z.infer<
+  T["routeParams"]
+> &
+  z.infer<T["searchParams"]>;
+
 export type AllRoutes = keyof AppRouter;
 
 type SearchParams<T extends AllRoutes> = AppRouter[T]["searchParams"];
