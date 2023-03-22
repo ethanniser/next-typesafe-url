@@ -226,8 +226,12 @@ declare function parseServerSideRouteParams<T extends z.AnyZodObject>({ context,
     context: GetServerSidePropsContext;
     validator: T;
 }): ServerParseParamsResult<T>;
+declare function WithParamValidation(Component: (...args: any[]) => JSX.Element, validator: {
+    searchParams: z.AnyZodObject | undefined;
+    routeParams: z.AnyZodObject | undefined;
+}): (...args: any[]) => JSX.Element;
 
-export { $path, parseServerSideRouteParams, parseServerSideSearchParams, useRouteParams, useSearchParams };`;
+export { $path, WithParamValidation, parseServerSideRouteParams, parseServerSideSearchParams, useRouteParams, useSearchParams };`;
 
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 

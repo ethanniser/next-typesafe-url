@@ -146,15 +146,16 @@ export function useSearchParams<T extends z.AnyZodObject>(
 }
 
 import type { GetServerSidePropsContext } from "next";
+import React from "react";
 
 export function parseServerSideSearchParams<T extends z.AnyZodObject>({
-  context,
+  query,
   validator,
 }: {
-  context: GetServerSidePropsContext;
+  query: GetServerSidePropsContext["query"];
   validator: T;
 }): ServerParseParamsResult<T> {
-  if (!context.query) {
+  if (!query) {
     return {
       data: undefined,
       isError: true,
@@ -168,7 +169,7 @@ export function parseServerSideSearchParams<T extends z.AnyZodObject>({
     };
   }
   const parsedParams = Object.fromEntries(
-    Object.entries(context.query).map(([key, value]) => [key, parse3(value)])
+    Object.entries(query).map(([key, value]) => [key, parse3(value)])
   );
 
   const validatedDynamicSearchParams = validator.safeParse(parsedParams);
@@ -188,13 +189,13 @@ export function parseServerSideSearchParams<T extends z.AnyZodObject>({
 }
 
 export function parseServerSideRouteParams<T extends z.AnyZodObject>({
-  context,
+  params,
   validator,
 }: {
-  context: GetServerSidePropsContext;
+  params: GetServerSidePropsContext["params"];
   validator: T;
 }): ServerParseParamsResult<T> {
-  if (!context.params) {
+  if (!params) {
     return {
       data: undefined,
       isError: true,
@@ -209,7 +210,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
   }
 
   const parsedParams = Object.fromEntries(
-    Object.entries(context.params).map(([key, value]) => [key, parse2(value)])
+    Object.entries(params).map(([key, value]) => [key, parse2(value)])
   );
 
   const validatedDynamicRouteParams = validator.safeParse(parsedParams);
@@ -226,4 +227,46 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
       error: validatedDynamicRouteParams.error as z.ZodError,
     };
   }
+}
+
+export function WithParamValidation(
+  Component: (...args: any[]) => JSX.Element,
+  validator: {
+    searchParams: z.AnyZodObject | undefined;
+    routeParams: z.AnyZodObject | undefined;
+  }
+): (...args: any[]) => JSX.Element {
+  const ValidatedPageComponent: (...args: any[]) => JSX.Element = (props) => {
+    const { params, searchParams } = props;
+
+    let parsedRouteParams = undefined;
+
+    if (validator.routeParams) {
+      parsedRouteParams = parseServerSideRouteParams({
+        params,
+        validator: validator.routeParams,
+      });
+    }
+
+    let parsedSearchParams = undefined;
+    if (validator.searchParams) {
+      parsedSearchParams = parseServerSideSearchParams({
+        query: searchParams ?? {},
+        validator: validator.searchParams,
+      });
+    }
+
+    if (parsedRouteParams?.isError) {
+      throw parsedRouteParams.error;
+    } else if (parsedSearchParams?.isError) {
+      throw parsedSearchParams.error;
+    }
+
+    return React.createElement(Component, {
+      routeParams: parsedRouteParams?.data,
+      searchParams: parsedSearchParams?.data,
+    });
+  };
+
+  return ValidatedPageComponent;
 }
