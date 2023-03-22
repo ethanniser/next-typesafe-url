@@ -1,5 +1,16 @@
 # next-typesafe-url
 
+## 1.3.0
+
+### Minor Changes
+
+- d180798: added tools to parse params in gsp/gssp
+
+### Patch Changes
+
+- 56b482b: added inferserversideparamstype help
+- 245a7dd: fix: now errors correctly when leaving required searchparams/routeparams undefined
+
 ## 1.2.3
 
 ### Patch Changes
