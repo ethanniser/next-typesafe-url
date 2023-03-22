@@ -130,6 +130,19 @@ Keep in mind that `next-typesafe-url` assumes your `Route` and export `RouteType
 
 **Double check your `Route` objects to make sure they are correct.**
 
+## AppRouter Type
+
+`next-typesafe-url` exports a `AppRouter` type that you can use to get the type of the valid search params and route params for any given route in your app.
+
+```tsx
+import { type AppRouter } from "next-typesafe-url";
+
+type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
+// type ProductIDRouteParams = {
+//     productID: number;
+// }
+```
+
 ## Path
 
 `next-typesafe-url` exports a `$path` function that generates a path that can be passed to `next/link` or `next/router`.
@@ -214,11 +227,8 @@ Feel free to use your state management library of choice to pass the data down t
 
 `next-typesafe-url` provides full support for validating route params and search params in `getStaticProps` and `getServerSideProps`.
 
-Use the `InferServerSideParamsType` to get the type of the route params and search params for the current route, we can pass that type as a generic to `NextPage` and `GetStaticProps` or `GetServerSideProps`.
 
-If you are passing other props in `getStaticProps` or `getServerSideProps`, just create a union type with the `InferServerSideParamsType` type.
-
-The `parseServerSideRouteParams` and `parseServerSideSearchParams` functions are used to parse the route params and search params. They take the same schema from your `Route` object as the `useRouteParams` and `useSearchParams` hooks, as well as the `context` object from `getStaticProps` or `getServerSideProps`.
+The `parseServerSideRouteParams` and `parseServerSideSearchParams` functions are used to parse the route params and search params. They take the same schema from your `Route` object as the `useRouteParams` and `useSearchParams` hooks, as well as the `context` object from `getStaticProps` / `getServerSideProps`.
 
 ### Errors
 
@@ -228,7 +238,13 @@ Like the hooks, `parseServerSideRouteParams` and `parseServerSideSearchParams` h
 
 This is an example of how to use `next-typesafe-url` with `getServerSideProps`, but the same pattern can be used with `getStaticProps`.
 
+***In this example I simply pass all of the params as props, but you can use the fully typed and validated `data` you get back from `parseServerSideRouteParams` and `parseServerSideSearchParams` however you wish.***
+
+*Also note use of the `AppRouter` type to gather the type of the params*
+
 ```tsx
+// pages/product/[productID].tsx
+
 import type {
   InferGetServerSidePropsType,
   NextPage,
@@ -239,7 +255,7 @@ import {
   $path,
   parseServerSideRouteParams,
   parseServerSideSearchParams,
-  type InferServerSideParamsType,
+  type AppRouter,
 } from "next-typesafe-url";
 
 const Route = {
@@ -256,7 +272,8 @@ const Route = {
 };
 export type RouteType = typeof Route;
 
-type ServerSideProps = InferServerSideParamsType<RouteType>;
+type ServerSideProps = AppRouter['/product/[productID]']['searchParams'] &
+    AppRouter['/product/[productID]']['routeParams'];
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   context
@@ -296,19 +313,6 @@ const Page: NextPage<PageProps> = (props) => {
   );
 };
 export default Page;
-```
-
-## AppRouter Type
-
-`next-typesafe-url` exports a `AppRouter` type that you can use to get the type of the valid search params and route params for any given route in your app.
-
-```tsx
-import { type AppRouter } from "next-typesafe-url";
-
-type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
-// type ProductIDRouteParams = {
-//     productID: number;
-// }
 ```
 
 ## Command Line Options
