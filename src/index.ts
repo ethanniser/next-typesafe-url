@@ -145,14 +145,14 @@ export function useSearchParams<T extends z.AnyZodObject>(
   }
 }
 
-import type { GetServerSidePropsContext } from "next";
+import type { ParsedUrlQuery } from "querystring";
 import React from "react";
 
 export function parseServerSideSearchParams<T extends z.AnyZodObject>({
   query,
   validator,
 }: {
-  query: GetServerSidePropsContext["query"];
+  query: ParsedUrlQuery;
   validator: T;
 }): ServerParseParamsResult<T> {
   if (!query) {
@@ -192,7 +192,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
   params,
   validator,
 }: {
-  params: GetServerSidePropsContext["params"];
+  params: ParsedUrlQuery | undefined;
   validator: T;
 }): ServerParseParamsResult<T> {
   if (!params) {

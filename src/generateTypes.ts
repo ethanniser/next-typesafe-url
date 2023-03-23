@@ -129,13 +129,71 @@ export function generateTypesFile(
     .join("\n");
 
   const additionalTypeDeclarations = `
-export type AppRouter = StaticRouter & DynamicRouter;
+import { type z } from "zod";
+import type { ParsedUrlQuery } from "querystring";
+
+type AppRouter = StaticRouter & DynamicRouter;
 
 type StaticRoutes = keyof StaticRouter;
 type DynamicRoutes = keyof DynamicRouter;
 
-import { type z } from "zod";
-import { type GetServerSidePropsContext } from "next";
+type InferRoute<T extends DynamicRoute> = HandleUndefined<Helper<T>>;
+
+type Helper<T extends DynamicRoute> = {
+  searchParams: T["searchParams"] extends undefined
+    ? undefined
+    : z.infer<T["searchParams"]>;
+  routeParams: T["routeParams"] extends undefined
+    ? undefined
+    : z.infer<T["routeParams"]>;
+};
+
+type HandleUndefined<T extends DynamicRoute> =
+  T["routeParams"] extends undefined
+    ? T["searchParams"] extends undefined
+      ? // Both are undefined
+        Option4<T>
+      : // Only routeParams is undefined
+        Option2<T>
+    : T["searchParams"] extends undefined
+    ? // Only searchParams is undefined
+      Option3<T>
+    : // Neither are undefined
+      Option1<T>;
+
+type Option1<T extends DynamicRoute> = AllPossiblyUndefined<
+  T["searchParams"]
+> extends undefined
+  ? {
+      searchParams?: T["searchParams"] | undefined;
+      routeParams: T["routeParams"];
+    }
+  : {
+      searchParams: T["searchParams"];
+      routeParams: T["routeParams"];
+    };
+
+type Option2<T extends DynamicRoute> = AllPossiblyUndefined<
+  T["searchParams"]
+> extends undefined
+  ? {
+      searchParams?: T["searchParams"] | undefined;
+      routeParams?: undefined;
+    }
+  : {
+      searchParams: T["searchParams"];
+      routeParams?: undefined;
+    };
+
+type Option3<T extends DynamicRoutes> = {
+  searchParams?: undefined;
+  routeParams: T["routeParams"];
+};
+
+type Option4<T extends DynamicRoutes> = {
+  searchParams?: undefined;
+  routeParams?: undefined;
+};
 
 type StaticRoute = {
   searchParams: undefined;
@@ -147,74 +205,17 @@ type DynamicRoute = {
   routeParams: z.AnyZodObject | undefined;
 };
 
-type InferRoute<T extends DynamicRoute> = {
-  searchParams: HandleUndefined<T["searchParams"]>;
-  routeParams: HandleUndefined<T["routeParams"]>;
-};
+type PathOptions<T extends AllRoutes> = T extends StaticRoutes
+  ? StaticPathOptions<T>
+  : { route: T } & AppRouter[T];
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
   : DynamicRouteOptions<T>;
 
-type HandleUndefined<T extends z.AnyZodObject | undefined> =
-  T extends z.AnyZodObject ? z.infer<T> : undefined;
-
 type AllPossiblyUndefined<T> = Exclude<Partial<T>, undefined> extends T
   ? undefined
   : T;
-
-type DynamicRouteOptions<T extends DynamicRoutes> =
-  RouteParams<T> extends undefined
-    ? SearchParams<T> extends undefined
-      ? // Both are undefined
-        Option4<T>
-      : // Only routeParams is undefined
-        Option2<T>
-    : SearchParams<T> extends undefined
-    ? // Only searchParams is undefined
-      Option3<T>
-    : // Neither are undefined
-      Option1<T>;
-
-type Option1<T extends DynamicRoutes> = AllPossiblyUndefined<
-  SearchParams<T>
-> extends undefined
-  ? {
-      route: T;
-      searchParams?: SearchParams<T> | undefined;
-      routeParams: RouteParams<T>;
-    }
-  : {
-      route: T;
-      searchParams: SearchParams<T>;
-      routeParams: RouteParams<T>;
-    };
-
-type Option2<T extends DynamicRoutes> = AllPossiblyUndefined<
-  SearchParams<T>
-> extends undefined
-  ? {
-      route: T;
-      searchParams?: SearchParams<T> | undefined;
-      routeParams?: undefined;
-    }
-  : {
-      route: T;
-      searchParams: SearchParams<T>;
-      routeParams?: undefined;
-    };
-
-type Option3<T extends DynamicRoutes> = {
-  route: T;
-  searchParams?: undefined;
-  routeParams: RouteParams<T>;
-};
-
-type Option4<T extends DynamicRoutes> = {
-  route: T;
-  searchParams?: undefined;
-  routeParams?: undefined;
-};
 
 type StaticPathOptions<T extends StaticRoutes> = {
   route: T;
@@ -223,9 +224,6 @@ type StaticPathOptions<T extends StaticRoutes> = {
 };
 
 type AllRoutes = keyof AppRouter;
-
-type SearchParams<T extends AllRoutes> = AppRouter[T]["searchParams"];
-type RouteParams<T extends AllRoutes> = AppRouter[T]["routeParams"];
 
 type UseParamsResult<T extends z.AnyZodObject> =
   | {
@@ -262,24 +260,49 @@ type ServerParseParamsResult<T extends z.AnyZodObject> =
       error: z.ZodError<T>;
     };
 
-declare function $path<T extends AllRoutes>({ route, searchParams, routeParams, }: PathOptions<T>): string;
-declare function useRouteParams<T extends z.AnyZodObject>(validator: T): UseParamsResult<T>;
-declare function useSearchParams<T extends z.AnyZodObject>(searchValidator: T): UseParamsResult<T>;
+declare function $path<T extends AllRoutes>({
+  route,
+  searchParams,
+  routeParams,
+}: PathOptions<T>): string;
+declare function useRouteParams<T extends z.AnyZodObject>(
+  validator: T
+): UseParamsResult<T>;
+declare function useSearchParams<T extends z.AnyZodObject>(
+  searchValidator: T
+): UseParamsResult<T>;
 
-declare function parseServerSideSearchParams<T extends z.AnyZodObject>({ context, validator, }: {
-    context: GetServerSidePropsContext;
-    validator: T;
+declare function parseServerSideSearchParams<T extends z.AnyZodObject>({
+  query,
+  validator,
+}: {
+  query: ParsedUrlQuery;
+  validator: T;
 }): ServerParseParamsResult<T>;
-declare function parseServerSideRouteParams<T extends z.AnyZodObject>({ context, validator, }: {
-    context: GetServerSidePropsContext;
-    validator: T;
+declare function parseServerSideRouteParams<T extends z.AnyZodObject>({
+  params,
+  validator,
+}: {
+  params: ParsedUrlQuery | undefined;
+  validator: T;
 }): ServerParseParamsResult<T>;
-declare function WithParamValidation(Component: (...args: any[]) => JSX.Element, validator: {
+declare function WithParamValidation(
+  Component: (...args: any[]) => JSX.Element,
+  validator: {
     searchParams: z.AnyZodObject | undefined;
     routeParams: z.AnyZodObject | undefined;
-}): (...args: any[]) => JSX.Element;
+  }
+): (...args: any[]) => JSX.Element;
 
-export { $path, WithParamValidation, parseServerSideRouteParams, parseServerSideSearchParams, useRouteParams, useSearchParams };`;
+export {
+  $path,
+  WithParamValidation,
+  parseServerSideRouteParams,
+  parseServerSideSearchParams,
+  useRouteParams,
+  useSearchParams,
+  AppRouter,
+};`;
 
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
