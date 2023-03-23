@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export function getRoutesWithExportedRoute(
+export function getPAGESRoutesWithExportedRoute(
   basePath: string,
   dir: string,
   exportedRoutes: string[] = [],
@@ -10,7 +10,7 @@ export function getRoutesWithExportedRoute(
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
-      getRoutesWithExportedRoute(
+      getPAGESRoutesWithExportedRoute(
         basePath,
         fullPath,
         exportedRoutes,
@@ -57,16 +57,64 @@ export function getRoutesWithExportedRoute(
   return { exportedRoutes, filesWithoutExportedRoutes };
 }
 
+export function getAPPRoutesWithExportedRoute(
+  basePath: string,
+  dir: string,
+  exportedRoutes: string[] = [],
+  filesWithoutExportedRoutes: string[] = []
+) {
+  fs.readdirSync(dir).forEach((file) => {
+    const fullPath = path.join(dir, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      getAPPRoutesWithExportedRoute(
+        basePath,
+        fullPath,
+        exportedRoutes,
+        filesWithoutExportedRoutes
+      );
+    } else {
+      const fileName = path.basename(fullPath);
+
+      if (fileName !== "page.tsx") return;
+
+      const fileContent = fs.readFileSync(fullPath, "utf8");
+      const hasExportedRouteType = /export\s+type\s+RouteType\b/.test(
+        fileContent
+      );
+
+      let routePath = fullPath
+        .replace(basePath, "")
+        .replace(/\\/g, "/")
+        .replace(/\/page\.tsx$/, "");
+
+      if (dir === basePath) {
+        routePath = "/";
+      }
+
+      if (hasExportedRouteType) {
+        exportedRoutes.push(routePath);
+      } else {
+        filesWithoutExportedRoutes.push(routePath);
+      }
+    }
+  });
+
+  return { exportedRoutes, filesWithoutExportedRoutes };
+}
+
 export function generateTypesFile(
   hasRoute: string[],
-  doesntHaveRoute: string[]
+  doesntHaveRoute: string[],
+  type: "pages" | "app"
 ): void {
   let importStatements = "";
   let routeCounter = 0;
 
   for (const route of hasRoute) {
     const routeVariableName = `Route_${routeCounter}`;
-    importStatements += `import { type RouteType as ${routeVariableName} } from "~/pages${route}";\n`;
+    importStatements += `import { type RouteType as ${routeVariableName} } from "../../../src/${type}${
+      route === "/" ? "" : route
+    }${type === "app" ? "/page" : ""}";\n`;
     routeCounter++;
   }
 

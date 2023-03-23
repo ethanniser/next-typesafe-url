@@ -2,7 +2,11 @@
 import meow from "meow";
 import path from "path";
 import chokidar from "chokidar";
-import { getRoutesWithExportedRoute, generateTypesFile } from "./generateTypes";
+import {
+  getPAGESRoutesWithExportedRoute,
+  getAPPRoutesWithExportedRoute,
+  generateTypesFile,
+} from "./generateTypes";
 
 const helpText = `
 Usage
@@ -31,12 +35,14 @@ const cli = meow(helpText, {
 });
 
 function build(type: "pages" | "app") {
-  const pagesPath = path.join(process.cwd(), "/src/pages");
+  const dirPath = path.join(process.cwd(), `/src/${type}`);
 
   const { exportedRoutes, filesWithoutExportedRoutes } =
-    getRoutesWithExportedRoute(pagesPath, pagesPath);
+    type === "pages"
+      ? getPAGESRoutesWithExportedRoute(dirPath, dirPath)
+      : getAPPRoutesWithExportedRoute(dirPath, dirPath);
 
-  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes);
+  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type);
   console.log("Generated route types");
 }
 
