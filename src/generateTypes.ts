@@ -66,7 +66,7 @@ export function generateTypesFile(
 
   for (const route of hasRoute) {
     const routeVariableName = `Route_${routeCounter}`;
-    importStatements += `import { type RouteType as ${routeVariableName} } from "~/pages${route}";\n`;
+    importStatements += `import { type RouteType as ${routeVariableName} } from "../../../src/pages${route}";\n`;
     routeCounter++;
   }
 
