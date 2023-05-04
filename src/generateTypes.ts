@@ -301,14 +301,14 @@ declare function parseServerSideRouteParams<T extends z.AnyZodObject>({
 
 type SomeReactComponent = (...args: any[]) => ReactElement;
 
-declare function WithParamValidation(
+declare function withParamValidation(
   Component: SomeReactComponent,
   validator: DynamicRoute
 ): SomeReactComponent;
 
 export {
   $path,
-  WithParamValidation,
+  withParamValidation,
   parseServerSideRouteParams,
   parseServerSideSearchParams,
   useRouteParams,
