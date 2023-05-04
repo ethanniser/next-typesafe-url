@@ -16,6 +16,8 @@ import type {
   PathOptions,
   UseParamsResult,
   ServerParseParamsResult,
+  DynamicRoute,
+  SomeReactComponent,
 } from "./types";
 
 export function $path<T extends AllRoutes>({
@@ -228,16 +230,19 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
     };
   }
 }
-type SomeReactComponent = (...args: any[]) => ReactElement;
+
+type NextAppPageProps = {
+  params: Record<string, string>;
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 export function withParamValidation(
   Component: SomeReactComponent,
-  validator: {
-    searchParams: z.AnyZodObject | undefined;
-    routeParams: z.AnyZodObject | undefined;
-  }
+  validator: DynamicRoute
 ): SomeReactComponent {
-  const ValidatedPageComponent: SomeReactComponent = (props) => {
+  const ValidatedPageComponent: SomeReactComponent = (
+    props: NextAppPageProps
+  ) => {
     const { params, searchParams } = props;
 
     let parsedRouteParams = undefined;

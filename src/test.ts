@@ -2,7 +2,9 @@ import { z } from "zod";
 import { $path } from ".";
 import React from "react";
 import { withParamValidation } from ".";
-import { renderToString } from 'react-dom/server';
+import type { InferPagePropsType } from "./types";
+import { renderToString } from "react-dom/server";
+import type { NextPage } from "next";
 
 const Route = {
   searchParams: z.object({
@@ -14,17 +16,15 @@ const Route = {
 };
 export type RouteType = typeof Route;
 
-type X = {
-  searchParams: z.infer<RouteType['searchParams']>,
-  routeParams: z.infer<RouteType['routeParams']>
-}
+type X = InferPagePropsType<RouteType>;
 
-const page = (props: X) => React.createElement('h1', null, `slug: ${props.routeParams.slug}`);
+const page = (props: InferPagePropsType<RouteType>) =>
+  React.createElement("h1", null, `slug: ${props.routeParams.slug}`);
 
 const validatedComponent = withParamValidation(page, Route);
 
 export default withParamValidation(page, Route);
 
-const x = validatedComponent({params: {slug: "10"}, searchParams: {}})
+const x = validatedComponent({ params: { slug: "10" }, searchParams: {} });
 
-console.log(renderToString(x))
+console.log(renderToString(x));

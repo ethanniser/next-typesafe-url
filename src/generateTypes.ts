@@ -260,14 +260,25 @@ type ServerParseParamsResult<T extends z.AnyZodObject> =
       error: z.ZodError<T>;
     };
 
+type InferPagePropsType<T extends DynamicRoute> = {
+  searchParams: T["searchParams"] extends z.AnyZodObject
+    ? z.infer<T["searchParams"]>
+    : undefined;
+  routeParams: T["routeParams"] extends z.AnyZodObject
+    ? z.infer<T["routeParams"]>
+    : undefined;
+};
+
 declare function $path<T extends AllRoutes>({
   route,
   searchParams,
   routeParams,
 }: PathOptions<T>): string;
+
 declare function useRouteParams<T extends z.AnyZodObject>(
   validator: T
 ): UseParamsResult<T>;
+
 declare function useSearchParams<T extends z.AnyZodObject>(
   searchValidator: T
 ): UseParamsResult<T>;
@@ -279,6 +290,7 @@ declare function parseServerSideSearchParams<T extends z.AnyZodObject>({
   query: ParsedUrlQuery;
   validator: T;
 }): ServerParseParamsResult<T>;
+
 declare function parseServerSideRouteParams<T extends z.AnyZodObject>({
   params,
   validator,
@@ -286,13 +298,13 @@ declare function parseServerSideRouteParams<T extends z.AnyZodObject>({
   params: ParsedUrlQuery | undefined;
   validator: T;
 }): ServerParseParamsResult<T>;
+
+type SomeReactComponent = (...args: any[]) => ReactElement;
+
 declare function WithParamValidation(
-  Component: (...args: any[]) => JSX.Element,
-  validator: {
-    searchParams: z.AnyZodObject | undefined;
-    routeParams: z.AnyZodObject | undefined;
-  }
-): (...args: any[]) => JSX.Element;
+  Component: SomeReactComponent,
+  validator: DynamicRoute
+): SomeReactComponent;
 
 export {
   $path,
@@ -302,6 +314,7 @@ export {
   useRouteParams,
   useSearchParams,
   AppRouter,
+  InferPagePropsType,
 };`;
 
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
