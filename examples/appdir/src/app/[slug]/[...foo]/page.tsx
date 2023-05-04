@@ -1,4 +1,4 @@
-import { withParamValidation, InferPagePropsType } from "next-typesafe-url";
+import { withParamValidation } from "next-typesafe-url/dist/server";
 import { z } from "zod";
 import { ClientLink } from "./client";
 
@@ -17,9 +17,9 @@ const Route = {
 };
 
 export type RouteType = typeof Route;
-type PageProps = InferPagePropsType<RouteType>;
+// type PageProps = InferPagePropsType<RouteType>;
 
-const Page = ({ routeParams, searchParams }: PageProps) => {
+const Page = ({ routeParams, searchParams }: any) => {
   return (
     <>
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
