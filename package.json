@@ -24,7 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/cli.ts src/index.ts src/server.ts src/client.ts --format cjs,esm --dts",
+    "build": "tsup src/cli.ts src/index.ts src/server.ts src/client.ts --format cjs,esm --dts-resolve",
     "lint": "tsc --noEmit",
     "release": "npm run build && changeset version && changeset publish"
   },

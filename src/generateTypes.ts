@@ -128,73 +128,7 @@ export function generateTypesFile(
     .map((route) => `  "${route}": StaticRoute;`)
     .join("\n");
 
-  const additionalTypeDeclarations = `
-import { type z } from "zod";
-
-type AppRouter = StaticRouter & DynamicRouter;
-
-type StaticRoutes = keyof StaticRouter;
-
-type DynamicRoute = {
-  searchParams: z.AnyZodObject | undefined;
-  routeParams: z.AnyZodObject | undefined;
-};
-
-type PathOptions<T extends AllRoutes> = T extends StaticRoutes
-  ? StaticPathOptions<T>
-  : { route: T } & AppRouter[T];
-
-type PathOptions<T extends AllRoutes> = T extends StaticRoutes
-  ? StaticPathOptions<T>
-  : DynamicRouteOptions<T>;
-
-type StaticPathOptions<T extends StaticRoutes> = {
-  route: T;
-  searchParams?: undefined;
-  routeParams?: undefined;
-};
-
-type AllRoutes = keyof AppRouter;
-
-type UseParamsResult<T extends z.AnyZodObject> =
-  | {
-      data: z.infer<T>;
-      isValid: true;
-      isReady: true;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: true;
-      isError: true;
-      error: z.ZodError<T>;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: false;
-      isError: false;
-      error: undefined;
-    };
-
-type ServerParseParamsResult<T extends z.AnyZodObject> =
-  | {
-      data: z.infer<T>;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isError: true;
-      error: z.ZodError<T>;
-    };
-
-type SomeReactComponent = (...args: any[]) => ReactElement;
-
-export { AppRouter as A, DynamicRoute as D, PathOptions as P, ServerParseParamsResult as S, UseParamsResult as U, AllRoutes as a, SomeReactComponent as b };
-`;
+  const additionalTypeDeclarations = `import type { InferRoute } from "./types";`;
 
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
