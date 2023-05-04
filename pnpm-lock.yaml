@@ -8,6 +8,7 @@ specifiers:
   meow: 9.0.0
   next: ^13.2.3
   react: 18.2.0
+  react-dom: ^18.2.0
   tsup: ^6.6.3
   typescript: ^4.9.5
   zod: ^3.20.2
@@ -20,8 +21,9 @@ devDependencies:
   '@changesets/cli': 2.26.0
   '@types/node': 18.15.0
   '@types/react': 18.0.28
-  next: 13.2.4_react@18.2.0
+  next: 13.2.4_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
+  react-dom: 18.2.0_react@18.2.0
   tsup: 6.6.3_typescript@4.9.5
   typescript: 4.9.5
   zod: 3.21.4
@@ -1751,7 +1753,7 @@ packages:
     hasBin: true
     dev: true
 
-  /next/13.2.4_react@18.2.0:
+  /next/13.2.4_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-g1I30317cThkEpvzfXujf0O4wtaQHtDCLhlivwlTJ885Ld+eOgcz7r3TGQzeU+cSRoNHtD8tsJgzxVdYojFssw==}
     engines: {node: '>=14.6.0'}
     hasBin: true
@@ -1777,6 +1779,7 @@ packages:
       caniuse-lite: 1.0.30001464
       postcss: 8.4.14
       react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       styled-jsx: 5.1.1_react@18.2.0
     optionalDependencies:
       '@next/swc-android-arm-eabi': 13.2.4
@@ -2028,6 +2031,16 @@ packages:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
     engines: {node: '>=8'}
 
+  /react-dom/18.2.0_react@18.2.0:
+    resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
+    peerDependencies:
+      react: ^18.2.0
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.2.0
+      scheduler: 0.23.0
+    dev: true
+
   /react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
@@ -2139,6 +2152,12 @@ packages:
 
   /safer-buffer/2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
+    dev: true
+
+  /scheduler/0.23.0:
+    resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
+    dependencies:
+      loose-envify: 1.4.0
     dev: true
 
   /semver/5.7.1:

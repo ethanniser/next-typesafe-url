@@ -29,23 +29,23 @@
     "release": "npm run build && changeset version && changeset publish"
   },
   "dependencies": {
-    "meow": "9.0.0",
-    "chokidar": "^3.5.3"
+    "chokidar": "^3.5.3",
+    "meow": "9.0.0"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "tsup": "^6.6.3",
-    "typescript": "^4.9.5",
     "@types/node": "^18.15.0",
     "@types/react": "^18.0.28",
     "next": "^13.2.3",
     "react": "18.2.0",
+    "react-dom": "^18.2.0",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5",
     "zod": "^3.20.2"
   },
   "peerDependencies": {
     "next": "^13.2.3",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
     "zod": "^3.20.2"
   }
 }

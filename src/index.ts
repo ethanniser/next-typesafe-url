@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/router";
 import { z } from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactElement } from "react";
 import {
   parseObjectFromParamString,
   getDynamicRouteParams,
@@ -228,15 +228,16 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
     };
   }
 }
+type SomeReactComponent = (...args: any[]) => ReactElement;
 
-export function WithParamValidation(
-  Component: (...args: any[]) => JSX.Element,
+export function withParamValidation(
+  Component: SomeReactComponent,
   validator: {
     searchParams: z.AnyZodObject | undefined;
     routeParams: z.AnyZodObject | undefined;
   }
-): (...args: any[]) => JSX.Element {
-  const ValidatedPageComponent: (...args: any[]) => JSX.Element = (props) => {
+): SomeReactComponent {
+  const ValidatedPageComponent: SomeReactComponent = (props) => {
     const { params, searchParams } = props;
 
     let parsedRouteParams = undefined;
