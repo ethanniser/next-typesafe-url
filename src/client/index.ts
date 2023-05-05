@@ -5,8 +5,8 @@
 import { useRouter } from "next/router";
 import { z } from "zod";
 import { useState, useEffect } from "react";
-import { parseObjectFromParamString, getDynamicRouteParams } from "./utils";
-import type { UseParamsResult } from "./types";
+import { parseObjectFromParamString, getDynamicRouteParams } from "../utils";
+import type { UseParamsResult } from "../types";
 
 // ! Should only be used in top level route component or a component that you know will only be rendered in a certain route
 export function useRouteParams<T extends z.AnyZodObject>(

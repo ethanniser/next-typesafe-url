@@ -1,4 +1,4 @@
-import { withParamValidation } from "next-typesafe-url/dist/server";
+import { withParamValidation } from "next-typesafe-url/server";
 import { z } from "zod";
 import { ClientLink } from "./client";
 
