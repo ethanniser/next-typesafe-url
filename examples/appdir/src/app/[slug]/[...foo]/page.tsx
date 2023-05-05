@@ -1,6 +1,7 @@
-import { withParamValidation } from "next-typesafe-url/server";
+import { withParamValidation } from "next-typesafe-url/dist/server";
+import { InferPagePropsType } from "next-typesafe-url";
 import { z } from "zod";
-import { ClientLink } from "./client";
+import { Client } from "./client";
 
 const Route = {
   routeParams: z.object({
@@ -17,15 +18,15 @@ const Route = {
 };
 
 export type RouteType = typeof Route;
-// type PageProps = InferPagePropsType<RouteType>;
+type PageProps = InferPagePropsType<RouteType>;
 
-const Page = ({ routeParams, searchParams }: any) => {
+const Page = ({ routeParams, searchParams }: PageProps) => {
   return (
     <>
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
       <br />
       <div>{`data: ${JSON.stringify(searchParams)}`}</div>
-      <ClientLink />
+      <Client />
     </>
   );
 };
