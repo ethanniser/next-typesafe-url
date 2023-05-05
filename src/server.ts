@@ -8,13 +8,13 @@ import {
   fillPath,
   parse2,
   parse3,
-} from "../utils";
+} from "./utils";
 import type {
   AllRoutes,
   PathOptions,
   ServerParseParamsResult,
   DynamicRoute,
-} from "../types";
+} from "./types";
 import { createElement } from "react";
 
 export function $path<T extends AllRoutes>({

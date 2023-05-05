@@ -31,14 +31,14 @@
       "types": "./dist/index.d.ts"
     },
     "./server": {
-      "require": "./dist/server/index.js",
-      "import": "./dist/server/index.mjs",
-      "types": "./dist/server/index.d.ts"
+      "require": "./dist/server.js",
+      "import": "./dist/server.mjs",
+      "types": "./dist/server.d.ts"
     },
     "./client": {
-      "require": "./dist/client/index.js",
-      "import": "./dist/client/index.mjs",
-      "types": "./dist/client/index.d.ts"
+      "require": "./dist/client.js",
+      "import": "./dist/client.mjs",
+      "types": "./dist/client.d.ts"
     }
   },
   "scripts": {
