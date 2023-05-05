@@ -175,50 +175,7 @@ type InferPagePropsType<T extends DynamicRoute> = {
     : undefined;
 };
 
-declare function $path<T extends AllRoutes>({
-  route,
-  searchParams,
-  routeParams,
-}: PathOptions<T>): string;
-
-declare function useRouteParams<T extends z.AnyZodObject>(
-  validator: T
-): UseParamsResult<T>;
-
-declare function useSearchParams<T extends z.AnyZodObject>(
-  searchValidator: T
-): UseParamsResult<T>;
-
-declare function parseServerSideSearchParams<T extends z.AnyZodObject>({
-  query,
-  validator,
-}: {
-  query: ParsedUrlQuery;
-  validator: T;
-}): ServerParseParamsResult<T>;
-
-declare function parseServerSideRouteParams<T extends z.AnyZodObject>({
-  params,
-  validator,
-}: {
-  params: ParsedUrlQuery | undefined;
-  validator: T;
-}): ServerParseParamsResult<T>;
-
-type SomeReactComponent = (...args: any[]) => ReactElement;
-
-declare function withParamValidation(
-  Component: SomeReactComponent,
-  validator: DynamicRoute
-): SomeReactComponent;
-
 export {
-  $path,
-  withParamValidation,
-  parseServerSideRouteParams,
-  parseServerSideSearchParams,
-  useRouteParams,
-  useSearchParams,
   AppRouter,
   ServerParseParamsResult,
   UseParamsResult,
@@ -226,6 +183,5 @@ export {
   PathOptions,
   InferPagePropsType,
   DynamicRoute,
-  SomeReactComponent,
   InferRoute,
 };

@@ -14,7 +14,6 @@ import type {
   PathOptions,
   ServerParseParamsResult,
   DynamicRoute,
-  SomeReactComponent,
 } from "./types";
 import { createElement } from "react";
 
@@ -126,6 +125,8 @@ type NextAppPageProps = {
   params: Record<string, string>;
   searchParams: { [key: string]: string | string[] | undefined };
 };
+import type { ReactElement } from "react";
+type SomeReactComponent = (...args: any[]) => ReactElement;
 
 export function withParamValidation(
   Component: SomeReactComponent,
