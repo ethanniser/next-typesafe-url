@@ -1,4 +1,3 @@
-import type { ParsedUrlQuery } from "querystring";
 import { type z } from "zod";
 
 type __FOR_BUNDLER_MOCK_IMPORT = {

@@ -1,5 +1,3 @@
-"use server";
-
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
 import { z } from "zod";
