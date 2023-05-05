@@ -4,12 +4,11 @@ import type {
   GetServerSideProps,
 } from "next";
 import { z } from "zod";
+import { $path, type AppRouter } from "next-typesafe-url";
 import {
-  $path,
   parseServerSideRouteParams,
   parseServerSideSearchParams,
-  type AppRouter,
-} from "next-typesafe-url";
+} from "next-typesafe-url/server";
 import Link from "next/link";
 
 const Route = {

@@ -1,6 +1,8 @@
 import type { NextPage } from "next";
-import { $path, useRouteParams, useSearchParams } from "next-typesafe-url";
+import { $path } from "next-typesafe-url";
+import { useRouteParams, useSearchParams } from "next-typesafe-url/client";
 import Link from "next/link";
+import { useState } from "react";
 import { z } from "zod";
 
 const Route = {
@@ -20,6 +22,8 @@ const Route = {
 export type RouteType = typeof Route;
 
 const Page: NextPage = () => {
+  const [input, setInput] = useState("");
+
   const { data: routeData, error: routeError } = useRouteParams(
     Route.routeParams
   );
@@ -31,9 +35,29 @@ const Page: NextPage = () => {
   return (
     <>
       <Link href={$path({ route: "/" })}>Back</Link>
+      <br />
+      <input value={input} onChange={(e) => setInput(e.target.value)} />
+      <Link
+        href={$path({
+          route: "/[slug]/[...foo]",
+          routeParams: {
+            slug: input === "" ? "default" : input,
+            foo: [123, 424, 343],
+          },
+          searchParams: {
+            location: "us",
+            userInfo: { name: "string", age: 123 },
+          },
+        })}
+      >
+        hooks
+      </Link>
+      <br />
+      <h1>routeParams</h1>
       <div>{`data: ${JSON.stringify(routeData)}`}</div>
       <div>{`error: ${JSON.stringify(routeError) ?? "no error"}`}</div>
       <br />
+      <h1>searchParams</h1>
       <div>{`data: ${JSON.stringify(searchData)}`}</div>
       <div>{`error: ${JSON.stringify(searchError) ?? "no error"}`}</div>
     </>
