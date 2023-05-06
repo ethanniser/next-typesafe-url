@@ -12,8 +12,11 @@ import type {
   PathOptions,
   ServerParseParamsResult,
   DynamicRoute,
+  InferPagePropsType as IPPT,
 } from "./types";
 import { createElement } from "react";
+
+export type InferPagePropsType<T extends DynamicRoute> = IPPT<T>;
 
 export function $path<T extends AllRoutes>({
   route,

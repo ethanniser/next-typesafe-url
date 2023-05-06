@@ -5,12 +5,10 @@ import type {
   AllRoutes,
   PathOptions,
   AppRouter as AR,
-  InferPagePropsType as IPPT,
   DynamicRoute,
 } from "./types";
 
 export type AppRouter = AR;
-export type InferPagePropsType<T extends DynamicRoute> = IPPT<T>;
 
 export function $path<T extends AllRoutes>({
   route,
