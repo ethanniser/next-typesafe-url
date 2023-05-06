@@ -17,14 +17,9 @@ export const Client = () => {
       <input value={input} onChange={(e) => setInput(e.target.value)} />
       <Link
         href={$path({
-          route: "/[slug]/[...foo]",
-          routeParams: {
-            slug: "string",
-            foo: [123, 424, 343],
-          },
+          route: "/path",
           searchParams: {
-            location: "us",
-            userInfo: { name: input === "" ? "default" : input, age: 123 },
+            location: input,
           },
         })}
       >

@@ -123,7 +123,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
 }
 
 type NextAppPageProps = {
-  params: Record<string, string>;
+  params: Record<string, string | string[]>;
   searchParams: { [key: string]: string | string[] | undefined };
 };
 import type { ReactElement } from "react";
