@@ -106,8 +106,8 @@ type StaticRoute = {
 };
 
 type DynamicRoute = {
-  searchParams?: z.AnyZodObject;
-  routeParams?: z.AnyZodObject;
+  searchParams?: z.AnyZodObject | undefined;
+  routeParams?: z.AnyZodObject | undefined;
 };
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
