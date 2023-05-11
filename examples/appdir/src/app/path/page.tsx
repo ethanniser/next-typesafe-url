@@ -1,5 +1,5 @@
-import { withParamValidation } from "next-typesafe-url/server";
-import { InferPagePropsType } from "next-typesafe-url/server";
+import { withParamValidation } from "next-typesafe-url/app";
+import { InferPagePropsType } from "next-typesafe-url/app";
 import { Route } from "./routeType";
 import { Client } from "./client";
 

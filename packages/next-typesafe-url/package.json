@@ -23,27 +23,27 @@
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
     },
-    "./server": {
-      "require": "./dist/server.js",
-      "import": "./dist/server.mjs"
+    "./pages": {
+      "require": "./dist/pages.js",
+      "import": "./dist/pages.mjs"
     },
-    "./client": {
-      "require": "./dist/client.js",
-      "import": "./dist/client.mjs"
+    "./app": {
+      "require": "./dist/app.js",
+      "import": "./dist/app.mjs"
     }
   },
   "typesVersions": {
     "*": {
-      "server": [
-        "./dist/server.d.ts"
+      "pages": [
+        "./dist/pages.d.ts"
       ],
-      "client": [
-        "./dist/client.d.ts"
+      "app": [
+        "./dist/app.d.ts"
       ]
     }
   },
   "scripts": {
-    "build": "tsup src/cli.ts src/index.ts src/server.ts src/client.ts --format cjs,esm --dts",
+    "build": "tsup src/cli.ts src/index.ts src/app.ts src/pages.ts --format cjs,esm --dts",
     "lint": "tsc --noEmit",
     "dev": "npm run build -- --watch"
   },

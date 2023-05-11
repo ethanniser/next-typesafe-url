@@ -8,7 +8,7 @@ import { $path, type AppRouter } from "next-typesafe-url";
 import {
   parseServerSideRouteParams,
   parseServerSideSearchParams,
-} from "next-typesafe-url/server";
+} from "next-typesafe-url/pages";
 import Link from "next/link";
 
 const Route = {

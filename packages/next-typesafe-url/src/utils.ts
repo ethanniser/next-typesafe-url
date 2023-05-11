@@ -255,3 +255,90 @@ export function fillPath(path: string, data: RouteParamsInput): string {
 
   return parts.join("/");
 }
+
+import type { ParsedUrlQuery } from "querystring";
+import { z } from "zod";
+import type { ServerParseParamsResult } from "./types";
+
+// takes gssp context.query
+export function parseServerSideSearchParams<T extends z.AnyZodObject>({
+  query,
+  validator,
+}: {
+  query: ParsedUrlQuery;
+  validator: T;
+}): ServerParseParamsResult<T> {
+  if (!query) {
+    return {
+      data: undefined,
+      isError: true,
+      error: new z.ZodError([
+        {
+          path: [],
+          code: "custom",
+          message: "No query context found",
+        },
+      ]),
+    };
+  }
+  const parsedParams = Object.fromEntries(
+    Object.entries(query).map(([key, value]) => [key, parse3(value)])
+  );
+
+  const validatedDynamicSearchParams = validator.safeParse(parsedParams);
+  if (validatedDynamicSearchParams.success) {
+    return {
+      data: validatedDynamicSearchParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicSearchParams.error as z.ZodError,
+    };
+  }
+}
+
+// takes gssp context.params
+export function parseServerSideRouteParams<T extends z.AnyZodObject>({
+  params,
+  validator,
+}: {
+  params: ParsedUrlQuery | undefined;
+  validator: T;
+}): ServerParseParamsResult<T> {
+  if (!params) {
+    return {
+      data: undefined,
+      isError: true,
+      error: new z.ZodError([
+        {
+          path: [],
+          code: "custom",
+          message: "No param context found",
+        },
+      ]),
+    };
+  }
+
+  const parsedParams = Object.fromEntries(
+    Object.entries(params).map(([key, value]) => [key, parse2(value)])
+  );
+
+  const validatedDynamicRouteParams = validator.safeParse(parsedParams);
+  if (validatedDynamicRouteParams.success) {
+    return {
+      data: validatedDynamicRouteParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicRouteParams.error as z.ZodError,
+    };
+  }
+}
