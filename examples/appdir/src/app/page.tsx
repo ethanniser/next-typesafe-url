@@ -1,6 +1,6 @@
 "use client";
 
-import { $path } from "next-typesafe-url";
+import { $path, type AppRouter } from "next-typesafe-url";
 import Link from "next/link";
 
 export default function Page() {
@@ -18,6 +18,17 @@ export default function Page() {
         })}
       >
         server component!
+      </Link>
+      <Link
+        href={$path({
+          route: "/path",
+          routeParams: { slug: "string", foo: [123, 424, 343] },
+          searchParams: {
+            location: "us",
+          },
+        })}
+      >
+        link2
       </Link>
     </>
   );

@@ -5,10 +5,11 @@ import type {
   AllRoutes,
   PathOptions,
   AppRouter as AR,
-  DynamicRoute,
+  DynamicRoute as DR,
 } from "./types";
 
 export type AppRouter = AR;
+export type DynamicRoute = DR;
 
 export function $path<T extends AllRoutes>({
   route,

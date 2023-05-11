@@ -31,26 +31,30 @@ const cli = meow(helpText, {
       type: "boolean",
       alias: "a",
     },
+    dontUseDev: {
+      type: "boolean",
+    },
   },
 });
 
-function build(type: "pages" | "app") {
+function build(type: "pages" | "app", dev: boolean) {
   const dirPath = path.join(process.cwd(), `/src/${type}`);
+  console.log(dirPath);
 
   const { exportedRoutes, filesWithoutExportedRoutes } =
     type === "pages"
       ? getPAGESRoutesWithExportedRoute(dirPath, dirPath)
       : getAPPRoutesWithExportedRoute(dirPath, dirPath);
 
-  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type);
-  console.log("Generated route types");
+  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type, dev);
+  console.log(`Generated route types ${dev ? "IN DEV MODE" : ""}`);
 }
 
-function watch(type: "pages" | "app") {
+function watch(type: "pages" | "app", dev: boolean) {
   chokidar
     .watch([path.join(process.cwd(), `/src/${type}/**/*.{ts,tsx}`)])
     .on("change", () => {
-      build(type);
+      build(type, dev);
     });
   console.log(`Watching for route file changes in ${type} directory...`);
 }
@@ -64,10 +68,12 @@ if (require.main === module) {
     process.exit(1);
   }
 
+  const dev = cli.flags.dontUseDev !== undefined ? cli.flags.dontUseDev : false;
+
   if (cli.flags.watch) {
-    build(cli.flags.pages ? "pages" : "app");
-    watch(cli.flags.pages ? "pages" : "app");
+    build(cli.flags.pages ? "pages" : "app", dev);
+    watch(cli.flags.pages ? "pages" : "app", dev);
   } else {
-    build(cli.flags.pages ? "pages" : "app");
+    build(cli.flags.pages ? "pages" : "app", dev);
   }
 }

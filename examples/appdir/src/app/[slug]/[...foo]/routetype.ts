@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { type DynamicRoute } from "next-typesafe-url";
 
 export const Route = {
   routeParams: z.object({
@@ -12,4 +13,4 @@ export const Route = {
       age: z.number(),
     }),
   }),
-};
+} satisfies DynamicRoute;

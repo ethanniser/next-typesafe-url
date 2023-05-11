@@ -30,11 +30,11 @@ type __FOR_BUNDLER_MOCK_IMPORT = {
 };
 
 type DynamicRouter = {
-  "/[productID]": InferRoute<__FOR_BUNDLER_MOCK_IMPORT>;
+  "/__DEFAULT": InferRoute<__FOR_BUNDLER_MOCK_IMPORT>;
 };
 
 type StaticRouter = {
-  "/": StaticRoute;
+  "/__DEFAULT2": StaticRoute;
 };
 
 type AppRouter = StaticRouter & DynamicRouter;
@@ -106,17 +106,13 @@ type StaticRoute = {
 };
 
 type DynamicRoute = {
-  searchParams: z.AnyZodObject | undefined;
-  routeParams: z.AnyZodObject | undefined;
+  searchParams?: z.AnyZodObject;
+  routeParams?: z.AnyZodObject;
 };
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
   : { route: T } & AppRouter[T];
-
-type PathOptions<T extends AllRoutes> = T extends StaticRoutes
-  ? StaticPathOptions<T>
-  : DynamicRouteOptions<T>;
 
 type AllPossiblyUndefined<T> = Exclude<Partial<T>, undefined> extends T
   ? undefined

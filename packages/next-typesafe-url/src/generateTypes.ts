@@ -105,16 +105,17 @@ export function getAPPRoutesWithExportedRoute(
 export function generateTypesFile(
   hasRoute: string[],
   doesntHaveRoute: string[],
-  type: "pages" | "app"
+  type: "pages" | "app",
+  dev: boolean
 ): void {
   let importStatements = "";
   let routeCounter = 0;
 
   for (const route of hasRoute) {
     const routeVariableName = `Route_${routeCounter}`;
-    importStatements += `import { type RouteType as ${routeVariableName} } from "../../../src/${type}${
-      route === "/" ? "" : route
-    }${type === "app" ? "/page" : ""}";\n`;
+    importStatements += `import { type RouteType as ${routeVariableName} } from "${
+      dev ? `../../../examples/${type}dir/src/` : "../../../src/"
+    }${type}${route === "/" ? "" : route}${type === "app" ? "/page" : ""}";\n`;
     routeCounter++;
   }
 
@@ -200,17 +201,13 @@ type StaticRoute = {
 };
 
 type DynamicRoute = {
-  searchParams: z.AnyZodObject | undefined;
-  routeParams: z.AnyZodObject | undefined;
+  searchParams?: z.AnyZodObject;
+  routeParams?: z.AnyZodObject;
 };
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
   : { route: T } & AppRouter[T];
-
-type PathOptions<T extends AllRoutes> = T extends StaticRoutes
-  ? StaticPathOptions<T>
-  : DynamicRouteOptions<T>;
 
 type AllPossiblyUndefined<T> = Exclude<Partial<T>, undefined> extends T
   ? undefined
@@ -274,7 +271,7 @@ export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
   fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-4ca1ad86.d.ts",
+    "node_modules/next-typesafe-url/dist/types.d-fb432963.d.ts",
     fileContentString
   );
 }
