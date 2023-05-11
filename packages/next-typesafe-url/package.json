@@ -32,20 +32,9 @@
       "import": "./dist/client.mjs"
     }
   },
-  "typesVersions": {
-    "*": {
-      "server": [
-        "./dist/server.d.ts"
-      ],
-      "client": [
-        "./dist/client.d.ts"
-      ]
-    }
-  },
   "scripts": {
     "build": "tsup src/cli.ts src/index.ts src/server.ts src/client.ts --format cjs,esm --dts",
     "lint": "tsc --noEmit",
-    "release": "npm run build && changeset version && changeset publish",
     "dev": "npm run build -- --watch"
   },
   "dependencies": {
