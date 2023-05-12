@@ -59,12 +59,13 @@ export function getPAGESRoutesWithExportedRoute(
 
 export function getAPPRoutesWithExportedRoute(
   basePath: string,
-  dir: string,
+  dir: string = basePath,
   exportedRoutes: string[] = [],
   filesWithoutExportedRoutes: string[] = []
 ) {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
+
     if (fs.statSync(fullPath).isDirectory()) {
       getAPPRoutesWithExportedRoute(
         basePath,
@@ -72,16 +73,8 @@ export function getAPPRoutesWithExportedRoute(
         exportedRoutes,
         filesWithoutExportedRoutes
       );
-    } else {
-      const fileName = path.basename(fullPath);
-
-      if (fileName !== "page.tsx") return;
-
-      const fileContent = fs.readFileSync(fullPath, "utf8");
-      const hasExportedRouteType = /export\s+type\s+RouteType\b/.test(
-        fileContent
-      );
-
+    } else if (file === "page.tsx") {
+      const routeTypePath = path.join(dir, "routeType.ts");
       let routePath = fullPath
         .replace(basePath, "")
         .replace(/\\/g, "/")
@@ -91,7 +84,7 @@ export function getAPPRoutesWithExportedRoute(
         routePath = "/";
       }
 
-      if (hasExportedRouteType) {
+      if (fs.existsSync(routeTypePath)) {
         exportedRoutes.push(routePath);
       } else {
         filesWithoutExportedRoutes.push(routePath);
@@ -115,7 +108,9 @@ export function generateTypesFile(
     const routeVariableName = `Route_${routeCounter}`;
     importStatements += `import { type RouteType as ${routeVariableName} } from "${
       dev ? `../../../examples/${type}dir/src/` : "../../../src/"
-    }${type}${route === "/" ? "" : route}${type === "app" ? "/page" : ""}";\n`;
+    }${type}${route === "/" ? "" : route}${
+      type === "app" ? "/routeType" : ""
+    }";\n`;
     routeCounter++;
   }
 
@@ -139,13 +134,15 @@ type DynamicRoutes = keyof DynamicRouter;
 
 type InferRoute<T extends DynamicRoute> = HandleUndefined<Helper<T>>;
 
+type HasProperty<T, K extends string> = K extends keyof T ? true : false;
+
 type Helper<T extends DynamicRoute> = {
-  searchParams: T["searchParams"] extends undefined
-    ? undefined
-    : z.infer<T["searchParams"]>;
-  routeParams: T["routeParams"] extends undefined
-    ? undefined
-    : z.infer<T["routeParams"]>;
+  searchParams: HasProperty<T, "searchParams"> extends true
+    ? z.infer<T["searchParams"]>
+    : undefined;
+  routeParams: HasProperty<T, "routeParams"> extends true
+    ? z.infer<T["routeParams"]>
+    : undefined;
 };
 
 type HandleUndefined<T extends DynamicRoute> =
@@ -271,7 +268,7 @@ export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
   fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-fb432963.d.ts",
+    "node_modules/next-typesafe-url/dist/types.d-71dc0ff3.d.ts",
     fileContentString
   );
 }

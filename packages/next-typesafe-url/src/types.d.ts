@@ -44,13 +44,15 @@ type DynamicRoutes = keyof DynamicRouter;
 
 type InferRoute<T extends DynamicRoute> = HandleUndefined<Helper<T>>;
 
+type HasProperty<T, K extends string> = K extends keyof T ? true : false;
+
 type Helper<T extends DynamicRoute> = {
-  searchParams: T["searchParams"] extends undefined
-    ? undefined
-    : z.infer<T["searchParams"]>;
-  routeParams: T["routeParams"] extends undefined
-    ? undefined
-    : z.infer<T["routeParams"]>;
+  searchParams: HasProperty<T, "searchParams"> extends true
+    ? z.infer<T["searchParams"]>
+    : undefined;
+  routeParams: HasProperty<T, "routeParams"> extends true
+    ? z.infer<T["routeParams"]>
+    : undefined;
 };
 
 type HandleUndefined<T extends DynamicRoute> =
@@ -149,6 +151,25 @@ type UseParamsResult<T extends z.AnyZodObject> =
       error: undefined;
     };
 
+type UseAppParamsResult<T extends z.AnyZodObject> =
+  | {
+      data: undefined;
+      isLoading: true;
+      isError: false;
+      error: undefined;
+    }
+  | {
+      data: z.infer<T>;
+      isError: false;
+      isLoading: false;
+      error: undefined;
+    }
+  | {
+      data: undefined;
+      isError: true;
+      error: z.ZodError<T>;
+    };
+
 type ServerParseParamsResult<T extends z.AnyZodObject> =
   | {
       data: z.infer<T>;
@@ -174,6 +195,7 @@ export {
   AppRouter,
   ServerParseParamsResult,
   UseParamsResult,
+  UseAppParamsResult,
   AllRoutes,
   PathOptions,
   InferPagePropsType,

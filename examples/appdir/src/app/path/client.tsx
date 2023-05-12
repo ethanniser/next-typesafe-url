@@ -3,12 +3,13 @@
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "next-typesafe-url/app";
+import { Route } from "./routeType";
 
 export const Client = () => {
   const [input, setInput] = useState("");
 
-  const params = useSearchParams();
+  const params = useSearchParams(Route.searchParams);
 
   return (
     <>
@@ -27,7 +28,7 @@ export const Client = () => {
       </Link>
       <br />
       <h1>searchParams</h1>
-      <div>{`data: ${JSON.stringify(Array.from(params.entries()))}`}</div>
+      <div>{`data: ${JSON.stringify(params)}`}</div>
     </>
   );
 };

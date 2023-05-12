@@ -1,9 +1,8 @@
 import { withParamValidation } from "next-typesafe-url/app";
 import { InferPagePropsType } from "next-typesafe-url/app";
-import { Route } from "./routetype";
+import { Route, RouteType } from "./routeType";
 import { Client } from "./client";
 
-export type RouteType = typeof Route;
 type PageProps = InferPagePropsType<RouteType>;
 
 let count = 0;

@@ -14,3 +14,5 @@ export const Route = {
     }),
   }),
 } satisfies DynamicRoute;
+
+export type RouteType = typeof Route;

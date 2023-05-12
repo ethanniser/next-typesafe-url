@@ -3,12 +3,14 @@
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
 import { useState } from "react";
-import { useMyParams } from "next-typesafe-url/app";
+import { useRouteParams, useSearchParams } from "next-typesafe-url/app";
+import { Route } from "./routeType";
 
 export const Client = () => {
   const [input, setInput] = useState("");
 
-  const params = useMyParams();
+  const params = useSearchParams(Route.searchParams);
+  const routeParams = useRouteParams(Route.routeParams);
 
   return (
     <>
@@ -19,12 +21,12 @@ export const Client = () => {
         href={$path({
           route: "/[slug]/[...foo]",
           routeParams: {
-            slug: "string",
+            slug: input === "" ? "default" : input,
             foo: [123, 424, 343],
           },
           searchParams: {
             location: "us",
-            userInfo: { name: input === "" ? "default" : input, age: 123 },
+            userInfo: { name: "harry", age: 123 },
           },
         })}
       >
@@ -33,6 +35,8 @@ export const Client = () => {
       <br />
       <h1>searchParams</h1>
       <div>{`data: ${JSON.stringify(params)}`}</div>
+      <h1>routeParams</h1>
+      <div>{`data: ${JSON.stringify(routeParams)}`}</div>
     </>
   );
 };

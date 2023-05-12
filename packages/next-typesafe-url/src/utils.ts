@@ -42,6 +42,50 @@ export function parseObjectFromParamString(
   return obj;
 }
 
+export function parseObjectFromURLParamObj(
+  params: ReadonlyURLSearchParams
+): Record<string, unknown> {
+  const obj: Record<string, unknown> = {};
+  for (const [key, value] of params.entries()) {
+    let parsedValue: unknown;
+    if (value === "true") {
+      parsedValue = true;
+    } else if (value === "false") {
+      parsedValue = false;
+    } else if (value === "null") {
+      parsedValue = null;
+    } else {
+      try {
+        parsedValue = JSON.parse(value);
+      } catch {
+        parsedValue = value;
+      }
+    }
+    console.log(key, value, parsedValue);
+    obj[key] = parsedValue;
+  }
+  return obj;
+}
+
+export function parseObjectFromParamObj(
+  params: Params
+): Record<string, unknown> {
+  const obj: Record<string, unknown> = {};
+  for (const [key, value2] of Object.entries(params)) {
+    let value = (value2 as string).split("/");
+    console.log(value);
+    let parsedValue: unknown;
+    if (value.length > 1) {
+      parsedValue = value.map((e) => reservedParse(e));
+    } else {
+      parsedValue = reservedParse(value[0]!);
+    }
+    console.log(parsedValue);
+    obj[key] = parsedValue;
+  }
+  return obj;
+}
+
 type Query = {
   [key: string]: string | string[] | undefined;
 };
@@ -259,6 +303,8 @@ export function fillPath(path: string, data: RouteParamsInput): string {
 import type { ParsedUrlQuery } from "querystring";
 import { z } from "zod";
 import type { ServerParseParamsResult } from "./types";
+import { ReadonlyURLSearchParams } from "next/navigation";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
 // takes gssp context.query
 export function parseServerSideSearchParams<T extends z.AnyZodObject>({

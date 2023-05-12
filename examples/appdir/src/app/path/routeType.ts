@@ -6,3 +6,5 @@ export const Route = {
     location: z.string().optional(),
   }),
 } satisfies DynamicRoute;
+
+export type RouteType = typeof Route;

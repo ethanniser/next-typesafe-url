@@ -22,7 +22,6 @@ export default function Page() {
       <Link
         href={$path({
           route: "/path",
-          routeParams: { slug: "string", foo: [123, 424, 343] },
           searchParams: {
             location: "us",
           },
