@@ -8,12 +8,14 @@ import {
 } from "./utils";
 import type {
   DynamicRoute,
+  DynamicLayout,
   InferPagePropsType as IPPT,
   UseAppParamsResult,
   UseParamsResult,
 } from "./types";
 import { createElement, useRef } from "react";
 
+export type { DynamicLayout };
 export type InferPagePropsType<T extends DynamicRoute> = IPPT<T>;
 
 type NextAppPageProps = {
@@ -58,6 +60,39 @@ export function withParamValidation(
     return createElement(Component, {
       routeParams: parsedRouteParams?.data,
       searchParams: parsedSearchParams?.data,
+    });
+  };
+
+  return ValidatedPageComponent;
+}
+
+export function withLayoutParamValidation(
+  Component: SomeReactComponent,
+  validator: DynamicLayout
+): SomeReactComponent {
+  const ValidatedPageComponent: SomeReactComponent = (
+    props: Pick<NextAppPageProps, "params"> & { children: ReactElement }
+  ) => {
+    const { params, children } = props;
+
+    let parsedRouteParams = undefined;
+
+    if (validator.routeParams) {
+      parsedRouteParams = parseServerSideRouteParams({
+        params,
+        validator: validator.routeParams,
+      });
+    }
+
+    if (parsedRouteParams?.isError) {
+      throw parsedRouteParams.error;
+    }
+
+    console.log(parsedRouteParams?.data);
+
+    return createElement(Component, {
+      routeParams: parsedRouteParams?.data,
+      children,
     });
   };
 

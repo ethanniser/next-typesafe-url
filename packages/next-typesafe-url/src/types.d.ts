@@ -1,4 +1,5 @@
 import { type z } from "zod";
+import { type DynamicRoute } from "next-typesafe-url";
 
 type __FOR_BUNDLER_MOCK_IMPORT = {
   routeParams: z.ZodObject<
@@ -112,6 +113,8 @@ type DynamicRoute = {
   routeParams?: z.AnyZodObject | undefined;
 };
 
+type DynamicLayout = Pick<DynamicRoute, "routeParams">;
+
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
   : { route: T } & AppRouter[T];
@@ -200,5 +203,6 @@ export {
   PathOptions,
   InferPagePropsType,
   DynamicRoute,
+  DynamicLayout,
   InferRoute,
 };

@@ -202,6 +202,8 @@ type DynamicRoute = {
   routeParams?: z.AnyZodObject;
 };
 
+type DynamicLayout = Pick<DynamicRoute, "routeParams">;
+
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
   : { route: T } & AppRouter[T];
@@ -268,7 +270,7 @@ export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
   fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-71dc0ff3.d.ts",
+    "node_modules/next-typesafe-url/dist/types.d-244060a4.d.ts",
     fileContentString
   );
 }

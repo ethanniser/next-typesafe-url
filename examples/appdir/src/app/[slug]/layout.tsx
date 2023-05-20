@@ -1,4 +1,16 @@
-export default function DashboardLayout({
+import { z } from "zod";
+import {
+  withLayoutParamValidation,
+  type DynamicLayout,
+} from "next-typesafe-url/app";
+
+const LayoutValidator = {
+  routeParams: z.object({
+    slug: z.string(),
+  }),
+} satisfies DynamicLayout;
+
+function Layout({
   children,
   params,
 }: {
@@ -14,3 +26,5 @@ export default function DashboardLayout({
     </div>
   );
 }
+
+export default withLayoutParamValidation(Layout, LayoutValidator);
