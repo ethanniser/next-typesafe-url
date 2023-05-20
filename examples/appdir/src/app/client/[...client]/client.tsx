@@ -3,7 +3,7 @@
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next-typesafe-url/app";
+import { useSearchParams, useRouteParams } from "next-typesafe-url/app";
 import { Route } from "./routeType";
 
 export const Client = () => {
@@ -12,17 +12,22 @@ export const Client = () => {
   }, []);
 
   const [input, setInput] = useState("");
+  const [input2, setInput2] = useState("");
 
   const params = useSearchParams(Route.searchParams);
+  const routeParams = useRouteParams(Route.routeParams);
 
   return (
     <>
       <Link href={$path({ route: "/" })}>Back</Link>
       <br />
       <input value={input} onChange={(e) => setInput(e.target.value)} />
+      <br />
+      <input value={input2} onChange={(e) => setInput2(e.target.value)} />
       <Link
         href={$path({
-          route: "/client",
+          route: "/client/[...client]",
+          routeParams: { client: [input2 === "" ? "default" : input2, 123] },
           searchParams: {
             location: input,
           },
@@ -33,6 +38,8 @@ export const Client = () => {
       <br />
       <h1>searchParams</h1>
       <div>{`data: ${JSON.stringify(params)}`}</div>
+      <h1>routeParams</h1>
+      <div>{`data: ${JSON.stringify(routeParams)}`}</div>
     </>
   );
 };

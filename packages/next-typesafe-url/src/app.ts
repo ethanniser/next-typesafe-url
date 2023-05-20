@@ -12,7 +12,7 @@ import type {
   UseAppParamsResult,
   UseParamsResult,
 } from "./types";
-import { createElement } from "react";
+import { createElement, useRef } from "react";
 
 export type InferPagePropsType<T extends DynamicRoute> = IPPT<T>;
 
@@ -73,28 +73,39 @@ import { useState, useEffect } from "react";
 import { z } from "zod";
 import { parseObjectFromURLParamObj, parseObjectFromParamObj } from "./utils";
 
+function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
+  // Store current value in ref
+  useEffect(() => {
+    ref.current = value;
+  }, [value]); // Only re-run if value changes
+  // Return previous value (happens before update in useEffect above)
+  return ref.current;
+}
+
 export function useRouteParams<T extends z.AnyZodObject>(
   validator: T
 ): UseAppParamsResult<T> {
   const params = useParams();
-  console.log(params);
+  const prev = usePrevious(params);
+  const same = JSON.stringify(prev) === JSON.stringify(params);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
-    const parsedSearchParams = parseObjectFromParamObj(params);
-    console.log(parsedSearchParams);
-    const validatedSearchParams = validator.safeParse(parsedSearchParams);
+    const parsedRouteParams = parseObjectFromParamObj(params);
+    const validatedRouteParams = validator.safeParse(parsedRouteParams);
 
-    if (validatedSearchParams.success) {
-      console.log(validatedSearchParams.data);
-      setData(validatedSearchParams.data);
+    if (validatedRouteParams.success) {
+      setData(validatedRouteParams.data);
+      setIsError(false);
     } else {
+      setData(undefined);
       setIsError(true);
-      setError(validatedSearchParams.error);
+      setError(validatedRouteParams.error);
     }
-  }, [params]);
+  }, [same]);
 
   if (isError) {
     return {
