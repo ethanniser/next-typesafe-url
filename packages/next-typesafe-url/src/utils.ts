@@ -61,7 +61,6 @@ export function parseObjectFromURLParamObj(
         parsedValue = value;
       }
     }
-    console.log(key, value, parsedValue);
     obj[key] = parsedValue;
   }
   return obj;
@@ -73,14 +72,12 @@ export function parseObjectFromParamObj(
   const obj: Record<string, unknown> = {};
   for (const [key, value2] of Object.entries(params)) {
     let value = (value2 as string).split("/");
-    console.log(value);
     let parsedValue: unknown;
     if (value.length > 1) {
       parsedValue = value.map((e) => reservedParse(e));
     } else {
       parsedValue = reservedParse(value[0]!);
     }
-    console.log(parsedValue);
     obj[key] = parsedValue;
   }
   return obj;

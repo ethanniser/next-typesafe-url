@@ -135,9 +135,10 @@ export function useSearchParams<T extends z.AnyZodObject>(
     const validatedSearchParams = searchValidator.safeParse(parsedSearchParams);
 
     if (validatedSearchParams.success) {
-      console.log(validatedSearchParams.data);
       setData(validatedSearchParams.data);
+      setIsError(false);
     } else {
+      setData(undefined);
       setIsError(true);
       setError(validatedSearchParams.error);
     }

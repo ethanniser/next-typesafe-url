@@ -2,11 +2,15 @@
 
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next-typesafe-url/app";
 import { Route } from "./routeType";
 
 export const Client = () => {
+  useEffect(() => {
+    console.log("Component has been rendered");
+  }, []);
+
   const [input, setInput] = useState("");
 
   const params = useSearchParams(Route.searchParams);
@@ -18,7 +22,7 @@ export const Client = () => {
       <input value={input} onChange={(e) => setInput(e.target.value)} />
       <Link
         href={$path({
-          route: "/path",
+          route: "/client",
           searchParams: {
             location: input,
           },

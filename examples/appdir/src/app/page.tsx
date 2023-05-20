@@ -21,7 +21,7 @@ export default function Page() {
       </Link>
       <Link
         href={$path({
-          route: "/path",
+          route: "/client",
           searchParams: {
             location: "us",
           },
