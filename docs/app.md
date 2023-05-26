@@ -160,9 +160,78 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 ## Server Components
 
+In `page.tsx` and `layout.tsx` search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by next [(see the "good to know" section at the very bottom)](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know)
+
+If you do not want this behavior, you are forced to place the search param logic **in a client component**. Check out the 'Client Components' section below to see more.
+
 ### Usage in page.tsx
 
+`next-typesafe-url/app` provides a higher order component `withParamValidation` you can wrap your page with to provide runtime validation through your zod validator.
+
+The `InferPagePropsType` is passed `RouteType` as a generic to extrapolate the valid types coming out of the zod validator.
+
+```tsx
+// app/product/[productID]/page.tsx
+import { withParamValidation } from "next-typesafe-url/app";
+import { InferPagePropsType } from "next-typesafe-url/app";
+import { Route, type RouteType } from "./routeType";
+
+type PageProps = InferPagePropsType<RouteType>;
+
+const Page = ({ routeParams, searchParams }: PageProps) => {
+  return (
+    <>
+      <div>{JSON.stringify(routeParams)}</div>
+      <div>{JSON.stringify(searchParams)}</div>
+    </>
+  );
+};
+
+export default withParamValidation(Page, Route);
+```
+
+#### Errors
+
+If the zod validation fails, `withParamValidation` will throw a `ZodError`. Use Next's `error.tsx` to handle these thrown errors.
+
 ### Usage in layout.tsx
+
+Layouts only have access to route params, not search params ([see why](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know)).
+
+In terms of validation a layout could represent any number of routes within it, all of which may have their own validators, which may not neccesarily overlap. Because of this **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
+
+```tsx
+// app/product/[productID]/layout.tsx
+import { z } from "zod";
+import {
+  withLayoutParamValidation,
+  type DynamicLayout,
+  type InferLayoutPropsType
+} from "next-typesafe-url/app";
+
+const LayoutValidator = {
+  routeParams: z.object({
+    productID: z.number(),
+  }),
+} satisfies DynamicLayout;
+type LayoutType = typeof LayoutValidator
+
+type Props = InferLayoutPropsType<LayoutValidator>
+function Layout({ children, routeParams }: Props) {
+  return (
+    <div>
+      <p>{JSON.stringify(routeParams)}</p>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+export default withLayoutParamValidation(Layout, LayoutValidator);
+```
+
+#### Errors
+
+If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`. Use Next's `error.tsx` to handle these thrown errors.
 
 ## Client Components
 
@@ -192,7 +261,7 @@ if (isLoading) {
 
 **If `isReady` is true and `isError` is false, then `data` will always be valid and match the schema.**
 
-### **Be mindful when using useSearchParams and useRouteParams in components used in multiple routes, as only 1 validator can be passed at a time**
+### **Be mindful when using useSearchParams and useRouteParams in components used in multiple routes, making sure you pass the correct validator**
 
 ## Command Line Options
 
