@@ -40,7 +40,7 @@ Worst case senario, you may have to restart your editor. If you are still having
 
 # Usage
 
-## Route
+## routeType.ts
 
 `next-typesafe-url` is powered by a `routeType.ts` file in each directory in `app` where you wish to have validated search/route params. Think of this as another one of the built in next `.ts` files, `page.tsx`, `loading.tsx` ... and now `routeType.ts`.
 
