@@ -159,7 +159,7 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 ## Server Components
 
-In `page.tsx` and `layout.tsx` search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by next [(see the "good to know" section at the very bottom)](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know)
+In `page.tsx`, search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by next ([see the "good to know" section at the very bottom](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know))
 
 If you do not want this behavior, you are forced to place the search param logic **in a client component**. Check out the 'Client Components' section below to see more.
 
@@ -199,6 +199,8 @@ Layouts only have access to route params, not search params ([see why](https://n
 
 In terms of validation a layout could represent any number of routes within it, all of which may have their own validators, which may not neccesarily overlap. Because of this **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
 
+The `InferLayoutPropsType` is passed the type of your LayoutRoute as a generic to extrapolate the valid types coming out of the zod validator.
+
 ```tsx
 // app/product/[productID]/layout.tsx
 import { z } from "zod";
@@ -208,12 +210,12 @@ import {
   type InferLayoutPropsType
 } from "next-typesafe-url/app";
 
-const LayoutValidator = {
+const LayoutRoute = {
   routeParams: z.object({
     productID: z.number(),
   }),
 } satisfies DynamicLayout;
-type LayoutType = typeof LayoutValidator
+type LayoutType = typeof LayoutRoute
 
 type Props = InferLayoutPropsType<LayoutValidator>
 function Layout({ children, routeParams }: Props) {
@@ -225,7 +227,7 @@ function Layout({ children, routeParams }: Props) {
   );
 }
 
-export default withLayoutParamValidation(Layout, LayoutValidator);
+export default withLayoutParamValidation(Layout, LayoutRoute);
 ```
 
 #### Errors
