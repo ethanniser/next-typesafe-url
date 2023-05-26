@@ -2,25 +2,25 @@ import { z } from "zod";
 import {
   withLayoutParamValidation,
   type DynamicLayout,
+  type InferLayoutPropsType,
 } from "next-typesafe-url/app";
 
-const LayoutValidator = {
+const LayoutRoute = {
   routeParams: z.object({
     slug: z.string(),
   }),
 } satisfies DynamicLayout;
+type LayoutType = typeof LayoutRoute
 
+type Props = InferLayoutPropsType<LayoutType>
 function Layout({
   children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: Record<string, string | string[]>;
-}) {
+  routeParams,
+}: Props) {
   return (
     <div>
       <h1>THIS IS A LAYOUT</h1>
-      <p>{JSON.stringify(params)}</p>
+      <p>{JSON.stringify(routeParams)}</p>
       <div className="border border-black">{children}</div>
       <p>bottom</p>
     </div>

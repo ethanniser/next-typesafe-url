@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { $path } from "next-typesafe-url";
+import { $path, type DynamicRoute } from "next-typesafe-url";
 import { useRouteParams, useSearchParams } from "next-typesafe-url/pages";
 import Link from "next/link";
 import { useState } from "react";
@@ -17,7 +17,7 @@ const Route = {
       age: z.number(),
     }),
   }),
-};
+} satisfies DynamicRoute;
 
 export type RouteType = typeof Route;
 

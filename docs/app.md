@@ -219,7 +219,7 @@ const LayoutRoute = {
 } satisfies DynamicLayout;
 type LayoutType = typeof LayoutRoute
 
-type Props = InferLayoutPropsType<LayoutValidator>
+type Props = InferLayoutPropsType<LayoutType>
 function Layout({ children, routeParams }: Props) {
   return (
     <div>
