@@ -197,7 +197,7 @@ If the zod validation fails, `withParamValidation` will throw a `ZodError`. Use 
 
 Layouts only have access to route params, not search params ([see why](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know)).
 
-In terms of validation a layout could represent any number of routes within it, all of which may have their own validators, which may not neccesarily overlap. Because of this **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
+In terms of validation, a layout could represent any number of routes within it, all of which may have their own validators which may not neccesarily overlap. Because of this **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
 
 The `InferLayoutPropsType` is passed the type of your LayoutRoute as a generic to extrapolate the valid types coming out of the zod validator.
 
@@ -236,7 +236,13 @@ If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`
 
 ## Client Components
 
+---
+
 ### If you need your top level page component to NOT BE dynamically rendered (SSR), i.e. you want your top level page component to be statically generated, or ISR'ed, then you can access route/search params within deeper client components via hooks
+
+**If you don't need this it is reccomended to use the server component patterns and pass your route/search params down to other server or client components through props or context.**
+
+---
 
 `next-typesafe-url/app` exports a `useRouteParams` and `useSearchParams` hook that will return the route params / search params for the current route. They take one argument, the zod schema for either route params or search params from the Route object.
 
