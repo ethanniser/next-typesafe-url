@@ -202,7 +202,9 @@ type DynamicRoute = {
   routeParams?: z.AnyZodObject;
 };
 
-type DynamicLayout = Pick<DynamicRoute, "routeParams">;
+type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
+
+type InferLayoutPropsType<T extends DynamicLayout> = {routeParams: z.infer<T['routeParams']>, children: React.ReactNode};
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
@@ -264,13 +266,13 @@ type InferPagePropsType<T extends DynamicRoute> = {
     : undefined;
 };
 
-export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions as P, ServerParseParamsResult as S, UseParamsResult as U, AllRoutes as a };
+export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions as P, ServerParseParamsResult as S, UseAppParamsResult as U, AllRoutes as a, DynamicLayout as b, InferLayoutPropsType as c, UseParamsResult as d };
 `;
 
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
   fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-244060a4.d.ts",
+    "node_modules/next-typesafe-url/dist/types.d-c2f88e62.d.ts",
     fileContentString
   );
 }

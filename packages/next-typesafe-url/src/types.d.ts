@@ -113,7 +113,9 @@ type DynamicRoute = {
   routeParams?: z.AnyZodObject | undefined;
 };
 
-type DynamicLayout = Pick<DynamicRoute, "routeParams">;
+type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
+
+type InferLayoutPropsType<T extends DynamicLayout> = {routeParams: z.infer<T['routeParams']>, children: React.ReactNode};
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
@@ -202,6 +204,7 @@ export {
   AllRoutes,
   PathOptions,
   InferPagePropsType,
+  InferLayoutPropsType,
   DynamicRoute,
   DynamicLayout,
   InferRoute,

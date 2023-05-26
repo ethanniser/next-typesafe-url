@@ -10,6 +10,7 @@ import type {
   DynamicRoute,
   DynamicLayout,
   InferPagePropsType as IPPT,
+  InferLayoutPropsType as ILPT,
   UseAppParamsResult,
   UseParamsResult,
 } from "./types";
@@ -17,6 +18,7 @@ import { createElement, useRef } from "react";
 
 export type { DynamicLayout };
 export type InferPagePropsType<T extends DynamicRoute> = IPPT<T>;
+export type InferLayoutPropsType<T extends DynamicLayout> = ILPT<T>;
 
 type NextAppPageProps = {
   params: Record<string, string | string[]>;
