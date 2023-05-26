@@ -1,18 +1,23 @@
-# Setup
+# PAGES DIRECTORY
+
+## Setup
 
 ### IMPORTANT NOTE
 
-**This package requires you to run your npm scripts from the root directory of your project, as well as your `pages` directory being in `root/src`.**
+**This package REQUIRES your project structure to look like this:**
+
+```
+your_project
+├── node_modules
+└── src
+    └── pages
+```
 
 ---
 
-If you run into any issues it will most likely be the cli (_for me it works fine on my setup, but when using it in a github codespace the watch functionality wouldn't work_).
+_If the functions still show type errors after running the cli, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster._
 
-**Assuming you have the correct directory structure as listed above**, a quick `npx next-typesafe-url` should generate the types and you'll be all set.
-
-_If the functions still show type errors, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster._
-
-Worst case senario, you may have to restart your editor. If you are still having issues, please open an issue.
+Worst case senario, you may have to restart your editor. If you are still having problems, please open an issue on github.
 
 ---
 
@@ -23,11 +28,11 @@ For dev mode, you can either run it in a seperate shell, or in one with the [con
 ```json
 {
   "scripts": {
-    "build": "next-typesafe-url && next build",
+    "build": "next-typesafe-url -p && next build",
 
-    "dev": "concurrently  \"next-typesafe-url -w\" \"next dev\"",
+    "dev": "concurrently  \"next-typesafe-url -p -w\" \"next dev\"",
     // OR
-    "dev:url": "next-typesafe-url -w"
+    "dev:url": "next-typesafe-url -p -w"
   }
 }
 ```
@@ -37,8 +42,6 @@ For dev mode, you can either run it in a seperate shell, or in one with the [con
 ## Route
 
 `next-typesafe-url` is powered by exporting a special `RouteType` type from each route in your `pages` directory. It is derived from a special `Route` object, that defines the valid route params and search params for that route.
-
-**Note: `Route` should exclusively include the keys of either `routeParams` or `searchParams`, or both, and they must be Zod objects without exception.**
 
 ---
 
@@ -50,6 +53,7 @@ Any page that does not export a `RouteType` type will be classified as a `Static
 
 ```ts
 // pages/product/[productID].tsx
+import { type DynamicRoute } from "next-typesafe-url";
 
 const Route = {
   routeParams: z.object({
@@ -62,7 +66,7 @@ const Route = {
       age: z.number(),
     }),
   }),
-};
+} satisfies DynamicRoute;
 export type RouteType = typeof Route;
 ```
 
@@ -153,9 +157,10 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 ## Hooks
 
-`next-typesafe-url` exports a `useRouteParams` and `useSearchParams` hook that will return the route params / search params for the current route. They take one argument, the zod schema for either route params or search params from the Route object.
+`next-typesafe-url/pages` exports a `useRouteParams` and `useSearchParams` hook that will return the route params / search params for the current route. They take one argument, the zod schema for either route params or search params from the Route object.
 
 ```tsx
+import { useSearchParams } from "next-typesafe-url/pages";
 const params = useSearchParams(Route.searchParams);
 const { data, isValid, isReady, isError, error } = params;
 
@@ -175,11 +180,13 @@ if (!isReady) {
 
 **If `isReady` is true and `isError` is false, then `data` will always be valid and match the schema.**
 
-_For convenience, instead of needing checking `isReady && !isError`, I have added the `isValid` flag which is only true when `isReady` is `true` and and `isError` is false._
+_For convenience, instead of needing checking `isReady && !isError`, the `isValid` flag is only true when `isReady` is `true` and and `isError` is false._
 
 ## Reccomended Usage
 
 ### **It is _HIGHLY_ reccomended to only call `useSearchParams` and `useRouteParams` in the top level component of each route, and pass the data down to child components through props or context.**
+
+Only the `RouteType`, not the `Route`, is exported to enforce this.
 
 Feel free to use your state management library of choice to pass the data down to child components.
 
@@ -210,12 +217,11 @@ import type {
   GetServerSideProps,
 } from "next";
 import { z } from "zod";
+import { type AppRouter } from "next-typesafe-url";
 import {
-  $path,
   parseServerSideRouteParams,
   parseServerSideSearchParams,
-  type AppRouter,
-} from "next-typesafe-url";
+} from "next-typesafe-url/pages";
 
 const Route = {
   routeParams: z.object({
@@ -228,7 +234,7 @@ const Route = {
       age: z.number(),
     }),
   }),
-};
+} satisfies DynamicRoute;
 export type RouteType = typeof Route;
 
 type ServerSideProps = AppRouter["/product/[productID]"]["searchParams"] &
@@ -238,12 +244,12 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   context
 ) => {
   const routeParams = parseServerSideRouteParams({
-    context,
+    context.params,
     validator: Route.routeParams,
   });
 
   const searchParams = parseServerSideSearchParams({
-    context,
+    context.query,
     validator: Route.searchParams,
   });
 
