@@ -27,4 +27,4 @@ function Layout({
   );
 }
 
-export default withLayoutParamValidation(Layout, LayoutValidator);
+export default withLayoutParamValidation(Layout, LayoutRoute);
