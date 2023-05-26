@@ -249,18 +249,22 @@ If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`
 ```tsx
 import { Route } from "~/app/product/[productID]/routeType.tsx"
 import { useSearchParams } from "next-typesafe-url/app";
-const params = useSearchParams(Route.searchParams);
-const { data, isLoading, isError, error } = params;
 
-// if isLoading is false, and isError is false (isValid is true), then data *will* be in the shape of Route.searchParams
-// in this case, data will be { userInfo: { name: string, age: number } }
+const Component = () => {
+  const params = useSearchParams(Route.searchParams);
+  const { data, isLoading, isError, error } = params;
 
-if (isLoading) {
-  return <div>loading...</div>;
-} else if (isError) {
-  return <div>Invalid search params {error.message}</div>;
-} else if (isValid) {
-  return <div>{data.userInfo.name}</div>;
+  // if isLoading is false, and isError is false (isValid is true), then data *will* be in the shape of Route.searchParams
+  // in this case, data will be { userInfo: { name: string, age: number } }
+
+  if (isLoading) {
+    return <div>loading...</div>;
+  } else if (isError) {
+    return <div>Invalid search params {error.message}</div>;
+  } else if (isValid) {
+    return <div>{data.userInfo.name}</div>;
+  }
+
 }
 ```
 

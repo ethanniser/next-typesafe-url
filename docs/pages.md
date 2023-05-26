@@ -161,18 +161,21 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 ```tsx
 import { useSearchParams } from "next-typesafe-url/pages";
-const params = useSearchParams(Route.searchParams);
-const { data, isValid, isReady, isError, error } = params;
 
-// if isReady is true, and isError is false (isValid is true), then data *will* be in the shape of Route.searchParams
-// in this case, data will be { userInfo: { name: string, age: number } }
+const Component = () => {
+  const params = useSearchParams(Route.searchParams);
+  const { data, isValid, isReady, isError, error } = params;
 
-if (!isReady) {
-  return <div>loading...</div>;
-} else if (isError) {
-  return <div>Invalid search params {error.message}</div>;
-} else if (isValid) {
-  return <div>{data.userInfo.name}</div>;
+  // if isReady is true, and isError is false (isValid is true), then data *will* be in the shape of Route.searchParams
+  // in this case, data will be { userInfo: { name: string, age: number } }
+
+  if (!isReady) {
+    return <div>loading...</div>;
+  } else if (isError) {
+    return <div>Invalid search params {error.message}</div>;
+  } else if (isValid) {
+    return <div>{data.userInfo.name}</div>;
+  }
 }
 ```
 
