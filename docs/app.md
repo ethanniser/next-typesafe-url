@@ -158,6 +158,12 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 ---
 
+## Server Components
+
+### Usage in page.tsx
+
+### Usage in layout.tsx
+
 ## Client Components
 
 ### If you need your top level page component to NOT BE dynamically rendered (SSR), i.e. you want your top level page component to be statically generated, or ISR'ed, then you can access route/search params within deeper client components via hooks
