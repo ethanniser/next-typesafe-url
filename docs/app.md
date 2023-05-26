@@ -28,7 +28,7 @@ For dev mode, you can either run it in a seperate shell, or in one with the [con
 }
 ```
 
-**Running this script will build the types for your app.**
+**Running this script will build the types for your project.**
 
 _If the functions still show type errors after running the cli, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster. You may need to do a 2nd `crtl+click` to the type file with the weird looking generated name, as this is where the actual core types are. It should be on the first line of what you first `crtl+click` on_
 
