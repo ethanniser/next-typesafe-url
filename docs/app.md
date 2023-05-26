@@ -12,15 +12,6 @@ your_project
 └── src
     └── app
 ```
-
----
-
-_If the functions still show type errors after running the cli, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster._
-
-Worst case senario, you may have to restart your editor. If you are still having problems, please open an issue on github.
-
----
-
 Add `next-typesafe-url` to your dev and build script in package.json.
 
 For dev mode, you can either run it in a seperate shell, or in one with the [concurrently](https://www.npmjs.com/package/concurrently) package.
@@ -36,6 +27,14 @@ For dev mode, you can either run it in a seperate shell, or in one with the [con
   }
 }
 ```
+
+**Running this script will build the types for your app.**
+
+_If the functions still show type errors after running the cli, you can restart typescript server, but I have found a quick `crtl+click` to go the origin type file can often wake the ts server up much faster. You may need to do a 2nd `crtl+click` to the type file with the weird looking generated name, as this is where the actual core types are. It should be on the first line of what you first `crtl+click` on_
+
+Worst case senario, you may have to restart your editor. If you are still having problems, please open an issue on github.
+
+---
 
 # Usage
 
@@ -82,7 +81,7 @@ Search params support all valid JSON types. However, **route params are not JSON
 **Note:** Catch all and optional catch all routes are interepted as arrays or tuples.
 
 ```ts
-// app/dashboard/[...options]/routeType.tsx
+// app/dashboard/[...options]/routeType.ts
 export const Route = {
   routeParams: z.object({
     options: z.tuple([z.string(), z.number()]),
@@ -93,7 +92,7 @@ export type RouteType = typeof Route;
 // /dashboard/deployments/2 will match and return { options: ["deployments", 2] }
 ```
 
-Keep in mind that `next-typesafe-url` assumes your `Route` and `RouteType` are correct. If you for example, have a route param that is a different name than the file name, it will cause silent errors.
+Keep in mind that `next-typesafe-url` assumes your `Route` and `RouteType` are correct. If you for example, have a route param that is a different name than what the actual directory for that route is named, it will cause errors.
 
 **Double check your `Route` objects to make sure they are correct.**
 

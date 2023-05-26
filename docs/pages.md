@@ -90,7 +90,7 @@ export type RouteType = typeof Route;
 // /dashboard/deployments/2 will match and return { options: ["deployments", 2] }
 ```
 
-Keep in mind that `next-typesafe-url` assumes your `Route` and export `RouteType` is correct. If you for example, have a route param that is a different name than the file name, it will cause silent errors.
+Keep in mind that `next-typesafe-url` assumes your `Route` and export `RouteType` is correct. If you for example, have a route param that is a different name than what the actual directory/file for that route is named, it will cause errors.
 
 **Double check your `Route` objects to make sure they are correct.**
 
