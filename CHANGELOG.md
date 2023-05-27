@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.3.4
+
+### Patch Changes
+
+- 422c965: use relative path instead of ~, as this will work for anyone
+
 ## 1.3.3
 
 ### Patch Changes
