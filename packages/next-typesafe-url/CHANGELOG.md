@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.4.0
+
+### Minor Changes
+
+- 65d706b: hopefully final test
+
 ## 1.3.10
 
 ### Patch Changes
