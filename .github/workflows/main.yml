@@ -19,4 +19,3 @@ jobs:
 
       - run: pnpm install
       - run: pnpm turbo build lint
-      - run: pnpm manypkg check

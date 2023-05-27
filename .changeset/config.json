@@ -7,6 +7,5 @@
   "commit": false,
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
   "ignore": ["@examples/pagesdir", "@examples/appdir"]
 }
