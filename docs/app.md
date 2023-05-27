@@ -242,7 +242,7 @@ If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`
 
 ### If you need your top level page component to NOT BE dynamically rendered (SSR), i.e. you want your top level page component to be statically generated, or ISR'ed, then you can access route/search params within deeper client components via hooks
 
-**If you don't need this it is reccomended to use the server component patterns and pass your route/search params down to other server or client components through props or context.**
+**If you don't need this it is reccomended to use the server component patterns and pass your route/search params down to other server or client components through props.**
 
 ---
 
