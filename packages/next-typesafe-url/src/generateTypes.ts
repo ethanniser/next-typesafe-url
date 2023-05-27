@@ -272,7 +272,7 @@ export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
   fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-c2f88e62.d.ts",
+    "node_modules/next-typesafe-url/dist/types.d-3a579616.d.ts",
     fileContentString
   );
 }
