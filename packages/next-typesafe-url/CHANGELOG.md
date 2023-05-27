@@ -1,5 +1,15 @@
 # next-typesafe-url
 
+## 2.0.0
+
+### Major Changes
+
+- 401f94e: Full support for App router and server components
+  API overhaul and improved featureset
+
+  **THIS IS A BREAKING CHANGE**
+  Please refer to the updated documentation for how to use the new API
+
 ## 1.3.4
 
 ### Patch Changes
