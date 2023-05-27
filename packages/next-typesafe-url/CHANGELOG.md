@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.3.9
+
+### Patch Changes
+
+- c6f3122: npmignore
+
 ## 1.3.8
 
 ### Patch Changes
