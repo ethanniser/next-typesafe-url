@@ -16,10 +16,10 @@ jobs:
           version: 7
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18
           cache: "pnpm"
 
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1

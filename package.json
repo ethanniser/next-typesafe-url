@@ -1,25 +1,27 @@
 {
-  "name": "next-typesafe-url",
+  "name": "root",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "release": "turbo run lint build && changeset version && changeset publish"
+    "release": "changeset version && changeset publish"
   },
-  "devDependencies": {
+  "dependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@manypkg/cli": "^0.20.0",
     "prettier": "latest",
     "turbo": "latest"
   },
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
   "packageManager": "pnpm@7.27.0"
 }

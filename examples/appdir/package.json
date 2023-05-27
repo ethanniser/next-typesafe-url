@@ -1,11 +1,9 @@
 {
-  "name": "appdir",
+  "name": "@examples/appdir",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "concurrently  \"next-typesafe-url -w -a --dontUseDev\" \"next dev\"",
-    "build": "next build",
-    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
