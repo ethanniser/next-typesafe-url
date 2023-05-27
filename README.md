@@ -1,5 +1,7 @@
 # next-typesafe-url
 
+![next-typesafe-url-example](https://github.com/ethanniser/next-typesafe-url/assets/100045248/216da637-9cf0-48dd-942e-e24e0146acd0)
+
 _Now with full support for app directory and server components!_
 
 JSON serializable, fully typesafe, and [zod](https://www.npmjs.com/package/zod) validated URL search params, dynamic route params, and routing for NextJS.
