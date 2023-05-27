@@ -1,29 +1,5 @@
 # next-typesafe-url
 
-## 1.4.0
-
-### Minor Changes
-
-- 65d706b: hopefully final test
-
-## 1.3.10
-
-### Patch Changes
-
-- f75bd07: maybe now
-
-## 1.3.9
-
-### Patch Changes
-
-- c6f3122: npmignore
-
-## 1.3.8
-
-### Patch Changes
-
-- 7c26b7b: final test
-
 ## 1.3.4
 
 ### Patch Changes
