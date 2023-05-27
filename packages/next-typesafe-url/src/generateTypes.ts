@@ -245,6 +245,25 @@ type UseParamsResult<T extends z.AnyZodObject> =
       error: undefined;
     };
 
+type UseAppParamsResult<T extends z.AnyZodObject> =
+  | {
+      data: undefined;
+      isLoading: true;
+      isError: false;
+      error: undefined;
+    }
+  | {
+      data: z.infer<T>;
+      isError: false;
+      isLoading: false;
+      error: undefined;
+    }
+  | {
+      data: undefined;
+      isError: true;
+      error: z.ZodError<T>;
+    };
+
 type ServerParseParamsResult<T extends z.AnyZodObject> =
   | {
       data: z.infer<T>;
