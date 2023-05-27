@@ -15,6 +15,9 @@
     "release": "changeset version && changeset publish"
   },
   "dependencies": {
+    "@types/node": "18.16.3",
+    "@types/react": "18.2.5",
+    "@types/react-dom": "18.2.3",
     "@changesets/cli": "^2.26.0",
     "@manypkg/cli": "^0.20.0",
     "prettier": "latest",
