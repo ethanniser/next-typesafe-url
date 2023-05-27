@@ -30,39 +30,6 @@ Traditional Search Param APIs usually assume a few things:
 - Search params are JSON-first, so you can pass strings, numbers, booleans, nulls, **and even nested objects and arrays**
 - Search and route params are validated at runtime using zod, so you can be sure that **the data you get matches the schema you expect**
 
-## Installation
+## Documentation
 
-```bash
-npm install next-typesafe-url
-# or
-yarn add next-typesafe-url
-# or
-pnpm add next-typesafe-url
-```
-
-## Usage
-
-### PLEASE READ THE DOCS
-
-#### [Pages](docs/pages.md)
-
-#### [App](docs/app.md)
-
-## Issues
-
-Please open an issue if you find a bug or have a feature request.
-You can also DM me on twitter @ethanniser with any questions or concerns.
-
-## License
-
-[MIT](LICENSE)
-
-## Contributing
-
-All contributions are welcome! Please open an issue or submit a PR.
-
-## TODO
-
-- add tests
-- fix cd pipeline
-- [`remix-routes` style typescript plugin](https://github.com/yesmeck/remix-routes/tree/master/packages/typescript-remix-routes-plugin) to improve autocomplete and add 'go to definition' to route string (would take you to the route file)
+PLEASE READ THE FULL DOCS ON THE [GITHUB REPO](https://github.com/ethanniser/next-typesafe-url)
