@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 1.3.7
+
+### Patch Changes
+
+- 5d08de0: fix I think
+
 ## 1.3.6
 
 ### Patch Changes
