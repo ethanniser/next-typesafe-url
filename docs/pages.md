@@ -111,7 +111,7 @@ type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
 
 ## Path
 
-`next-typesafe-url` exports a `$path` function that generates a path that can be passed to `next/link` or `next/router`.
+`next-typesafe-url` exports a `$path` function that generates a path that can be passed to `next/link` or `next/router`'s `useRouter`.
 
 ```tsx
 import { $path } from "next-typesafe-url";
@@ -178,7 +178,7 @@ const Component = () => {
   } else if (isValid) {
     return <div>{data.userInfo.name}</div>;
   }
-}
+};
 ```
 
 `isReady` is the internal state of next/router, and `isError` is a boolean that is true if the params do not match the schema. If `isError` is true, then `error` will be a zod error object you can use to get more information about the error. (_also check out [zod-validation-error](https://github.com/causaly/zod-validation-error) to get a nice error message_)

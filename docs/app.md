@@ -12,6 +12,7 @@ your_project
 └── src
     └── app
 ```
+
 Add `next-typesafe-url` to your dev and build script in package.json.
 
 For dev mode, you can either run it in a seperate shell, or in one with the [concurrently](https://www.npmjs.com/package/concurrently) package.
@@ -113,7 +114,7 @@ type ProductIDRouteParams = AppRouter["/product/[productID]"]["routeParams"];
 
 ## Path
 
-`next-typesafe-url` exports a `$path` function that generates a path that can be passed to `next/link` or `next/router`.
+`next-typesafe-url` exports a `$path` function that generates a path that can be passed to `next/link` or `next/navigation`'s `useRouter`.
 
 ```tsx
 import { $path } from "next-typesafe-url";
@@ -209,7 +210,7 @@ import { z } from "zod";
 import {
   withLayoutParamValidation,
   type DynamicLayout,
-  type InferLayoutPropsType
+  type InferLayoutPropsType,
 } from "next-typesafe-url/app";
 
 const LayoutRoute = {
@@ -217,9 +218,9 @@ const LayoutRoute = {
     productID: z.number(),
   }),
 } satisfies DynamicLayout;
-type LayoutType = typeof LayoutRoute
+type LayoutType = typeof LayoutRoute;
 
-type Props = InferLayoutPropsType<LayoutType>
+type Props = InferLayoutPropsType<LayoutType>;
 function Layout({ children, routeParams }: Props) {
   return (
     <div>
@@ -249,7 +250,7 @@ If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`
 `next-typesafe-url/app` exports a `useRouteParams` and `useSearchParams` hook that will return the route params / search params for the current route. They take one argument, the zod schema for either route params or search params from the Route object.
 
 ```tsx
-import { Route } from "~/app/product/[productID]/routeType.tsx"
+import { Route } from "~/app/product/[productID]/routeType.tsx";
 import { useSearchParams } from "next-typesafe-url/app";
 
 const Component = () => {
@@ -266,8 +267,7 @@ const Component = () => {
   } else if (isValid) {
     return <div>{data.userInfo.name}</div>;
   }
-
-}
+};
 ```
 
 `isLoading` is the loading state of the internal Next router, and `isError` is a boolean that is true if the params do not match the schema. If `isError` is true, then `error` will be a zod error object you can use to get more information about the error. (_also check out [zod-validation-error](https://github.com/causaly/zod-validation-error) to get a nice error message_)
