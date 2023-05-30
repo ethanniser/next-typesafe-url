@@ -1,25 +1,26 @@
-- [APP DIRECTORY](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#app-directory)
-  - [Setup](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#setup)
-    - [IMPORTANT NOTE](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#important-note)
-  - [Usage](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage)
-    - [routeType.ts](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#routetypets)
-    - [AppRouter Type](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#approuter-type)
-    - [Path](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#path)
-    - [Server Components](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#server-components)
-      - [Usage in page.tsx](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage-in-pagetsx)
-        - [withParamValidation](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#withparamvalidation)
-        - [Errors](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#errors)
-      - [Usage in layout.tsx](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage-in-layouttsx)
-        - [withLayoutParamValidation](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#withlayoutparamvalidation)
-        - [Errors](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#errors-1)
-    - [Client Components](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#client-components)
-    - [Advanced Routing Patterns](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#advanced-routing-patterns)
-      - [Parallel Routes](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#parallel-routes)
-        - [Adjusting Layout Props](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#adjusting-layout-props)
-      - [Intercepted Routes](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#intercepted-routes)
-    - [Command Line Options](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#command-line-options)
-
 # APP DIRECTORY
+
+## Table of Contents
+
+- [Setup](#setup)
+  - [IMPORTANT NOTE](#important-note)
+- [Usage](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage)
+  - [routeType.ts](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#routetypets)
+  - [AppRouter Type](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#approuter-type)
+  - [Path](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#path)
+  - [Server Components](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#server-components)
+    - [Usage in page.tsx](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage-in-pagetsx)
+      - [withParamValidation](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#withparamvalidation)
+      - [Errors](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#errors)
+    - [Usage in layout.tsx](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage-in-layouttsx)
+      - [withLayoutParamValidation](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#withlayoutparamvalidation)
+      - [Errors](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#errors-1)
+  - [Client Components](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#client-components)
+  - [Advanced Routing Patterns](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#advanced-routing-patterns)
+    - [Parallel Routes](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#parallel-routes)
+      - [Adjusting Layout Props](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#adjusting-layout-props)
+    - [Intercepted Routes](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#intercepted-routes)
+  - [Command Line Options](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#command-line-options)
 
 ## Setup
 
