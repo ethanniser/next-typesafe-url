@@ -1,5 +1,19 @@
 # PAGES DIRECTORY
 
+## Table of Contents
+
+- [Setup](#setup)
+  - [IMPORTANT NOTE](#important-note)
+- [Usage](#usage)
+  - [Route](#route)
+  - [AppRouter Type](#approuter-type)
+  - [Path](#path)
+  - [Hooks](#hooks)
+  - [Reccomended Usage](#reccomended-usage)
+  - [Static/SeverSide Props](#staticseverside-props)
+    - [Errors](#errors)
+  - [Command Line Options](#command-line-options)
+
 ## Setup
 
 ### IMPORTANT NOTE
