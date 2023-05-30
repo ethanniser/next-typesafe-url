@@ -67,6 +67,17 @@ export function getAPPRoutesWithExportedRoute(
     const fullPath = path.join(dir, file);
 
     if (fs.statSync(fullPath).isDirectory()) {
+
+      //parallel routes
+      if (file.startsWith('@')) {
+        return;
+      }
+
+      //intercepted routes- "(.)" "(..)" "(...)"
+      if (/^\(\.\)(.+)$/.test(file) || /^\(\.\.\)(.+)$/.test(file) || /^\(\.\.\.\)(.+)$/.test(file)) {
+        return;
+      }
+
       getAPPRoutesWithExportedRoute(
         basePath,
         fullPath,
@@ -78,6 +89,8 @@ export function getAPPRoutesWithExportedRoute(
       let routePath = fullPath
         .replace(basePath, "")
         .replace(/\\/g, "/")
+        // route groups
+        .replace(/\/\([^()]+\)/g, "")
         .replace(/\/page\.tsx$/, "");
 
       if (dir === basePath) {
