@@ -67,6 +67,20 @@ export function getAPPRoutesWithExportedRoute(
     const fullPath = path.join(dir, file);
 
     if (fs.statSync(fullPath).isDirectory()) {
+      //parallel routes
+      if (file.startsWith("@")) {
+        return;
+      }
+
+      //intercepted routes- "(.)" "(..)" "(...)"
+      if (
+        /^\(\.\)(.+)$/.test(file) ||
+        /^\(\.\.\)(.+)$/.test(file) ||
+        /^\(\.\.\.\)(.+)$/.test(file)
+      ) {
+        return;
+      }
+
       getAPPRoutesWithExportedRoute(
         basePath,
         fullPath,
@@ -116,7 +130,11 @@ export function generateTypesFile(
 
   const routeTypeDeclarations = hasRoute
     .map(
-      (route) => `  "${route}": InferRoute<Route_${hasRoute.indexOf(route)}>;`
+      (route) =>
+        `  "${route.replace(
+          /\/\([^()]+\)/g,
+          ""
+        )}": InferRoute<Route_${hasRoute.indexOf(route)}>;`
     )
     .join("\n");
 
@@ -204,7 +222,10 @@ type DynamicRoute = {
 
 type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
 
-type InferLayoutPropsType<T extends DynamicLayout> = {routeParams: z.infer<T['routeParams']>, children: React.ReactNode};
+type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
+  routeParams: z.infer<T["routeParams"]>;
+  children: React.ReactNode;
+} & { [P in K]: React.ReactNode };
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
@@ -291,7 +312,7 @@ export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
   fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-3a579616.d.ts",
+    "node_modules/next-typesafe-url/dist/types.d-18bb367a.d.ts",
     fileContentString
   );
 }

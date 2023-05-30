@@ -1,10 +1,12 @@
 {
-  "name": "@examples/appdir",
+  "name": "appdir",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "concurrently  \"next-typesafe-url -w -a --dontUseDev\" \"next dev\"",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build": "next-typesafe-url -a && next build",
+    "start": "next start"
   },
   "dependencies": {
     "@types/node": "18.16.3",
