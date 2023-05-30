@@ -18,7 +18,10 @@ import { createElement, useRef } from "react";
 
 export type { DynamicLayout };
 export type InferPagePropsType<T extends DynamicRoute> = IPPT<T>;
-export type InferLayoutPropsType<T extends DynamicLayout> = ILPT<T>;
+export type InferLayoutPropsType<
+  T extends DynamicLayout,
+  K extends string = never
+> = ILPT<T, K>;
 
 type NextAppPageProps = {
   params: Record<string, string | string[]>;
@@ -34,7 +37,7 @@ export function withParamValidation(
   const ValidatedPageComponent: SomeReactComponent = (
     props: NextAppPageProps
   ) => {
-    const { params, searchParams } = props;
+    const { params, searchParams, ...otherProps } = props;
 
     let parsedRouteParams = undefined;
 
@@ -62,6 +65,7 @@ export function withParamValidation(
     return createElement(Component, {
       routeParams: parsedRouteParams?.data,
       searchParams: parsedSearchParams?.data,
+      ...otherProps,
     });
   };
 
@@ -75,7 +79,7 @@ export function withLayoutParamValidation(
   const ValidatedPageComponent: SomeReactComponent = (
     props: Pick<NextAppPageProps, "params"> & { children: ReactElement }
   ) => {
-    const { params, children } = props;
+    const { params, children, ...otherProps } = props;
 
     let parsedRouteParams = undefined;
 
@@ -95,6 +99,7 @@ export function withLayoutParamValidation(
     return createElement(Component, {
       routeParams: parsedRouteParams?.data,
       children,
+      ...otherProps,
     });
   };
 
