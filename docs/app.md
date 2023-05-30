@@ -1,3 +1,24 @@
+- [APP DIRECTORY](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#app-directory)
+  - [Setup](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#setup)
+    - [IMPORTANT NOTE](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#important-note)
+  - [Usage](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage)
+    - [routeType.ts](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#routetypets)
+    - [AppRouter Type](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#approuter-type)
+    - [Path](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#path)
+    - [Server Components](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#server-components)
+      - [Usage in page.tsx](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage-in-pagetsx)
+        - [withParamValidation](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#withparamvalidation)
+        - [Errors](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#errors)
+      - [Usage in layout.tsx](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#usage-in-layouttsx)
+        - [withLayoutParamValidation](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#withlayoutparamvalidation)
+        - [Errors](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#errors-1)
+    - [Client Components](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#client-components)
+    - [Advanced Routing Patterns](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#advanced-routing-patterns)
+      - [Parallel Routes](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#parallel-routes)
+        - [Adjusting Layout Props](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#adjusting-layout-props)
+      - [Intercepted Routes](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#intercepted-routes)
+    - [Command Line Options](https://github.com/ethanniser/next-typesafe-url/blob/advancedRoutes/docs/app.md#command-line-options)
+
 # APP DIRECTORY
 
 ## Setup
@@ -162,7 +183,7 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 ## Server Components
 
-In `page.tsx`, search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by next ([see the "good to know" section at the very bottom](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know))
+In `page.tsx`, search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by Next ([see the "good to know" section at the very bottom](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know))
 
 If you do not want this behavior, you are forced to place the search param logic **in a client component**. Check out the 'Client Components' section below to see more.
 
@@ -204,13 +225,15 @@ If the zod validation fails, `withParamValidation` will throw a `ZodError`. Use 
 
 Layouts only have access to route params, not search params ([see why](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know)).
 
-In terms of validation, a layout could represent any number of routes within it, all of which may have their own validators which may not neccesarily overlap. Because of this, **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
+In terms of validation, a layout could represent any number of routes within it, all of which may have their own validators which may not neccesarily overlap. \
+
+Because of this, **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
 
 #### withLayoutParamValidation
 
 `next-typesafe-url/app` provides a higher order component `withLayoutParamValidation` you can wrap your layouts with to provide runtime validation through your zod validator.
 
-**If your layout does not consume any search/route params, there is no need to use `withLayoutParamValidation`**
+**If your layout does not consume any route params, there is no need to use `withLayoutParamValidation`**
 
 The `InferLayoutPropsType` is passed the type of your LayoutRoute as a generic to extrapolate the valid types coming out of the zod validator.
 
@@ -290,7 +313,7 @@ const Component = () => {
 
 ### Parallel Routes
 
-**`page.tsx` in any parallel routes should use the import from the `routeType.ts from the parent directory**
+**`page.tsx` in any parallel routes should use the import from the `routeType.ts` from the parent directory**
 
 This is because they will be shown on the same route, receiving the same route params and search params, and therefore should use the same zod validator.
 
@@ -323,7 +346,7 @@ export default withLayoutParamValidation(Layout, LayoutRoute);
 
 ### Intercepted Routes
 
-Like parallel routes, **`page.tsx` in any intercepted routes should import from the `routeType.tsx from the directory of the route being intercepted**
+Like parallel routes, **`page.tsx` in any intercepted routes should import from the `routeType.ts` from the directory of the route being intercepted**
 
 This way, whether that route is accessed directly or intercepted, the same validation is used.
 
