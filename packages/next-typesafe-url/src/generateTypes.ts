@@ -67,14 +67,17 @@ export function getAPPRoutesWithExportedRoute(
     const fullPath = path.join(dir, file);
 
     if (fs.statSync(fullPath).isDirectory()) {
-
       //parallel routes
-      if (file.startsWith('@')) {
+      if (file.startsWith("@")) {
         return;
       }
 
       //intercepted routes- "(.)" "(..)" "(...)"
-      if (/^\(\.\)(.+)$/.test(file) || /^\(\.\.\)(.+)$/.test(file) || /^\(\.\.\.\)(.+)$/.test(file)) {
+      if (
+        /^\(\.\)(.+)$/.test(file) ||
+        /^\(\.\.\)(.+)$/.test(file) ||
+        /^\(\.\.\.\)(.+)$/.test(file)
+      ) {
         return;
       }
 
@@ -89,8 +92,6 @@ export function getAPPRoutesWithExportedRoute(
       let routePath = fullPath
         .replace(basePath, "")
         .replace(/\\/g, "/")
-        // route groups
-        .replace(/\/\([^()]+\)/g, "")
         .replace(/\/page\.tsx$/, "");
 
       if (dir === basePath) {
@@ -129,7 +130,11 @@ export function generateTypesFile(
 
   const routeTypeDeclarations = hasRoute
     .map(
-      (route) => `  "${route}": InferRoute<Route_${hasRoute.indexOf(route)}>;`
+      (route) =>
+        `  "${route.replace(
+          /\/\([^()]+\)/g,
+          ""
+        )}": InferRoute<Route_${hasRoute.indexOf(route)}>;`
     )
     .join("\n");
 
@@ -307,7 +312,7 @@ export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions
   const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
 
   fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-3a579616.d.ts",
+    "node_modules/next-typesafe-url/dist/types.d-18bb367a.d.ts",
     fileContentString
   );
 }
