@@ -18,4 +18,4 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install
-      - run: pnpm turbo build lint
+      - run: pnpm turbo build lint --filter="./packages/*"

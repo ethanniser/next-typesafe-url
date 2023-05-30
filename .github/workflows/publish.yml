@@ -20,7 +20,7 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install
-      - run: pnpm turbo lint build
+      - run: pnpm turbo lint build --filter="./packages/*"
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1

@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "concurrently  \"next-typesafe-url -w -p --dontUseDev\" \"next dev\"",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@types/node": "18.16.3",
