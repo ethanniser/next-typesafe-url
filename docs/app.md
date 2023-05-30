@@ -168,9 +168,13 @@ If you do not want this behavior, you are forced to place the search param logic
 
 ### Usage in page.tsx
 
+#### withParamValidation
+
 `next-typesafe-url/app` provides a higher order component `withParamValidation` you can wrap your page with to provide runtime validation through your zod validator.
 
 The `InferPagePropsType` is passed `RouteType` as a generic to extrapolate the valid types coming out of the zod validator.
+
+**If your page does not consume any search/route params (i.e. it is a 'static' route), there is no need to use `withParamValidation`**
 
 ```tsx
 // app/product/[productID]/page.tsx
@@ -200,7 +204,13 @@ If the zod validation fails, `withParamValidation` will throw a `ZodError`. Use 
 
 Layouts only have access to route params, not search params ([see why](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know)).
 
-In terms of validation, a layout could represent any number of routes within it, all of which may have their own validators which may not neccesarily overlap. Because of this **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
+In terms of validation, a layout could represent any number of routes within it, all of which may have their own validators which may not neccesarily overlap. Because of this, **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
+
+#### withLayoutParamValidation
+
+`next-typesafe-url/app` provides a higher order component `withLayoutParamValidation` you can wrap your layouts with to provide runtime validation through your zod validator.
+
+**If your layout does not consume any search/route params, there is no need to use `withLayoutParamValidation`**
 
 The `InferLayoutPropsType` is passed the type of your LayoutRoute as a generic to extrapolate the valid types coming out of the zod validator.
 
@@ -275,6 +285,58 @@ const Component = () => {
 **If `isReady` is true and `isError` is false, then `data` will always be valid and match the schema.**
 
 ### **Be mindful when using useSearchParams and useRouteParams in components used in multiple routes, making sure you pass the correct validator**
+
+## Advanced Routing Patterns
+
+### Parallel Routes
+
+**`page.tsx` in any parallel routes should use the import from the `routeType.ts from the parent directory**
+
+This is because they will be shown on the same route, receiving the same route params and search params, and therefore should use the same zod validator.
+
+```
+app
+├── @analytics
+    └── page.tsx  <- THIS SHOULD IMPORT FROM  |
+└── layout.tsx                                |
+└── page.tsx                                  |
+└── routeType.ts <-----------------------------
+```
+
+#### Adjusting Layout Props
+
+`InferLayoutPropsType` takes an optional second generic of `string` or `string` union (for multiple parallel routes) that should represent any parallel routes beneath the layout.
+
+```tsx
+type Props = InferLayoutPropsType<LayoutType, "analytics">;
+function Layout({ children, routeParams, analytics }: Props) {
+  return (
+    <div>
+      <p>{JSON.stringify(routeParams)}</p>
+      <div>{children}</div>
+      <div>{analytics}</div>
+    </div>
+  );
+}
+export default withLayoutParamValidation(Layout, LayoutRoute);
+```
+
+### Intercepted Routes
+
+Like parallel routes, **`page.tsx` in any intercepted routes should import from the `routeType.tsx from the directory of the route being intercepted**
+
+This way, whether that route is accessed directly or intercepted, the same validation is used.
+
+```
+app
+├── @modal
+    └── (.)foo
+        └── page.tsx  <- THIS SHOULD IMPORT FROM  |
+└── layout.tsx                                    |
+└── foo                                           |
+    └── page.tsx                                  |
+    └── routeType.ts <-----------------------------
+```
 
 ## Command Line Options
 
