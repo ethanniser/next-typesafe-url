@@ -1,6 +1,6 @@
 import { withParamValidation } from "next-typesafe-url/app";
 import { InferPagePropsType } from "next-typesafe-url/app";
-import { Route, RouteType } from "./routeType";
+import { Route, RouteType } from "../../nest/routeType";
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
 
@@ -10,15 +10,15 @@ const Page = ({ routeParams }: PageProps) => {
   return (
     <>
       <div className="border border-black">
-        <h1>page</h1>
+        <h1>INTERCEPT</h1>
         <div>{`route: ${JSON.stringify(routeParams)}`}</div>
         <Link
           href={$path({
-            route: "/foo/[id]/nest",
+            route: "/foo/[id]",
             routeParams: { id: routeParams.id },
           })}
         >
-          LINK
+          BACK
         </Link>
       </div>
     </>

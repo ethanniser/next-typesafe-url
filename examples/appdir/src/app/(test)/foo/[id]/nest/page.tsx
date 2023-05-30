@@ -10,16 +10,8 @@ const Page = ({ routeParams }: PageProps) => {
   return (
     <>
       <div className="border border-black">
-        <h1>page</h1>
+        <h1>NORMAL NEST PAGE</h1>
         <div>{`route: ${JSON.stringify(routeParams)}`}</div>
-        <Link
-          href={$path({
-            route: "/foo/[id]/nest",
-            routeParams: { id: routeParams.id },
-          })}
-        >
-          LINK
-        </Link>
       </div>
     </>
   );
