@@ -115,7 +115,10 @@ type DynamicRoute = {
 
 type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
 
-type InferLayoutPropsType<T extends DynamicLayout> = {routeParams: z.infer<T['routeParams']>, children: React.ReactNode};
+type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
+  routeParams: z.infer<T["routeParams"]>;
+  children: React.ReactNode;
+} & { [P in K]: React.ReactNode };
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
