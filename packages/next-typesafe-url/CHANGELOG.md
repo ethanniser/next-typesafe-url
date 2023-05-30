@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 2.1.1
+
+### Patch Changes
+
+- ab485bd: fix to only run route group removal in 'app' mode
+
 ## 2.1.0
 
 ### Minor Changes
