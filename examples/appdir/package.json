@@ -17,7 +17,7 @@
     "eslint": "8.39.0",
     "eslint-config-next": "13.4.0",
     "next": "13.4.0",
-    "next-typesafe-url": "workspace:*",
+    "next-typesafe-url": "2.1.0-beta.1",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
