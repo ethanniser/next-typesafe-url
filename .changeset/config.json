@@ -7,5 +7,5 @@
   "commit": false,
   "access": "public",
   "baseBranch": "main",
-  "ignore": ["@examples/pagesdir", "@examples/appdir"]
+  "ignore": ["pagesdir", "appdir"]
 }
