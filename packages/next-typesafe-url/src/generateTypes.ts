@@ -131,10 +131,9 @@ export function generateTypesFile(
   const routeTypeDeclarations = hasRoute
     .map(
       (route) =>
-        `  "${route.replace(
-          /\/\([^()]+\)/g,
-          ""
-        )}": InferRoute<Route_${hasRoute.indexOf(route)}>;`
+        `  "${
+          type === "app" ? route.replace(/\/\([^()]+\)/g, "") : route
+        }": InferRoute<Route_${hasRoute.indexOf(route)}>;`
     )
     .join("\n");
 
