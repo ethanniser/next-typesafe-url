@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 2.1.0
+
+### Minor Changes
+
+- 4e9270f: added support for route groups, parallel routes and intercepted routes
+
 ## 2.0.0
 
 ### Major Changes
