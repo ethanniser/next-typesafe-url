@@ -1,15 +1,16 @@
 export const SITE = {
-  title: "Documentation",
-  description: "Your website description.",
+  title: "next-typesafe-url",
+  description:
+    "Documentation for next-typesafe-url, a typesafe routing library for Next.js",
   defaultLanguage: "en-us",
 } as const;
 
 export const OPEN_GRAPH = {
   image: {
-    src: "https://github.com/withastro/astro/blob/main/.github/assets/banner.png?raw=true",
+    src: "https://github.com/ethanniser/next-typesafe-url/tree/main/www/docs/public/banner.png?raw=true",
     alt:
-      "astro logo on a starry expanse of space," +
-      " with a purple saturn-like planet floating in the right foreground",
+      "next-typesafe-url: " +
+      "JSON serializable, fully typesafe, and zod validated URL search params, dynamic route params, and routing for NextJS.",
   },
   twitter: "astrodotbuild",
 };
@@ -19,16 +20,18 @@ export const KNOWN_LANGUAGES = {
 } as const;
 export const KNOWN_LANGUAGE_CODES = Object.values(KNOWN_LANGUAGES);
 
-export const GITHUB_EDIT_URL = `https://github.com/withastro/astro/tree/main/examples/docs`;
+export const GITHUB_EDIT_URL = `https://github.com/ethanniser/next-typesafe-url/tree/main/www/docs`;
 
-export const COMMUNITY_INVITE_URL = `https://astro.build/chat`;
+export const MY_TWITTER_LINK = "https://twitter.com/ethanniser";
+export const MY_GITHUB_LINK = "https://github.com/ethanniser";
+export const GH_REPO_LINK = "https://github.com/ethanniser/next-typesafe-url";
 
 // See "Algolia" section of the README for more information.
-export const ALGOLIA = {
-  indexName: "XXXXXXXXXX",
-  appId: "XXXXXXXXXX",
-  apiKey: "XXXXXXXXXX",
-};
+// export const ALGOLIA = {
+//   indexName: "XXXXXXXXXX",
+//   appId: "XXXXXXXXXX",
+//   apiKey: "XXXXXXXXXX",
+// };
 
 export type Sidebar = Record<
   (typeof KNOWN_LANGUAGE_CODES)[number],
@@ -36,11 +39,10 @@ export type Sidebar = Record<
 >;
 export const SIDEBAR: Sidebar = {
   en: {
-    "Section Header": [
+    Docs: [
       { text: "Introduction", link: "en/introduction" },
-      { text: "Page 2", link: "en/page-2" },
-      { text: "Page 3", link: "en/page-3" },
+      { text: "App Directory", link: "en/app" },
+      { text: "Pages Directory", link: "en/pages" },
     ],
-    "Another Section": [{ text: "Page 4", link: "en/page-4" }],
   },
 };

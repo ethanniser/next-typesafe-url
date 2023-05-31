@@ -2,7 +2,7 @@
 
 _Now with full support for app directory and server components!_
 
-![next-typesafe-url-example](https://github.com/ethanniser/next-typesafe-url/assets/100045248/216da637-9cf0-48dd-942e-e24e0146acd0)
+![next-typesafe-url-example](https://github.com/ethanniser/next-typesafe-url/assets/100045248/682e2a01-7e7f-4e44-adb5-6512b22eaadf)
 
 JSON serializable, fully typesafe, and [zod](https://www.npmjs.com/package/zod) validated URL search params, dynamic route params, and routing for NextJS.
 
@@ -55,13 +55,13 @@ pnpm add next-typesafe-url
 Please open an issue if you find a bug or have a feature request.
 You can also DM me on twitter @ethanniser with any questions or concerns.
 
-## License
-
-[MIT](LICENSE)
-
 ## Contributing
 
 All contributions are welcome! Please open an issue or submit a PR.
+
+## License
+
+[MIT](https://github.com/ethanniser/next-typesafe-url/blob/main/LICENSE)
 
 ## TODO
 
