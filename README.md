@@ -30,7 +30,7 @@ Traditional Search Param APIs usually assume a few things:
 
 - **Fully typesafe routing-** all the way from the route, to the route params, to the search params
 - Search params are JSON-first, so you can pass strings, numbers, booleans, nulls, **and even nested objects and arrays**
-- Search and route params are validated at runtime using zod, so you can be sure that **the data you get matches the schema you expect**
+- Search and route params are **validated at runtime using zod**, so you can be sure that **the data you get matches the schema you expect**
 
 ## Installation
 
