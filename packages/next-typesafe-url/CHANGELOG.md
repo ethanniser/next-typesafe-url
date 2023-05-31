@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 2.1.2
+
+### Patch Changes
+
+- b72937f: docs: update links to direct to docs website
+
 ## 2.1.1
 
 ### Patch Changes
