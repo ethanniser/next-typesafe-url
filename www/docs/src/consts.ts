@@ -7,7 +7,7 @@ export const SITE = {
 
 export const OPEN_GRAPH = {
   image: {
-    src: "https://raw.githubusercontent.com/ethanniser/next-typesafe-url/docsSite/www/docs/public/banner.png",
+    src: "https://raw.githubusercontent.com/ethanniser/next-typesafe-url/main/www/docs/public/banner.png",
     alt:
       "next-typesafe-url: " +
       "JSON serializable, fully typesafe, and zod validated URL search params, dynamic route params, and routing for NextJS.",
