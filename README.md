@@ -44,11 +44,7 @@ pnpm add next-typesafe-url
 
 ## Usage
 
-### PLEASE READ THE DOCS
-
-#### [Pages](docs/pages.md)
-
-#### [App](docs/app.md)
+**[PLEASE READ THE DOCS](https://next-typesafe-url.dev)**
 
 ## Issues
 

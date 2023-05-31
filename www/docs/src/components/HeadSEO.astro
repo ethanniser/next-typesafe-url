@@ -7,7 +7,7 @@ type Props = { canonicalUrl: URL } & CollectionEntry<"docs">["data"];
 const { ogLocale, image, title, description, canonicalUrl } = Astro.props;
 const formattedContentTitle = `${title} 🚀 ${SITE.title}`;
 const imageSrc = image?.src ?? OPEN_GRAPH.image.src;
-const canonicalImageSrc = new URL(imageSrc, Astro.site);
+// const canonicalImageSrc = new URL(imageSrc, Astro.site);
 const imageAlt = image?.alt ?? OPEN_GRAPH.image.alt;
 ---
 
@@ -19,7 +19,7 @@ const imageAlt = image?.alt ?? OPEN_GRAPH.image.alt;
 <meta property="og:type" content="article" />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content={ogLocale ?? SITE.defaultLanguage} />
-<meta property="og:image" content={canonicalImageSrc} />
+<meta property="og:image" content={imageSrc} />
 <meta property="og:image:alt" content={imageAlt} />
 <meta
   name="description"
@@ -33,7 +33,7 @@ const imageAlt = image?.alt ?? OPEN_GRAPH.image.alt;
 <meta name="twitter:site" content={OPEN_GRAPH.twitter} />
 <meta name="twitter:title" content={formattedContentTitle} />
 <meta name="twitter:description" content={description ?? SITE.description} />
-<meta name="twitter:image" content={canonicalImageSrc} />
+<meta name="twitter:image" content={imageSrc} />
 <meta name="twitter:image:alt" content={imageAlt} />
 
 <!--
