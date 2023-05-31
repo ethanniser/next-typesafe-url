@@ -1,4 +1,7 @@
-# next-typesafe-url
+---
+title: "next-typesafe-url"
+description: "next-typesafe-url docs introduction"
+---
 
 _Now with full support for app directory and server components!_
 
@@ -44,7 +47,11 @@ pnpm add next-typesafe-url
 
 ## Usage
 
-**[PLEASE READ THE DOCS](https://next-typesafe-url.dev)**
+Please refer to the docs page for the version of next-typesafe-url you are using:
+
+### [App](/en/app)
+
+### [Pages](/en/pages)
 
 ## Issues
 

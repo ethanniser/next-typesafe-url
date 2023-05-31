@@ -1,0 +1,22 @@
+---
+import AvatarList from "./AvatarList.astro";
+import { MY_GITHUB_LINK } from "../../consts";
+---
+
+<footer>
+  <p>
+    By:
+    <a href={MY_GITHUB_LINK}>Ethan Niser</a>
+  </p>
+</footer>
+
+<style>
+  footer {
+    margin-top: auto;
+    padding: 2rem;
+    border-top: 3px solid var(--theme-divider);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
