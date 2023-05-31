@@ -1,26 +1,7 @@
-# APP DIRECTORY
-
-## Table of Contents
-
-- [Setup](#setup)
-  - [IMPORTANT NOTE](#important-note)
-- [Usage](#usage)
-  - [routeType.ts](#routetypets)
-  - [AppRouter Type](#approuter-type)
-  - [Path](#path)
-  - [Server Components](#server-components)
-    - [Usage in page.tsx](#usage-in-pagetsx)
-      - [withParamValidation](#withparamvalidation)
-      - [Errors](#errors)
-    - [Usage in layout.tsx](#usage-in-layouttsx)
-      - [withLayoutParamValidation](#withlayoutparamvalidation)
-      - [Errors](#errors-1)
-  - [Client Components](#client-components)
-  - [Advanced Routing Patterns](#advanced-routing-patterns)
-    - [Parallel Routes](#parallel-routes)
-      - [Adjusting Layout Props](#adjusting-layout-props)
-    - [Intercepted Routes](#intercepted-routes)
-  - [Command Line Options](#command-line-options)
+---
+title: "App Directory"
+description: "next-typesafe-url docs for app directory"
+---
 
 ## Setup
 
@@ -184,6 +165,8 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 ## Server Components
 
+### Forced Dynamic Rendering
+
 In `page.tsx`, search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by Next ([see the "good to know" section at the very bottom](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know))
 
 If you do not want this behavior, you are forced to place the search param logic **in a client component**. Check out the 'Client Components' section below to see more.
@@ -275,11 +258,13 @@ If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`
 
 ---
 
-### If you need your top level page component to NOT BE dynamically rendered (SSR), i.e. you want your top level page component to be statically generated, or ISR'ed, then you can access route/search params within deeper client components via hooks
+**If you need your top level page component to NOT BE dynamically rendered (SSR), i.e. you want your top level page component to be statically generated, or ISR'ed, then you can access route/search params within deeper client components via hooks**
 
-**If you don't need this it is reccomended to use the server component patterns and pass your route/search params down to other server or client components through props.**
+If you don't need this it is reccomended to use the server component patterns and pass your route/search params down to other server or client components through props.
 
 ---
+
+### Hooks
 
 `next-typesafe-url/app` exports a `useRouteParams` and `useSearchParams` hook that will return the route params / search params for the current route. They take one argument, the zod schema for either route params or search params from the Route object.
 
@@ -308,7 +293,7 @@ const Component = () => {
 
 **If `isReady` is true and `isError` is false, then `data` will always be valid and match the schema.**
 
-### **Be mindful when using useSearchParams and useRouteParams in components used in multiple routes, making sure you pass the correct validator**
+**Be mindful when using useSearchParams and useRouteParams in components used in multiple routes, making sure you pass the correct validator**
 
 ## Advanced Routing Patterns
 

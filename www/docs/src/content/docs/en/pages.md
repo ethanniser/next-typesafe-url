@@ -1,18 +1,7 @@
-# PAGES DIRECTORY
-
-## Table of Contents
-
-- [Setup](#setup)
-  - [IMPORTANT NOTE](#important-note)
-- [Usage](#usage)
-  - [Route](#route)
-  - [AppRouter Type](#approuter-type)
-  - [Path](#path)
-  - [Hooks](#hooks)
-  - [Reccomended Usage](#reccomended-usage)
-  - [Static/SeverSide Props](#staticseverside-props)
-    - [Errors](#errors)
-  - [Command Line Options](#command-line-options)
+---
+title: "Pages Directory"
+description: "next-typesafe-url docs for pages directory"
+---
 
 ## Setup
 
@@ -203,13 +192,13 @@ _For convenience, instead of needing checking `isReady && !isError`, the `isVali
 
 ## Reccomended Usage
 
-### **It is _HIGHLY_ reccomended to only call `useSearchParams` and `useRouteParams` in the top level component of each route, and pass the data down to child components through props or context.**
+**It is _HIGHLY_ reccomended to only call `useSearchParams` and `useRouteParams` in the top level component of each route, and pass the data down to child components through props or context.**
 
 Only the `RouteType`, not the `Route`, is exported to enforce this.
 
 Feel free to use your state management library of choice to pass the data down to child components.
 
-## Static/SeverSide Props
+## getStatic/SeverSide Props
 
 `next-typesafe-url` provides full support for validating route params and search params in `getStaticProps` and `getServerSideProps`.
 

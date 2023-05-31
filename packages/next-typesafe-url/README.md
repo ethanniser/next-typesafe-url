@@ -32,4 +32,4 @@ Traditional Search Param APIs usually assume a few things:
 
 ## Documentation
 
-PLEASE READ THE FULL DOCS ON THE [GITHUB REPO](https://github.com/ethanniser/next-typesafe-url)
+[PLEASE READ THE DOCS](https://next-typesafe-url.dev)
