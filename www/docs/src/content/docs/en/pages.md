@@ -267,8 +267,8 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   } else {
     return {
       props: {
-        ...routeParams.data,
-        ...searchParams.data,
+        routeParams: routeParams.data,
+        searchParams: searchParams.data,
       },
     };
   }
@@ -276,12 +276,12 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 type PageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const Page: NextPage<PageProps> = (props) => {
+const Page: NextPage<PageProps> = ({searchParams, routeParams}) => {
   return (
     <>
-      <div>slug: {props.slug}</div>
-      <div>search: {`${props.userInfo.name} - ${props.userInfo.age}`}</div>
-      <div>location: {props.location}</div>
+      <div>productID: {routeParams.productID}</div>
+      <div>user: {`${searchParams.userInfo.name} - ${searchParams.userInfo.age}`}</div>
+      <div>location: {searchParams.location}</div>
     </>
   );
 };

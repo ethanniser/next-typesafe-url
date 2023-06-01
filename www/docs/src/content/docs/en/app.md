@@ -169,7 +169,7 @@ $path({ route: "/" searchParams: { foo: undefined, bar: true } }) // => "/?bar=t
 
 In `page.tsx`, search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by Next ([see the "good to know" section at the very bottom](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know))
 
-If you do not want this behavior, you are forced to place the search param logic **in a client component**. Check out the 'Client Components' section below to see more.
+If you do not want this behavior (_i.e. you want some part of your page to be statically generated at build time or ISR'd_), you are forced to place the search param logic **in a client component**. [Check out the 'Client Components' section below](#client-components) to see more.
 
 ### Usage in page.tsx
 
@@ -255,14 +255,6 @@ export default withLayoutParamValidation(Layout, LayoutRoute);
 If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`. Use Next's `error.tsx` to handle these thrown errors.
 
 ## Client Components
-
----
-
-**If you need your top level page component to NOT BE dynamically rendered (SSR), i.e. you want your top level page component to be statically generated, or ISR'ed, then you can access route/search params within deeper client components via hooks**
-
-If you don't need this it is reccomended to use the server component patterns and pass your route/search params down to other server or client components through props.
-
----
 
 ### Hooks
 
