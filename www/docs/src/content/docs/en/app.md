@@ -209,7 +209,7 @@ If the zod validation fails, `withParamValidation` will throw a `ZodError`. Use 
 
 Layouts only have access to route params, not search params ([see why](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know)).
 
-In terms of validation, a layout could represent any number of routes within it, all of which may have their own validators which may not neccesarily overlap. \
+In terms of validation, a layout could represent any number of routes within it, all of which may have their own validators which may not neccesarily overlap.
 
 Because of this, **you** must define a new zod validator for each layout, which accurately represents the union of all possible valid route params for all nested routes.
 
