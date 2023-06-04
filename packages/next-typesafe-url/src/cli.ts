@@ -31,13 +31,21 @@ const cli = meow(helpText, {
       type: "boolean",
       alias: "a",
     },
-    dontUseDev: {
-      type: "boolean",
+    dtsPath: {
+      type: "string",
+      default: "./generated/static-paths.d.ts",
+    },
+    srcPath: {
+      type: "string",
+      default: "../../../src/",
     },
   },
 });
 
-function build(type: "pages" | "app", dev: boolean) {
+function build(
+  type: "pages" | "app",
+  paths: { srcPath: string; dtsPath: string }
+) {
   const dirPath = path.join(process.cwd(), `/src/${type}`);
   console.log(dirPath);
 
@@ -46,15 +54,18 @@ function build(type: "pages" | "app", dev: boolean) {
       ? getPAGESRoutesWithExportedRoute(dirPath, dirPath)
       : getAPPRoutesWithExportedRoute(dirPath, dirPath);
 
-  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type, dev);
-  console.log(`Generated route types ${dev ? "IN DEV MODE" : ""}`);
+  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type, paths);
+  console.log(`Generated route types`);
 }
 
-function watch(type: "pages" | "app", dev: boolean) {
+function watch(
+  type: "pages" | "app",
+  paths: { srcPath: string; dtsPath: string }
+) {
   chokidar
     .watch([path.join(process.cwd(), `/src/${type}/**/*.{ts,tsx}`)])
     .on("change", () => {
-      build(type, dev);
+      build(type, paths);
     });
   console.log(`Watching for route file changes in ${type} directory...`);
 }
@@ -68,12 +79,16 @@ if (require.main === module) {
     process.exit(1);
   }
 
-  const dev = cli.flags.dontUseDev !== undefined ? cli.flags.dontUseDev : false;
+  const paths: { srcPath: string; dtsPath: string } = {
+    srcPath: cli.flags.srcPath,
+    dtsPath: cli.flags.dtsPath,
+  };
 
+  const type = cli.flags.pages ? "pages" : "app";
   if (cli.flags.watch) {
-    build(cli.flags.pages ? "pages" : "app", dev);
-    watch(cli.flags.pages ? "pages" : "app", dev);
+    build(type, paths);
+    watch(type, paths);
   } else {
-    build(cli.flags.pages ? "pages" : "app", dev);
+    build(type, paths);
   }
 }

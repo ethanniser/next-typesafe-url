@@ -299,7 +299,7 @@ export function fillPath(path: string, data: RouteParamsInput): string {
 
 import type { ParsedUrlQuery } from "querystring";
 import { z } from "zod";
-import type { ServerParseParamsResult } from "./types";
+import type { ServerParseParamsResult } from "./static-types";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 

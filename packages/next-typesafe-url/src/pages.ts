@@ -8,7 +8,7 @@ import {
   getDynamicRouteParams,
   parseServerSideSearchParams,
 } from "./utils";
-import type { UseParamsResult } from "./types";
+import type { UseParamsResult } from "./static-types";
 
 export {
   parseServerSideRouteParams,

@@ -13,7 +13,7 @@ import type {
   InferLayoutPropsType as ILPT,
   UseAppParamsResult,
   UseParamsResult,
-} from "./types";
+} from "./static-types";
 import { createElement, useRef } from "react";
 
 export type { DynamicLayout };

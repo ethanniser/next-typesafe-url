@@ -1,42 +1,6 @@
-import { type z } from "zod";
-import { type DynamicRoute } from "next-typesafe-url";
 
-type __FOR_BUNDLER_MOCK_IMPORT = {
-  routeParams: z.ZodObject<
-    {
-      productID: z.ZodNumber;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-      productID: number;
-    },
-    {
-      productID: number;
-    }
-  >;
-  searchParams: z.ZodObject<
-    {
-      location: z.ZodOptional<z.ZodEnum<["us", "eu"]>>;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-      location?: "us" | "eu" | undefined;
-    },
-    {
-      location?: "us" | "eu" | undefined;
-    }
-  >;
-};
-
-type DynamicRouter = {
-  "/__DEFAULT": InferRoute<__FOR_BUNDLER_MOCK_IMPORT>;
-};
-
-type StaticRouter = {
-  "/__DEFAULT2": StaticRoute;
-};
+import type { StaticRouter, DynamicRouter } from "@@@next-typesafe-url";
+import { z } from "zod";
 
 type AppRouter = StaticRouter & DynamicRouter;
 
@@ -109,8 +73,8 @@ type StaticRoute = {
 };
 
 type DynamicRoute = {
-  searchParams?: z.AnyZodObject | undefined;
-  routeParams?: z.AnyZodObject | undefined;
+  searchParams?: z.AnyZodObject;
+  routeParams?: z.AnyZodObject;
 };
 
 type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
@@ -201,14 +165,14 @@ type InferPagePropsType<T extends DynamicRoute> = {
 
 export {
   AppRouter,
+  DynamicRoute,
+  InferPagePropsType,
+  PathOptions,
   ServerParseParamsResult,
-  UseParamsResult,
   UseAppParamsResult,
   AllRoutes,
-  PathOptions,
-  InferPagePropsType,
-  InferLayoutPropsType,
-  DynamicRoute,
   DynamicLayout,
+  InferLayoutPropsType,
+  UseParamsResult,
   InferRoute,
 };
