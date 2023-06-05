@@ -158,5 +158,7 @@ declare module "@@@next-typesafe-url" {
 }
 `;
 
-  fs.writeFileSync(path.join(process.cwd(), paths.dtsPath), fileContentString);
+  // Ensure the directory exists, create it if it doesn't
+  fs.mkdirSync(path.dirname(paths.dtsPath), { recursive: true });
+  fs.writeFileSync(paths.dtsPath, fileContentString);
 }

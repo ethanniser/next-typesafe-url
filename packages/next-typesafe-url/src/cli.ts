@@ -15,6 +15,8 @@ Options
 --watch, -w  Watch for routes changes
 --pages, -p  Pages directory
 --app, -a  App directory
+--dtsPath, The path of the generated dts
+--srcPath, The path of your src directory
 `;
 
 const cli = meow(helpText, {
@@ -33,7 +35,7 @@ const cli = meow(helpText, {
     },
     dtsPath: {
       type: "string",
-      default: "./generated/static-paths.d.ts",
+      default: "routes.d.ts",
     },
     srcPath: {
       type: "string",
