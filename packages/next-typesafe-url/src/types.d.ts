@@ -1,4 +1,3 @@
-
 import type { StaticRouter, DynamicRouter } from "@@@next-typesafe-url";
 import { z } from "zod";
 
@@ -102,29 +101,6 @@ type AllRoutes = keyof AppRouter;
 
 type UseParamsResult<T extends z.AnyZodObject> =
   | {
-      data: z.infer<T>;
-      isValid: true;
-      isReady: true;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: true;
-      isError: true;
-      error: z.ZodError<T>;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: false;
-      isError: false;
-      error: undefined;
-    };
-
-type UseAppParamsResult<T extends z.AnyZodObject> =
-  | {
       data: undefined;
       isLoading: true;
       isError: false;
@@ -138,6 +114,7 @@ type UseAppParamsResult<T extends z.AnyZodObject> =
     }
   | {
       data: undefined;
+      isLoading: false;
       isError: true;
       error: z.ZodError<T>;
     };
@@ -164,15 +141,20 @@ type InferPagePropsType<T extends DynamicRoute> = {
 };
 
 export {
+  // shared types
   AppRouter,
-  DynamicRoute,
-  InferPagePropsType,
-  PathOptions,
-  ServerParseParamsResult,
-  UseAppParamsResult,
   AllRoutes,
-  DynamicLayout,
-  InferLayoutPropsType,
-  UseParamsResult,
+  DynamicRoute,
+
+  // used by generated file
+  StaticRoute,
+  PathOptions,
   InferRoute,
+  ServerParseParamsResult,
+  UseParamsResult,
+
+  //app only types
+  DynamicLayout,
+  InferPagePropsType,
+  InferLayoutPropsType,
 };

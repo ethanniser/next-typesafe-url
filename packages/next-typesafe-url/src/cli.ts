@@ -9,14 +9,14 @@ import {
 } from "./generateTypes";
 
 const helpText = `
-Usage
-$ next-something
-Options
+Usage:
+$ npx next-typesafe-url (...options)
+Options:
 --watch, -w  Watch for routes changes
 --pages, -p  Pages directory
 --app, -a  App directory
---dtsPath, The path of the generated dts
---srcPath, The path of your src directory
+--outputPath, The path of the generated dts. DEFAULT: "./generated/routes.d.ts"
+--srcPath, The path of your src directory. DEFAULT: "../../../src" (<one level up from node_modules>/src)
 `;
 
 const cli = meow(helpText, {
@@ -33,20 +33,20 @@ const cli = meow(helpText, {
       type: "boolean",
       alias: "a",
     },
-    dtsPath: {
+    outputPath: {
       type: "string",
-      default: "routes.d.ts",
+      default: "./generated/routes.d.ts",
     },
     srcPath: {
       type: "string",
-      default: "../../../src/",
+      default: "../../../src",
     },
   },
 });
 
 function build(
   type: "pages" | "app",
-  paths: { srcPath: string; dtsPath: string }
+  paths: { srcPath: string; outputPath: string }
 ) {
   const dirPath = path.join(process.cwd(), `/src/${type}`);
   console.log(dirPath);
@@ -62,7 +62,7 @@ function build(
 
 function watch(
   type: "pages" | "app",
-  paths: { srcPath: string; dtsPath: string }
+  paths: { srcPath: string; outputPath: string }
 ) {
   chokidar
     .watch([path.join(process.cwd(), `/src/${type}/**/*.{ts,tsx}`)])
@@ -81,9 +81,9 @@ if (require.main === module) {
     process.exit(1);
   }
 
-  const paths: { srcPath: string; dtsPath: string } = {
+  const paths: { srcPath: string; outputPath: string } = {
     srcPath: cli.flags.srcPath,
-    dtsPath: cli.flags.dtsPath,
+    outputPath: cli.flags.outputPath,
   };
 
   const type = cli.flags.pages ? "pages" : "app";

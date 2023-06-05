@@ -113,7 +113,7 @@ export function generateTypesFile(
   hasRoute: string[],
   doesntHaveRoute: string[],
   type: "pages" | "app",
-  paths: { srcPath: string; dtsPath: string }
+  paths: { srcPath: string; outputPath: string }
 ): void {
   let importStatements = "";
   let routeCounter = 0;
@@ -129,7 +129,8 @@ export function generateTypesFile(
   }
 
   if (routeCounter > 0) {
-    importStatements += 'import { type InferRoute } from "next-typesafe-url";';
+    importStatements +=
+      'import type { InferRoute, StaticRoute } from "next-typesafe-url";';
   }
 
   const routeTypeDeclarations = hasRoute
@@ -159,6 +160,6 @@ declare module "@@@next-typesafe-url" {
 `;
 
   // Ensure the directory exists, create it if it doesn't
-  fs.mkdirSync(path.dirname(paths.dtsPath), { recursive: true });
-  fs.writeFileSync(paths.dtsPath, fileContentString);
+  fs.mkdirSync(path.dirname(paths.outputPath), { recursive: true });
+  fs.writeFileSync(paths.outputPath, fileContentString);
 }

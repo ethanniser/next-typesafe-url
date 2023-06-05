@@ -9,7 +9,8 @@ import type {
   InferPagePropsType,
   InferLayoutPropsType,
   DynamicLayout,
-} from "./static-types";
+  StaticRoute,
+} from "./types";
 
 export type {
   AllRoutes,
@@ -20,7 +21,8 @@ export type {
   InferPagePropsType,
   InferLayoutPropsType,
   DynamicLayout,
-}
+  StaticRoute,
+};
 
 export function $path<T extends AllRoutes>({
   route,

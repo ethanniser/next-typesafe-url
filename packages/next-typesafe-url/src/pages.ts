@@ -3,31 +3,27 @@
 import { useRouter } from "next/router";
 import { z } from "zod";
 import { useState, useEffect } from "react";
-import {
-  parseObjectFromParamString,
-  getDynamicRouteParams,
-  parseServerSideSearchParams,
-} from "./utils";
-import type { UseParamsResult } from "./static-types";
+import { parseObjectFromParamString, getDynamicRouteParams } from "./utils";
+import type { UseParamsResult } from "./types";
 
 export {
   parseServerSideRouteParams,
   parseServerSideSearchParams,
 } from "./utils";
 
-// ! Should only be used in top level route component or a component that you know will only be rendered in a certain route
+// ! Should ideally only be used in top level route component
 export function useRouteParams<T extends z.AnyZodObject>(
   validator: T
 ): UseParamsResult<T> {
   const router = useRouter();
-  const [isReady, setIsReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
     if (router.isReady) {
-      setIsReady(true);
+      setIsLoading(false);
       const dynamicParams = getDynamicRouteParams(router.route, router.query);
       const validatedDynamicRouteParams = validator.safeParse(dynamicParams);
       if (validatedDynamicRouteParams.success) {
@@ -39,46 +35,45 @@ export function useRouteParams<T extends z.AnyZodObject>(
     }
   }, [router, validator]);
 
-  if (isError && isReady) {
+  if (isError) {
     return {
       data: undefined,
-      isValid: false,
-      isReady: true,
       isError: true,
       error: error,
-    };
-  } else if (data !== undefined && isReady) {
-    return {
-      data: data,
-      isValid: true,
-      isReady: true,
-      isError: false,
-      error: undefined,
+      isLoading: false,
     };
   } else {
-    return {
-      data: undefined,
-      isValid: false,
-      isReady: false,
-      isError: false,
-      error: undefined,
-    };
+    if (!data) {
+      return {
+        data: undefined,
+        isError: false,
+        isLoading: true,
+        error: undefined,
+      };
+    } else {
+      return {
+        data: data,
+        isError: false,
+        isLoading: false,
+        error: undefined,
+      };
+    }
   }
 }
 
-// ! Should only be used in top level route component or a component that you know will only be rendered in a certain route
+// ! Should ideally only be used in top level route component
 export function useSearchParams<T extends z.AnyZodObject>(
   searchValidator: T
 ): UseParamsResult<T> {
   const router = useRouter();
-  const [isReady, setIsReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
     if (router.isReady) {
-      setIsReady(true);
+      setIsLoading(true);
 
       const queryString = router.asPath.split("?")[1] ?? "";
       const parsedSearchParams = parseObjectFromParamString(queryString);
@@ -94,29 +89,28 @@ export function useSearchParams<T extends z.AnyZodObject>(
     }
   }, [router, searchValidator]);
 
-  if (isError && isReady) {
+  if (isError) {
     return {
       data: undefined,
-      isValid: false,
-      isReady: true,
       isError: true,
       error: error,
-    };
-  } else if (data !== undefined && isReady) {
-    return {
-      data: data,
-      isValid: true,
-      isReady: true,
-      isError: false,
-      error: undefined,
+      isLoading: false,
     };
   } else {
-    return {
-      data: undefined,
-      isValid: false,
-      isReady: false,
-      isError: false,
-      error: undefined,
-    };
+    if (!data) {
+      return {
+        data: undefined,
+        isError: false,
+        isLoading: true,
+        error: undefined,
+      };
+    } else {
+      return {
+        data: data,
+        isError: false,
+        isLoading: false,
+        error: undefined,
+      };
+    }
   }
 }

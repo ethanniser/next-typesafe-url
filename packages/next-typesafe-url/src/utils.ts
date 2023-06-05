@@ -67,7 +67,7 @@ export function parseObjectFromURLParamObj(
 }
 
 export function parseObjectFromParamObj(
-  params: Params
+  params: Record<string, any>
 ): Record<string, unknown> {
   const obj: Record<string, unknown> = {};
   for (const [key, value2] of Object.entries(params)) {
@@ -297,18 +297,17 @@ export function fillPath(path: string, data: RouteParamsInput): string {
   return parts.join("/");
 }
 
-import type { ParsedUrlQuery } from "querystring";
 import { z } from "zod";
-import type { ServerParseParamsResult } from "./static-types";
+import type { ServerParseParamsResult } from "./types";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import type { GetServerSidePropsContext } from "next";
 
 // takes gssp context.query
 export function parseServerSideSearchParams<T extends z.AnyZodObject>({
   query,
   validator,
 }: {
-  query: ParsedUrlQuery;
+  query: GetServerSidePropsContext["query"];
   validator: T;
 }): ServerParseParamsResult<T> {
   if (!query) {
@@ -349,7 +348,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
   params,
   validator,
 }: {
-  params: ParsedUrlQuery | undefined;
+  params: GetServerSidePropsContext["params"];
   validator: T;
 }): ServerParseParamsResult<T> {
   if (!params) {
@@ -360,7 +359,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
         {
           path: [],
           code: "custom",
-          message: "No param context found",
+          message: "Params field of gSSP context is undefined",
         },
       ]),
     };
