@@ -1,5 +1,12 @@
-<script is:inline>
-  // Redirect your homepage to the first page of documentation.
-  // If you have a landing page, remove this script and add it here!
-  window.location.pathname = `/en/introduction`;
-</script>
+---
+import { getEntry } from "astro:content";
+import MainLayout from "../layouts/MainLayout.astro";
+
+const post = await getEntry("docs", "en");
+
+const { Content, headings } = await post.render();
+---
+
+<MainLayout headings={headings} {...post.data}>
+  <Content />
+</MainLayout>
