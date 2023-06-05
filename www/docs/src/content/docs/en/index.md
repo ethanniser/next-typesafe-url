@@ -1,6 +1,6 @@
 ---
 title: "next-typesafe-url"
-description: "next-typesafe-url docs introduction"
+description: "a search param and routing library for next.js"
 ---
 
 _Now with full support for app directory and server components!_
@@ -55,8 +55,8 @@ Please refer to the docs page for the version of next-typesafe-url you are using
 
 ## Issues
 
-Please open an issue if you find a bug or have a feature request.
-You can also DM me on twitter @ethanniser with any questions or concerns.
+Please [open an issue](https://github.com/ethanniser/next-typesafe-url/issues) if you find a bug or have a feature request.
+You can also DM me on twitter [@ethanniser](https://twitter.com/ethanniser) with any questions or concerns.
 
 ## Contributing
 

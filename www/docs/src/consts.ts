@@ -40,7 +40,6 @@ export type Sidebar = Record<
 export const SIDEBAR: Sidebar = {
   en: {
     Docs: [
-      { text: "Introduction", link: "en/introduction" },
       { text: "App Directory", link: "en/app" },
       { text: "Pages Directory", link: "en/pages" },
     ],
