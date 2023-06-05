@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next-typesafe-url -w -p --srcPath='../../../examples/pagesdir/src/'\" \"next dev\"",
+    "dev": "concurrently \"next-typesafe-url -w -p'\" \"next dev\"",
     "lint": "next lint",
     "build": "next-typesafe-url -p && next build",
     "start": "next start"

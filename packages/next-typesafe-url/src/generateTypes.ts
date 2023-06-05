@@ -113,24 +113,36 @@ export function generateTypesFile(
   hasRoute: string[],
   doesntHaveRoute: string[],
   type: "pages" | "app",
-  paths: { srcPath: string; outputPath: string }
+  paths: {
+    absoluteSrcPath: string;
+    absoluteOutputPath: string;
+    relativePathFromOutputToSrc: string;
+  }
 ): void {
-  let importStatements = "";
+  let importStatements: string[] = [];
   let routeCounter = 0;
 
   for (const route of hasRoute) {
     const routeVariableName = `Route_${routeCounter}`;
-    importStatements += `import { type RouteType as ${routeVariableName} } from "${
-      paths.srcPath
-    }${type}${route === "/" ? "" : route}${
-      type === "app" ? "/routeType" : ""
-    }";\n`;
+    const pathAfterSrc = path.join(
+      type,
+      route === "/" ? "" : route,
+      type === "app" ? "routeType" : ""
+    );
+    const finalRelativePath = path
+      .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
+      // replace backslashes with forward slashes
+      .replace(/\\/g, "/");
+    importStatements.push(
+      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath}"`
+    );
     routeCounter++;
   }
 
   if (routeCounter > 0) {
-    importStatements +=
-      'import type { InferRoute, StaticRoute } from "next-typesafe-url";';
+    importStatements.push(
+      'import type { InferRoute, StaticRoute } from "next-typesafe-url";'
+    );
   }
 
   const routeTypeDeclarations = hasRoute
@@ -146,7 +158,7 @@ export function generateTypesFile(
     .map((route) => `  "${route}": StaticRoute;`)
     .join("\n  ");
 
-  const fileContentString = `${importStatements}
+  const fileContentString = `${importStatements.join("\n")}
 
 declare module "@@@next-typesafe-url" {
   interface DynamicRouter {
@@ -160,6 +172,6 @@ declare module "@@@next-typesafe-url" {
 `;
 
   // Ensure the directory exists, create it if it doesn't
-  fs.mkdirSync(path.dirname(paths.outputPath), { recursive: true });
-  fs.writeFileSync(paths.outputPath, fileContentString);
+  fs.mkdirSync(path.dirname(paths.absoluteOutputPath), { recursive: true });
+  fs.writeFileSync(paths.absoluteOutputPath, fileContentString);
 }

@@ -11,12 +11,14 @@ import {
 const helpText = `
 Usage:
 $ npx next-typesafe-url (...options)
+
 Options:
---watch, -w  Watch for routes changes
---pages, -p  Pages directory
---app, -a  App directory
---outputPath, The path of the generated dts. DEFAULT: "./generated/routes.d.ts"
---srcPath, The path of your src directory. DEFAULT: "../../../src" (<one level up from node_modules>/src)
+--watch / -w,  Watch for routes changes
+--pages / -p,  Pages directory
+--app / -a,  App directory
+--srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
+--outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./generated/routes.d.ts"
+--help,  Show this help message
 `;
 
 const cli = meow(helpText, {
@@ -39,22 +41,25 @@ const cli = meow(helpText, {
     },
     srcPath: {
       type: "string",
-      default: "../../../src",
+      default: "./src",
     },
   },
 });
 
 function build(
   type: "pages" | "app",
-  paths: { srcPath: string; outputPath: string }
+  paths: {
+    absoluteSrcPath: string;
+    absoluteOutputPath: string;
+    relativePathFromOutputToSrc: string;
+  }
 ) {
-  const dirPath = path.join(process.cwd(), `/src/${type}`);
-  console.log(dirPath);
+  const appOrPagesPath = path.join(paths.absoluteSrcPath, type);
 
   const { exportedRoutes, filesWithoutExportedRoutes } =
     type === "pages"
-      ? getPAGESRoutesWithExportedRoute(dirPath, dirPath)
-      : getAPPRoutesWithExportedRoute(dirPath, dirPath);
+      ? getPAGESRoutesWithExportedRoute(appOrPagesPath, appOrPagesPath)
+      : getAPPRoutesWithExportedRoute(appOrPagesPath, appOrPagesPath);
 
   generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type, paths);
   console.log(`Generated route types`);
@@ -62,14 +67,18 @@ function build(
 
 function watch(
   type: "pages" | "app",
-  paths: { srcPath: string; outputPath: string }
+  paths: {
+    absoluteSrcPath: string;
+    absoluteOutputPath: string;
+    relativePathFromOutputToSrc: string;
+  }
 ) {
   chokidar
-    .watch([path.join(process.cwd(), `/src/${type}/**/*.{ts,tsx}`)])
+    .watch([`${path.join(paths.absoluteSrcPath, type)}/**/*.{ts,tsx}`])
     .on("change", () => {
       build(type, paths);
     });
-  console.log(`Watching for route file changes in ${type} directory...`);
+  console.log(`Watching for route changes`);
 }
 
 if (require.main === module) {
@@ -81,9 +90,25 @@ if (require.main === module) {
     process.exit(1);
   }
 
-  const paths: { srcPath: string; outputPath: string } = {
-    srcPath: cli.flags.srcPath,
-    outputPath: cli.flags.outputPath,
+  const { srcPath, outputPath } = cli.flags;
+
+  const absoluteSrcPath = path.join(process.cwd(), srcPath);
+
+  if (!directoryExistsSync(absoluteSrcPath)) {
+    console.log("srcPath is not a directory or does not exist");
+    process.exit(1);
+  }
+
+  const absoluteOutputPath = path.join(process.cwd(), outputPath);
+  const relativePathFromOutputToSrc = path.relative(
+    path.dirname(absoluteOutputPath),
+    absoluteSrcPath
+  );
+
+  const paths = {
+    absoluteSrcPath,
+    absoluteOutputPath,
+    relativePathFromOutputToSrc,
   };
 
   const type = cli.flags.pages ? "pages" : "app";
@@ -92,5 +117,15 @@ if (require.main === module) {
     watch(type, paths);
   } else {
     build(type, paths);
+  }
+}
+
+import fs from "fs";
+function directoryExistsSync(path: string): boolean {
+  try {
+    const stats = fs.statSync(path);
+    return stats.isDirectory();
+  } catch (error) {
+    return false;
   }
 }

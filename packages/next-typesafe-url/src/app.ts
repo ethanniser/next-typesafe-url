@@ -77,8 +77,6 @@ export function withLayoutParamValidation(
       throw parsedRouteParams.error;
     }
 
-    console.log(parsedRouteParams?.data);
-
     return createElement(Component, {
       routeParams: parsedRouteParams?.data,
       children,
