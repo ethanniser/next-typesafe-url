@@ -8,9 +8,6 @@ import type {
   DynamicRoute,
   InferPagePropsType,
   InferLayoutPropsType,
-  UseParamsResult,
-  UseAppParamsResult,
-  ServerParseParamsResult,
   DynamicLayout,
 } from "./static-types";
 
@@ -22,9 +19,6 @@ export type {
   DynamicRoute,
   InferPagePropsType,
   InferLayoutPropsType,
-  UseParamsResult,
-  UseAppParamsResult,
-  ServerParseParamsResult,
   DynamicLayout,
 }
 
