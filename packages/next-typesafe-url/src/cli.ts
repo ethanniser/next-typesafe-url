@@ -17,7 +17,7 @@ Options:
 --pages / -p,  Pages directory
 --app / -a,  App directory
 --srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
---outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./generated/routes.d.ts"
+--outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./.next-typesafe-url/routes.d.ts"
 --help,  Show this help message
 `;
 
@@ -37,7 +37,7 @@ const cli = meow(helpText, {
     },
     outputPath: {
       type: "string",
-      default: "./generated/routes.d.ts",
+      default: "./.next-typesafe-url/routes.d.ts",
     },
     srcPath: {
       type: "string",
