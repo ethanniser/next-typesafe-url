@@ -1,3 +1,3 @@
-/// <reference path="./src/augment.d.ts" />
+/// <reference path="./module.d.ts" />
 
 export * from "./dist/index.d.ts";
