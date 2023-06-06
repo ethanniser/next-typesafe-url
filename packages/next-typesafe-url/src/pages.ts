@@ -16,14 +16,12 @@ export function useRouteParams<T extends z.AnyZodObject>(
   validator: T
 ): UseParamsResult<T> {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
     if (router.isReady) {
-      setIsLoading(false);
       const dynamicParams = getDynamicRouteParams(router.route, router.query);
       const validatedDynamicRouteParams = validator.safeParse(dynamicParams);
       if (validatedDynamicRouteParams.success) {
@@ -66,15 +64,12 @@ export function useSearchParams<T extends z.AnyZodObject>(
   searchValidator: T
 ): UseParamsResult<T> {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
     if (router.isReady) {
-      setIsLoading(true);
-
       const queryString = router.asPath.split("?")[1] ?? "";
       const parsedSearchParams = parseObjectFromParamString(queryString);
       const validatedSearchParams =
