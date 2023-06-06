@@ -24,6 +24,11 @@ export type {
   StaticRoute,
 };
 
+export { useSearchParams as usePagesSearchParams } from "./pages";
+export { useSearchParams as useAppSearchParams } from "./app";
+export { useRouteParams as useAppRouteParams } from "./app";
+export { useRouteParams as usePagesRouteParams } from "./pages";
+
 export function $path<T extends AllRoutes>({
   route,
   searchParams,

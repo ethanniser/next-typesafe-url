@@ -1,16 +1,20 @@
 "use client";
 
-import { $path } from "next-typesafe-url";
+import {
+  $path,
+  useAppRouteParams,
+  useAppSearchParams,
+} from "next-typesafe-url";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouteParams, useSearchParams } from "next-typesafe-url/app";
+// import { useRouteParams, useSearchParams } from "next-typesafe-url/app";
 import { Route } from "./routeType";
 
 export const Client = () => {
   const [input, setInput] = useState("");
 
-  const params = useSearchParams(Route.searchParams);
-  const routeParams = useRouteParams(Route.routeParams);
+  const params = useAppSearchParams(Route.searchParams);
+  const routeParams = useAppRouteParams(Route.routeParams);
 
   return (
     <>
