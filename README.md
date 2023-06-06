@@ -4,7 +4,7 @@ _Now with full support for app directory and server components!_
 
 ![next-typesafe-url-example](https://github.com/ethanniser/next-typesafe-url/assets/100045248/682e2a01-7e7f-4e44-adb5-6512b22eaadf)
 
-JSON serializable, fully typesafe, and [zod](https://www.npmjs.com/package/zod) validated URL search params, dynamic route params, and routing for NextJS.
+Fully typesafe, JSON serializable, and [zod](https://www.npmjs.com/package/zod) validated URL search params, dynamic route params, and routing for NextJS.
 
 **Big shoutout to [tanstack/router](https://github.com/tanstack/router) and [yesmeck/remix-routes](https://github.com/yesmeck/remix-routes) for inspiration and ideas.**
 

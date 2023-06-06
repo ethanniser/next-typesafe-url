@@ -10,7 +10,7 @@ export const OPEN_GRAPH = {
     src: "https://raw.githubusercontent.com/ethanniser/next-typesafe-url/main/www/docs/public/banner.png",
     alt:
       "next-typesafe-url: " +
-      "JSON serializable, fully typesafe, and zod validated URL search params, dynamic route params, and routing for NextJS.",
+      "Fully typesafe, JSON serializable, and zod validated URL search params, dynamic route params, and routing for NextJS.",
   },
   twitter: "ethanniser",
 };
