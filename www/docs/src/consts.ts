@@ -39,9 +39,27 @@ export type Sidebar = Record<
 >;
 export const SIDEBAR: Sidebar = {
   en: {
-    Docs: [
-      { text: "App Directory", link: "en/app" },
-      { text: "Pages Directory", link: "en/pages" },
+    General: [
+      { text: "Motivations", link: "en/general/motivations" },
+      { text: "Installation", link: "en/general/installation" },
     ],
+    "Route Setup": [
+      {
+        text: "Defining Your Routes",
+        link: "en/route-setup/defining-your-routes",
+      },
+      { text: "Running the CLI", link: "en/route-setup/running-the-cli" },
+    ],
+    "Usage and Integration": [
+      {
+        text: "Creating Links",
+        link: "en/usage-and-integration/creating-links",
+      },
+      {
+        text: "Utilizing Search/Route Params",
+        link: "en/usage-and-integration/utilizing-search-route-params",
+      },
+    ],
+    Reference: [{ text: "API Reference", link: "en/api-reference" }],
   },
 };
