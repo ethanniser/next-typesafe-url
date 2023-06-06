@@ -1,20 +1,21 @@
 import fs from "fs";
 import path from "path";
+import type { RouteInformation, Paths } from "./cli";
 
 export function getPAGESRoutesWithExportedRoute(
   basePath: string,
   dir: string,
-  exportedRoutes: string[] = [],
-  filesWithoutExportedRoutes: string[] = []
-) {
+  hasRoute: string[] = [],
+  doesntHaveRoute: string[] = []
+): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
       getPAGESRoutesWithExportedRoute(
         basePath,
         fullPath,
-        exportedRoutes,
-        filesWithoutExportedRoutes
+        hasRoute,
+        doesntHaveRoute
       );
     } else {
       const fileName = path.basename(fullPath);
@@ -47,22 +48,25 @@ export function getPAGESRoutesWithExportedRoute(
       }
 
       if (hasExportedRouteType) {
-        exportedRoutes.push(routePath);
+        hasRoute.push(routePath);
       } else {
-        filesWithoutExportedRoutes.push(routePath);
+        doesntHaveRoute.push(routePath);
       }
     }
   });
 
-  return { exportedRoutes, filesWithoutExportedRoutes };
+  return {
+    hasRoute,
+    doesntHaveRoute,
+  };
 }
 
 export function getAPPRoutesWithExportedRoute(
   basePath: string,
   dir: string = basePath,
-  exportedRoutes: string[] = [],
-  filesWithoutExportedRoutes: string[] = []
-) {
+  hasRoute: string[] = [],
+  doesntHaveRoute: string[] = []
+): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
 
@@ -84,8 +88,8 @@ export function getAPPRoutesWithExportedRoute(
       getAPPRoutesWithExportedRoute(
         basePath,
         fullPath,
-        exportedRoutes,
-        filesWithoutExportedRoutes
+        hasRoute,
+        doesntHaveRoute
       );
     } else if (file === "page.tsx") {
       const routeTypePath = path.join(dir, "routeType.ts");
@@ -99,31 +103,42 @@ export function getAPPRoutesWithExportedRoute(
       }
 
       if (fs.existsSync(routeTypePath)) {
-        exportedRoutes.push(routePath);
+        hasRoute.push(routePath);
       } else {
-        filesWithoutExportedRoutes.push(routePath);
+        doesntHaveRoute.push(routePath);
       }
     }
   });
 
-  return { exportedRoutes, filesWithoutExportedRoutes };
+  return { hasRoute, doesntHaveRoute };
 }
 
-export function generateTypesFile(
-  hasRoute: string[],
-  doesntHaveRoute: string[],
-  type: "pages" | "app",
-  paths: {
-    absoluteSrcPath: string;
-    absoluteOutputPath: string;
-    relativePathFromOutputToSrc: string;
-  }
-): void {
+export function generateTypesFile({
+  appRoutesInfo,
+  pagesRoutesInfo,
+  paths,
+}: {
+  appRoutesInfo: RouteInformation | null;
+  pagesRoutesInfo: RouteInformation | null;
+  paths: Paths;
+}): void {
   let importStatements: string[] = [];
   let routeCounter = 0;
 
-  for (const route of hasRoute) {
-    const routeVariableName = `Route_${routeCounter}`;
+  const allHasRoute = [
+    ...(appRoutesInfo?.hasRoute ?? []).map((route) => ({ route, type: "app" })),
+    ...(pagesRoutesInfo?.hasRoute ?? []).map((route) => ({
+      route,
+      type: "pages",
+    })),
+  ].map((obj) => ({ ...obj, count: routeCounter++ }));
+  const allDoesntHaveRoute = [
+    ...(appRoutesInfo?.doesntHaveRoute ?? []),
+    ...(pagesRoutesInfo?.doesntHaveRoute ?? []),
+  ];
+
+  for (const { route, type, count } of allHasRoute) {
+    const routeVariableName = `Route_${count}`;
     const pathAfterSrc = path.join(
       type,
       route === "/" ? "" : route,
@@ -141,22 +156,20 @@ export function generateTypesFile(
     routeCounter++;
   }
 
-  if (routeCounter > 0) {
-    importStatements.push(
-      'import type { InferRoute, StaticRoute } from "next-typesafe-url";'
-    );
-  }
+  importStatements.push(
+    'import type { InferRoute, StaticRoute } from "next-typesafe-url";'
+  );
 
-  const routeTypeDeclarations = hasRoute
+  const routeTypeDeclarations = allHasRoute
     .map(
-      (route) =>
+      ({ route, type, count }) =>
         `  "${
           type === "app" ? route.replace(/\/\([^()]+\)/g, "") : route
-        }": InferRoute<Route_${hasRoute.indexOf(route)}>;`
+        }": InferRoute<Route_${count}>;`
     )
     .join("\n  ");
 
-  const staticRoutesDeclarations = doesntHaveRoute
+  const staticRoutesDeclarations = allDoesntHaveRoute
     .map((route) => `  "${route}": StaticRoute;`)
     .join("\n  ");
 

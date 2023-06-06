@@ -11,11 +11,10 @@ import {
 const helpText = `
 Usage:
 $ npx next-typesafe-url (...options)
+Scans for routes in your app and pages directories and generates a types file for next-typesafe-url
 
 Options:
---watch / -w,  Watch for routes changes
---pages / -p,  Pages directory
---app / -a,  App directory
+--watch / -w,  Watch for file changes in src/app and src/pages and regenerate the types file
 --srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
 --outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./next-typesafe-url.d.ts"
 --help,  Show this help message
@@ -26,14 +25,6 @@ const cli = meow(helpText, {
     watch: {
       type: "boolean",
       alias: "w",
-    },
-    pages: {
-      type: "boolean",
-      alias: "p",
-    },
-    app: {
-      type: "boolean",
-      alias: "a",
     },
     outputPath: {
       type: "string",
@@ -46,50 +37,54 @@ const cli = meow(helpText, {
   },
 });
 
-function build(
-  type: "pages" | "app",
-  paths: {
-    absoluteSrcPath: string;
-    absoluteOutputPath: string;
-    relativePathFromOutputToSrc: string;
-  }
-) {
-  const appOrPagesPath = path.join(paths.absoluteSrcPath, type);
+export type Paths = {
+  absolutePagesPath: string | null;
+  absoluteAppPath: string | null;
+  absoluteOutputPath: string;
+  relativePathFromOutputToSrc: string;
+};
 
-  const { exportedRoutes, filesWithoutExportedRoutes } =
-    type === "pages"
-      ? getPAGESRoutesWithExportedRoute(appOrPagesPath, appOrPagesPath)
-      : getAPPRoutesWithExportedRoute(appOrPagesPath, appOrPagesPath);
+export type RouteInformation = {
+  hasRoute: string[];
+  doesntHaveRoute: string[];
+};
 
-  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type, paths);
+function build(paths: Paths) {
+  const { absoluteAppPath, absolutePagesPath } = paths;
+
+  const appRoutesInfo = absoluteAppPath
+    ? getAPPRoutesWithExportedRoute(absoluteAppPath, absoluteAppPath)
+    : null;
+  const pagesRoutesInfo = absolutePagesPath
+    ? getPAGESRoutesWithExportedRoute(absolutePagesPath, absolutePagesPath)
+    : null;
+
+  generateTypesFile({
+    appRoutesInfo,
+    pagesRoutesInfo,
+    paths,
+  });
   console.log(`Generated route types`);
 }
 
-function watch(
-  type: "pages" | "app",
-  paths: {
-    absoluteSrcPath: string;
-    absoluteOutputPath: string;
-    relativePathFromOutputToSrc: string;
-  }
-) {
-  chokidar
-    .watch([`${path.join(paths.absoluteSrcPath, type)}/**/*.{ts,tsx}`])
-    .on("change", () => {
-      build(type, paths);
+function watch(paths: Paths) {
+  const { absoluteAppPath, absolutePagesPath } = paths;
+
+  if (absoluteAppPath) {
+    chokidar.watch([`${absoluteAppPath}/**/*.{ts,tsx}`]).on("change", () => {
+      build(paths);
     });
+  }
+  if (absolutePagesPath) {
+    chokidar.watch([`${absolutePagesPath}/**/*.{ts,tsx}`]).on("change", () => {
+      build(paths);
+    });
+  }
+
   console.log(`Watching for route changes`);
 }
 
 if (require.main === module) {
-  if (cli.flags.pages && cli.flags.app) {
-    console.log("You can only specify one of --pages or --app");
-    process.exit(1);
-  } else if (!cli.flags.pages && !cli.flags.app) {
-    console.log("You must specify one of --pages or --app");
-    process.exit(1);
-  }
-
   const { srcPath, outputPath } = cli.flags;
 
   const absoluteSrcPath = path.join(process.cwd(), srcPath);
@@ -105,18 +100,24 @@ if (require.main === module) {
     absoluteSrcPath
   );
 
+  const appPath = path.join(absoluteSrcPath, "app");
+  const pagesPath = path.join(absoluteSrcPath, "pages");
+
+  const absoluteAppPath = directoryExistsSync(appPath) ? appPath : null;
+  const absolutePagesPath = directoryExistsSync(pagesPath) ? pagesPath : null;
+
   const paths = {
-    absoluteSrcPath,
+    absolutePagesPath,
+    absoluteAppPath,
     absoluteOutputPath,
     relativePathFromOutputToSrc,
   };
 
-  const type = cli.flags.pages ? "pages" : "app";
   if (cli.flags.watch) {
-    build(type, paths);
-    watch(type, paths);
+    build(paths);
+    watch(paths);
   } else {
-    build(type, paths);
+    build(paths);
   }
 }
 
