@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next-typesafe-url -w -a\" \"next dev\"",
+    "dev": "concurrently \"next-typesafe-url -w\" \"next dev\"",
     "lint": "next lint",
-    "build": "next-typesafe-url -a && next build",
+    "build": "next-typesafe-url && next build",
     "start": "next start"
   },
   "dependencies": {
