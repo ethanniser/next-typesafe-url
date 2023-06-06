@@ -10,7 +10,7 @@ import { createElement, useRef, type ReactElement } from "react";
 type NextAppPageProps = {
   params: Record<string, string | string[]>;
   searchParams: { [key: string]: string | string[] | undefined };
-};
+} & Record<string, any>;
 type SomeReactComponent = (...args: any) => ReactElement;
 
 export function withParamValidation(
@@ -93,7 +93,10 @@ import {
 } from "next/navigation";
 import { useState, useEffect } from "react";
 import { z } from "zod";
-import { parseObjectFromURLParamObj, parseObjectFromParamObj } from "./utils";
+import {
+  parseObjectFromReadonlyURLParams,
+  parseObjectFromUseParams,
+} from "./utils";
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -116,7 +119,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
-    const parsedRouteParams = parseObjectFromParamObj(params);
+    const parsedRouteParams = parseObjectFromUseParams(params);
     const validatedRouteParams = validator.safeParse(parsedRouteParams);
 
     if (validatedRouteParams.success) {
@@ -164,7 +167,7 @@ export function useSearchParams<T extends z.AnyZodObject>(
   const [data, setData] = useState<z.infer<T> | undefined>(undefined);
 
   useEffect(() => {
-    const parsedSearchParams = parseObjectFromURLParamObj(params);
+    const parsedSearchParams = parseObjectFromReadonlyURLParams(params);
     const validatedSearchParams = searchValidator.safeParse(parsedSearchParams);
 
     if (validatedSearchParams.success) {

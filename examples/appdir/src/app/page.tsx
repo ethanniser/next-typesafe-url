@@ -30,6 +30,14 @@ export default function Page() {
       >
         link2
       </Link>
+      <Link
+        href={$path({
+          route: "/jsonRoute/[[...foo]]",
+          routeParams: { foo: ["string!", { bar: "bar" }] },
+        })}
+      >
+        json
+      </Link>
     </>
   );
 }
