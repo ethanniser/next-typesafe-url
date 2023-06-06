@@ -9,12 +9,15 @@ import {
 } from "./generateTypes";
 
 const helpText = `
-Usage
-$ next-something
-Options
---watch, -w  Watch for routes changes
---pages, -p  Pages directory
---app, -a  App directory
+Usage:
+$ npx next-typesafe-url (...options)
+Scans for routes in your app and pages directories and generates a types file for next-typesafe-url
+
+Options:
+--watch / -w,  Watch for file changes in src/app and src/pages and regenerate the types file
+--srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
+--outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./next-typesafe-url.d.ts"
+--help,  Show this help message
 `;
 
 const cli = meow(helpText, {
@@ -23,57 +26,107 @@ const cli = meow(helpText, {
       type: "boolean",
       alias: "w",
     },
-    pages: {
-      type: "boolean",
-      alias: "p",
+    outputPath: {
+      type: "string",
+      default: "./next-typesafe-url.d.ts",
     },
-    app: {
-      type: "boolean",
-      alias: "a",
-    },
-    dontUseDev: {
-      type: "boolean",
+    srcPath: {
+      type: "string",
+      default: "./src",
     },
   },
 });
 
-function build(type: "pages" | "app", dev: boolean) {
-  const dirPath = path.join(process.cwd(), `/src/${type}`);
-  console.log(dirPath);
+export type Paths = {
+  absolutePagesPath: string | null;
+  absoluteAppPath: string | null;
+  absoluteOutputPath: string;
+  relativePathFromOutputToSrc: string;
+};
 
-  const { exportedRoutes, filesWithoutExportedRoutes } =
-    type === "pages"
-      ? getPAGESRoutesWithExportedRoute(dirPath, dirPath)
-      : getAPPRoutesWithExportedRoute(dirPath, dirPath);
+export type RouteInformation = {
+  hasRoute: string[];
+  doesntHaveRoute: string[];
+};
 
-  generateTypesFile(exportedRoutes, filesWithoutExportedRoutes, type, dev);
-  console.log(`Generated route types ${dev ? "IN DEV MODE" : ""}`);
+function build(paths: Paths) {
+  const { absoluteAppPath, absolutePagesPath } = paths;
+
+  const appRoutesInfo = absoluteAppPath
+    ? getAPPRoutesWithExportedRoute(absoluteAppPath, absoluteAppPath)
+    : null;
+  const pagesRoutesInfo = absolutePagesPath
+    ? getPAGESRoutesWithExportedRoute(absolutePagesPath, absolutePagesPath)
+    : null;
+
+  generateTypesFile({
+    appRoutesInfo,
+    pagesRoutesInfo,
+    paths,
+  });
+  console.log(`Generated route types`);
 }
 
-function watch(type: "pages" | "app", dev: boolean) {
-  chokidar
-    .watch([path.join(process.cwd(), `/src/${type}/**/*.{ts,tsx}`)])
-    .on("change", () => {
-      build(type, dev);
+function watch(paths: Paths) {
+  const { absoluteAppPath, absolutePagesPath } = paths;
+
+  if (absoluteAppPath) {
+    chokidar.watch([`${absoluteAppPath}/**/*.{ts,tsx}`]).on("change", () => {
+      build(paths);
     });
-  console.log(`Watching for route file changes in ${type} directory...`);
+  }
+  if (absolutePagesPath) {
+    chokidar.watch([`${absolutePagesPath}/**/*.{ts,tsx}`]).on("change", () => {
+      build(paths);
+    });
+  }
+
+  console.log(`Watching for route changes`);
 }
 
 if (require.main === module) {
-  if (cli.flags.pages && cli.flags.app) {
-    console.log("You can only specify one of --pages or --app");
-    process.exit(1);
-  } else if (!cli.flags.pages && !cli.flags.app) {
-    console.log("You must specify one of --pages or --app");
+  const { srcPath, outputPath } = cli.flags;
+
+  const absoluteSrcPath = path.join(process.cwd(), srcPath);
+
+  if (!directoryExistsSync(absoluteSrcPath)) {
+    console.log("srcPath is not a directory or does not exist");
     process.exit(1);
   }
 
-  const dev = cli.flags.dontUseDev !== undefined ? cli.flags.dontUseDev : false;
+  const absoluteOutputPath = path.join(process.cwd(), outputPath);
+  const relativePathFromOutputToSrc = path.relative(
+    path.dirname(absoluteOutputPath),
+    absoluteSrcPath
+  );
+
+  const appPath = path.join(absoluteSrcPath, "app");
+  const pagesPath = path.join(absoluteSrcPath, "pages");
+
+  const absoluteAppPath = directoryExistsSync(appPath) ? appPath : null;
+  const absolutePagesPath = directoryExistsSync(pagesPath) ? pagesPath : null;
+
+  const paths = {
+    absolutePagesPath,
+    absoluteAppPath,
+    absoluteOutputPath,
+    relativePathFromOutputToSrc,
+  };
 
   if (cli.flags.watch) {
-    build(cli.flags.pages ? "pages" : "app", dev);
-    watch(cli.flags.pages ? "pages" : "app", dev);
+    build(paths);
+    watch(paths);
   } else {
-    build(cli.flags.pages ? "pages" : "app", dev);
+    build(paths);
+  }
+}
+
+import fs from "fs";
+function directoryExistsSync(path: string): boolean {
+  try {
+    const stats = fs.statSync(path);
+    return stats.isDirectory();
+  } catch (error) {
+    return false;
   }
 }

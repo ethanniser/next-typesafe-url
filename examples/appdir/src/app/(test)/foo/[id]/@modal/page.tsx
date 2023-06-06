@@ -1,5 +1,5 @@
 import { withParamValidation } from "next-typesafe-url/app";
-import { InferPagePropsType } from "next-typesafe-url/app";
+import { InferPagePropsType } from "next-typesafe-url";
 import { Route, RouteType } from "../routeType";
 
 type PageProps = InferPagePropsType<RouteType>;

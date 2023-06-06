@@ -1,20 +1,21 @@
 import fs from "fs";
 import path from "path";
+import type { RouteInformation, Paths } from "./cli";
 
 export function getPAGESRoutesWithExportedRoute(
   basePath: string,
   dir: string,
-  exportedRoutes: string[] = [],
-  filesWithoutExportedRoutes: string[] = []
-) {
+  hasRoute: string[] = [],
+  doesntHaveRoute: string[] = []
+): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
       getPAGESRoutesWithExportedRoute(
         basePath,
         fullPath,
-        exportedRoutes,
-        filesWithoutExportedRoutes
+        hasRoute,
+        doesntHaveRoute
       );
     } else {
       const fileName = path.basename(fullPath);
@@ -47,22 +48,25 @@ export function getPAGESRoutesWithExportedRoute(
       }
 
       if (hasExportedRouteType) {
-        exportedRoutes.push(routePath);
+        hasRoute.push(routePath);
       } else {
-        filesWithoutExportedRoutes.push(routePath);
+        doesntHaveRoute.push(routePath);
       }
     }
   });
 
-  return { exportedRoutes, filesWithoutExportedRoutes };
+  return {
+    hasRoute,
+    doesntHaveRoute,
+  };
 }
 
 export function getAPPRoutesWithExportedRoute(
   basePath: string,
   dir: string = basePath,
-  exportedRoutes: string[] = [],
-  filesWithoutExportedRoutes: string[] = []
-) {
+  hasRoute: string[] = [],
+  doesntHaveRoute: string[] = []
+): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
 
@@ -84,8 +88,8 @@ export function getAPPRoutesWithExportedRoute(
       getAPPRoutesWithExportedRoute(
         basePath,
         fullPath,
-        exportedRoutes,
-        filesWithoutExportedRoutes
+        hasRoute,
+        doesntHaveRoute
       );
     } else if (file === "page.tsx") {
       const routeTypePath = path.join(dir, "routeType.ts");
@@ -99,219 +103,100 @@ export function getAPPRoutesWithExportedRoute(
       }
 
       if (fs.existsSync(routeTypePath)) {
-        exportedRoutes.push(routePath);
+        hasRoute.push(routePath);
       } else {
-        filesWithoutExportedRoutes.push(routePath);
+        doesntHaveRoute.push(routePath);
       }
     }
   });
 
-  return { exportedRoutes, filesWithoutExportedRoutes };
+  return { hasRoute, doesntHaveRoute };
 }
 
-export function generateTypesFile(
-  hasRoute: string[],
-  doesntHaveRoute: string[],
-  type: "pages" | "app",
-  dev: boolean
-): void {
-  let importStatements = "";
+export function generateTypesFile({
+  appRoutesInfo,
+  pagesRoutesInfo,
+  paths,
+}: {
+  appRoutesInfo: RouteInformation | null;
+  pagesRoutesInfo: RouteInformation | null;
+  paths: Paths;
+}): void {
+  let importStatements: string[] = [];
   let routeCounter = 0;
 
-  for (const route of hasRoute) {
-    const routeVariableName = `Route_${routeCounter}`;
-    importStatements += `import { type RouteType as ${routeVariableName} } from "${
-      dev ? `../../../examples/${type}dir/src/` : "../../../src/"
-    }${type}${route === "/" ? "" : route}${
-      type === "app" ? "/routeType" : ""
-    }";\n`;
+  const allHasRoute = [
+    ...(appRoutesInfo?.hasRoute ?? []).map((route) => ({ route, type: "app" })),
+    ...(pagesRoutesInfo?.hasRoute ?? []).map((route) => ({
+      route,
+      type: "pages",
+    })),
+  ].map((obj) => ({ ...obj, count: routeCounter++ }));
+  const allDoesntHaveRoute = [
+    ...(appRoutesInfo?.doesntHaveRoute ?? []),
+    ...(pagesRoutesInfo?.doesntHaveRoute ?? []),
+  ];
+
+  for (const { route, type, count } of allHasRoute) {
+    const routeVariableName = `Route_${count}`;
+    const pathAfterSrc = path.join(
+      type,
+      route === "/" ? "" : route,
+      type === "app" ? "routeType" : ""
+    );
+    const finalRelativePath = path
+      .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
+      // replace backslashes with forward slashes
+      .replace(/\\/g, "/")
+      // ensure relative paths start with "./"
+      .replace(/^(?!\.\.\/)/, "./");
+    importStatements.push(
+      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath}"`
+    );
     routeCounter++;
   }
 
-  const routeTypeDeclarations = hasRoute
+  importStatements.push(
+    'import type { InferRoute, StaticRoute } from "next-typesafe-url";'
+  );
+
+  const routeTypeDeclarations = allHasRoute
     .map(
-      (route) =>
+      ({ route, type, count }) =>
         `  "${
           type === "app" ? route.replace(/\/\([^()]+\)/g, "") : route
-        }": InferRoute<Route_${hasRoute.indexOf(route)}>;`
+        }": InferRoute<Route_${count}>;`
     )
-    .join("\n");
+    .join("\n  ");
 
-  const staticRoutesDeclarations = doesntHaveRoute
+  const staticRoutesDeclarations = allDoesntHaveRoute
     .map((route) => `  "${route}": StaticRoute;`)
-    .join("\n");
+    .join("\n  ");
 
-  const additionalTypeDeclarations = `
-import { z } from 'zod';
+  const fileContentString = `${infoText}\n${importStatements.join("\n")}
 
-type AppRouter = StaticRouter & DynamicRouter;
+declare module "@@@next-typesafe-url" {
+  interface DynamicRouter {
+  ${routeTypeDeclarations}
+  }
 
-type StaticRoutes = keyof StaticRouter;
-type DynamicRoutes = keyof DynamicRouter;
-
-type InferRoute<T extends DynamicRoute> = HandleUndefined<Helper<T>>;
-
-type HasProperty<T, K extends string> = K extends keyof T ? true : false;
-
-type Helper<T extends DynamicRoute> = {
-  searchParams: HasProperty<T, "searchParams"> extends true
-    ? z.infer<T["searchParams"]>
-    : undefined;
-  routeParams: HasProperty<T, "routeParams"> extends true
-    ? z.infer<T["routeParams"]>
-    : undefined;
-};
-
-type HandleUndefined<T extends DynamicRoute> =
-  T["routeParams"] extends undefined
-    ? T["searchParams"] extends undefined
-      ? // Both are undefined
-        Option4<T>
-      : // Only routeParams is undefined
-        Option2<T>
-    : T["searchParams"] extends undefined
-    ? // Only searchParams is undefined
-      Option3<T>
-    : // Neither are undefined
-      Option1<T>;
-
-type Option1<T extends DynamicRoute> = AllPossiblyUndefined<
-  T["searchParams"]
-> extends undefined
-  ? {
-      searchParams?: T["searchParams"] | undefined;
-      routeParams: T["routeParams"];
-    }
-  : {
-      searchParams: T["searchParams"];
-      routeParams: T["routeParams"];
-    };
-
-type Option2<T extends DynamicRoute> = AllPossiblyUndefined<
-  T["searchParams"]
-> extends undefined
-  ? {
-      searchParams?: T["searchParams"] | undefined;
-      routeParams?: undefined;
-    }
-  : {
-      searchParams: T["searchParams"];
-      routeParams?: undefined;
-    };
-
-type Option3<T extends DynamicRoutes> = {
-  searchParams?: undefined;
-  routeParams: T["routeParams"];
-};
-
-type Option4<T extends DynamicRoutes> = {
-  searchParams?: undefined;
-  routeParams?: undefined;
-};
-
-type StaticRoute = {
-  searchParams: undefined;
-  routeParams: undefined;
-};
-
-type DynamicRoute = {
-  searchParams?: z.AnyZodObject;
-  routeParams?: z.AnyZodObject;
-};
-
-type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
-
-type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
-  routeParams: z.infer<T["routeParams"]>;
-  children: React.ReactNode;
-} & { [P in K]: React.ReactNode };
-
-type PathOptions<T extends AllRoutes> = T extends StaticRoutes
-  ? StaticPathOptions<T>
-  : { route: T } & AppRouter[T];
-
-type AllPossiblyUndefined<T> = Exclude<Partial<T>, undefined> extends T
-  ? undefined
-  : T;
-
-type StaticPathOptions<T extends StaticRoutes> = {
-  route: T;
-  searchParams?: undefined;
-  routeParams?: undefined;
-};
-
-type AllRoutes = keyof AppRouter;
-
-type UseParamsResult<T extends z.AnyZodObject> =
-  | {
-      data: z.infer<T>;
-      isValid: true;
-      isReady: true;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: true;
-      isError: true;
-      error: z.ZodError<T>;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: false;
-      isError: false;
-      error: undefined;
-    };
-
-type UseAppParamsResult<T extends z.AnyZodObject> =
-  | {
-      data: undefined;
-      isLoading: true;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: z.infer<T>;
-      isError: false;
-      isLoading: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isError: true;
-      error: z.ZodError<T>;
-    };
-
-type ServerParseParamsResult<T extends z.AnyZodObject> =
-  | {
-      data: z.infer<T>;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isError: true;
-      error: z.ZodError<T>;
-    };
-
-type InferPagePropsType<T extends DynamicRoute> = {
-  searchParams: T["searchParams"] extends z.AnyZodObject
-    ? z.infer<T["searchParams"]>
-    : undefined;
-  routeParams: T["routeParams"] extends z.AnyZodObject
-    ? z.infer<T["routeParams"]>
-    : undefined;
-};
-
-export { AppRouter as A, DynamicRoute as D, InferPagePropsType as I, PathOptions as P, ServerParseParamsResult as S, UseAppParamsResult as U, AllRoutes as a, DynamicLayout as b, InferLayoutPropsType as c, UseParamsResult as d };
+  interface StaticRouter {
+  ${staticRoutesDeclarations}
+  }
+}
 `;
 
-  const fileContentString = `${importStatements}\ntype DynamicRouter = {\n${routeTypeDeclarations}\n};\n\ntype StaticRouter = {\n${staticRoutesDeclarations}\n};\n${additionalTypeDeclarations}\n`;
-
-  fs.writeFileSync(
-    "node_modules/next-typesafe-url/dist/types.d-18bb367a.d.ts",
-    fileContentString
-  );
+  // Ensure the directory exists, create it if it doesn't
+  fs.mkdirSync(path.dirname(paths.absoluteOutputPath), { recursive: true });
+  fs.writeFileSync(paths.absoluteOutputPath, fileContentString);
 }
+
+// thank you next-static-paths <3
+const infoText = `
+// This file is generated by next-typesafe-url
+// Do not edit this file directly.
+
+// @generated
+// prettier-ignore
+/* eslint-disable */
+`;

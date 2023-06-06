@@ -1,15 +1,28 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
-
 import { generateParamStringFromObject, fillPath } from "./utils";
 import type {
   AllRoutes,
   PathOptions,
-  AppRouter as AR,
-  DynamicRoute as DR,
+  AppRouter,
+  InferRoute,
+  DynamicRoute,
+  InferPagePropsType,
+  InferLayoutPropsType,
+  DynamicLayout,
+  StaticRoute,
 } from "./types";
 
-export type AppRouter = AR;
-export type DynamicRoute = DR;
+export type {
+  AllRoutes,
+  PathOptions,
+  AppRouter,
+  InferRoute,
+  DynamicRoute,
+  InferPagePropsType,
+  InferLayoutPropsType,
+  DynamicLayout,
+  StaticRoute,
+};
 
 export function $path<T extends AllRoutes>({
   route,

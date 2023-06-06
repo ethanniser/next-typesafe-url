@@ -1,22 +1,16 @@
 import { z } from "zod";
-import {
-  withLayoutParamValidation,
-  type DynamicLayout,
-  type InferLayoutPropsType,
-} from "next-typesafe-url/app";
+import { withLayoutParamValidation } from "next-typesafe-url/app";
+import type { DynamicLayout, InferLayoutPropsType } from "next-typesafe-url";
 
 const LayoutRoute = {
   routeParams: z.object({
     slug: z.string(),
   }),
 } satisfies DynamicLayout;
-type LayoutType = typeof LayoutRoute
+type LayoutType = typeof LayoutRoute;
 
-type Props = InferLayoutPropsType<LayoutType>
-function Layout({
-  children,
-  routeParams,
-}: Props) {
+type Props = InferLayoutPropsType<LayoutType>;
+function Layout({ children, routeParams }: Props) {
   return (
     <div>
       <h1>THIS IS A LAYOUT</h1>

@@ -18,7 +18,7 @@
     "zod"
   ],
   "bin": "./dist/cli.js",
-  "typings": "./dist/index.d.ts",
+  "types": "./root.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.js",

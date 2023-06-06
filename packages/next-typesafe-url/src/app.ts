@@ -1,34 +1,17 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
 import {
-  getDynamicRouteParams,
-  parseObjectFromParamString,
   parseServerSideRouteParams,
   parseServerSideSearchParams,
 } from "./utils";
-import type {
-  DynamicRoute,
-  DynamicLayout,
-  InferPagePropsType as IPPT,
-  InferLayoutPropsType as ILPT,
-  UseAppParamsResult,
-  UseParamsResult,
-} from "./types";
-import { createElement, useRef } from "react";
-
-export type { DynamicLayout };
-export type InferPagePropsType<T extends DynamicRoute> = IPPT<T>;
-export type InferLayoutPropsType<
-  T extends DynamicLayout,
-  K extends string = never
-> = ILPT<T, K>;
+import type { DynamicRoute, DynamicLayout, UseParamsResult } from "./types";
+import { createElement, useRef, type ReactElement } from "react";
 
 type NextAppPageProps = {
   params: Record<string, string | string[]>;
   searchParams: { [key: string]: string | string[] | undefined };
 };
-import type { ReactElement } from "react";
-type SomeReactComponent = (...args: any[]) => ReactElement;
+type SomeReactComponent = (...args: any) => ReactElement;
 
 export function withParamValidation(
   Component: SomeReactComponent,
@@ -94,8 +77,6 @@ export function withLayoutParamValidation(
       throw parsedRouteParams.error;
     }
 
-    console.log(parsedRouteParams?.data);
-
     return createElement(Component, {
       routeParams: parsedRouteParams?.data,
       children,
@@ -109,7 +90,6 @@ export function withLayoutParamValidation(
 import {
   useParams,
   useSearchParams as useNextSearchParams,
-  usePathname,
 } from "next/navigation";
 import { useState, useEffect } from "react";
 import { z } from "zod";
@@ -127,7 +107,7 @@ function usePrevious<T>(value: T) {
 
 export function useRouteParams<T extends z.AnyZodObject>(
   validator: T
-): UseAppParamsResult<T> {
+): UseParamsResult<T> {
   const params = useParams();
   const prev = usePrevious(params);
   const same = JSON.stringify(prev) === JSON.stringify(params);
@@ -177,7 +157,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
 
 export function useSearchParams<T extends z.AnyZodObject>(
   searchValidator: T
-): UseAppParamsResult<T> {
+): UseParamsResult<T> {
   const params = useNextSearchParams();
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));

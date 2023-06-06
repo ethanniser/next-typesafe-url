@@ -1,42 +1,5 @@
-import { type z } from "zod";
-import { type DynamicRoute } from "next-typesafe-url";
-
-type __FOR_BUNDLER_MOCK_IMPORT = {
-  routeParams: z.ZodObject<
-    {
-      productID: z.ZodNumber;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-      productID: number;
-    },
-    {
-      productID: number;
-    }
-  >;
-  searchParams: z.ZodObject<
-    {
-      location: z.ZodOptional<z.ZodEnum<["us", "eu"]>>;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-      location?: "us" | "eu" | undefined;
-    },
-    {
-      location?: "us" | "eu" | undefined;
-    }
-  >;
-};
-
-type DynamicRouter = {
-  "/__DEFAULT": InferRoute<__FOR_BUNDLER_MOCK_IMPORT>;
-};
-
-type StaticRouter = {
-  "/__DEFAULT2": StaticRoute;
-};
+import type { StaticRouter, DynamicRouter } from "@@@next-typesafe-url";
+import { z } from "zod";
 
 type AppRouter = StaticRouter & DynamicRouter;
 
@@ -109,8 +72,8 @@ type StaticRoute = {
 };
 
 type DynamicRoute = {
-  searchParams?: z.AnyZodObject | undefined;
-  routeParams?: z.AnyZodObject | undefined;
+  searchParams?: z.AnyZodObject;
+  routeParams?: z.AnyZodObject;
 };
 
 type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
@@ -138,29 +101,6 @@ type AllRoutes = keyof AppRouter;
 
 type UseParamsResult<T extends z.AnyZodObject> =
   | {
-      data: z.infer<T>;
-      isValid: true;
-      isReady: true;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: true;
-      isError: true;
-      error: z.ZodError<T>;
-    }
-  | {
-      data: undefined;
-      isValid: false;
-      isReady: false;
-      isError: false;
-      error: undefined;
-    };
-
-type UseAppParamsResult<T extends z.AnyZodObject> =
-  | {
       data: undefined;
       isLoading: true;
       isError: false;
@@ -174,6 +114,7 @@ type UseAppParamsResult<T extends z.AnyZodObject> =
     }
   | {
       data: undefined;
+      isLoading: false;
       isError: true;
       error: z.ZodError<T>;
     };
@@ -200,15 +141,20 @@ type InferPagePropsType<T extends DynamicRoute> = {
 };
 
 export {
+  // shared types
   AppRouter,
+  AllRoutes,
+  DynamicRoute,
+
+  // used by generated file
+  StaticRoute,
+  PathOptions,
+  InferRoute,
   ServerParseParamsResult,
   UseParamsResult,
-  UseAppParamsResult,
-  AllRoutes,
-  PathOptions,
+
+  //app only types
+  DynamicLayout,
   InferPagePropsType,
   InferLayoutPropsType,
-  DynamicRoute,
-  DynamicLayout,
-  InferRoute,
 };
