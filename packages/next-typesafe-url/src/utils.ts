@@ -3,10 +3,16 @@ function encodeValue(value: unknown): string {
     return encodeURIComponent(value);
   } else if (typeof value === "number" || typeof value === "boolean") {
     return encodeURIComponent(value.toString());
-  } else if (Array.isArray(value) || typeof value === "object") {
+  } else if (
+    Array.isArray(value) ||
+    typeof value === "object" ||
+    value === null
+  ) {
     return encodeURIComponent(JSON.stringify(value));
   } else {
-    throw new Error("only string, number, boolean, array, and object allowed");
+    throw new Error(
+      "only null, string, number, boolean, array, and object allowed"
+    );
   }
 }
 
