@@ -34,7 +34,7 @@ Information that is passed to a route via the query string, in next they are den
 
 #### Routing
 
-Routing is the process of navigating between pages in your nextjs app. This is mopst often done either through the use of the `next/link` component.
+Routing is the process of navigating between pages in your nextjs app. This is most often done either through the use of the `next/link` component.
 
 ```tsx
 import Link from "next/link";
