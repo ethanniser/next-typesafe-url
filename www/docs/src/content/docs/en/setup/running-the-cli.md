@@ -2,7 +2,7 @@
 title: "Running the CLI"
 description: "how to run the next-typesafe-url CLI"
 nextPage:
-  text: "Next: Creating Links"
+  text: "Next: Routing"
   link: "en/usage/routing"
 ---
 
@@ -11,6 +11,19 @@ nextPage:
 The CLI's purpose is to generate a file that contains a mapping of every possible route to a schema if you defined one.
 
 This is required to be able to define the schemas in a convenient way (wherever the route is), and still have a single type representing all possible routes and their schemas that can be used to generate links.
+
+### src
+
+`next-typesafe-url` requires that you have a `src` directory in your project, and that your `pages` and `app` directories are inside of it.
+
+```
+└── src
+    └── app
+    // or/and
+    └── pages
+```
+
+It doesn't where `src` is located, but it must exist.
 
 ## Running the CLI
 

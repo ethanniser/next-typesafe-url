@@ -90,4 +90,19 @@ To spark your curiosity, here's a [tic-tac-toe game I made](https://tictactoe-to
 
 _its of course built with `next-typesafe-url`, and the source can be found [here](https://github.com/ethanniser/tictactoe-tomfoolery)_
 
+---
+
+**Note:** as a result of this certain strings will not remain strings when parsed:
+
+- `"true"` -> `true`
+- `"false"` -> `false`
+- `"null"` -> `null`
+- `"<some_numberic_literal>"` -> `number`
+
+**`"undefined"` is not valid JSON**, and will be interpreted as a string if passed as the value of a param in the URL.
+
+_if you need these values to be strings, you can wrap them in quotes_- `"\"true\""` -> `"true"`
+
+---
+
 <h4>With that out of the way, we can now begin defining valid routes<h4>
