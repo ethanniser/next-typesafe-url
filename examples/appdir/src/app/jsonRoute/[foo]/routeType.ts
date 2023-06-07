@@ -3,7 +3,8 @@ import { type DynamicRoute } from "next-typesafe-url";
 
 export const Route = {
   routeParams: z.object({
-    foo: z.tuple([z.string(), z.object({ bar: z.string() })]).optional(),
+    // foo: z.literal("undefined"),
+    foo: z.object({ foo: z.string() }),
   }),
 } satisfies DynamicRoute;
 

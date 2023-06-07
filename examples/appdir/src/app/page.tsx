@@ -32,8 +32,8 @@ export default function Page() {
       </Link>
       <Link
         href={$path({
-          route: "/jsonRoute/[[...foo]]",
-          routeParams: { foo: ["string!", { bar: "bar" }] },
+          route: "/jsonRoute/[foo]",
+          routeParams: { foo: { foo: "bar" } },
         })}
       >
         json
