@@ -54,14 +54,14 @@ export const SIDEBAR: Sidebar = {
       },
       { text: "Running the CLI", link: "en/setup/running-the-cli" },
     ],
-    "Usage and Integration": [
+    Usage: [
       {
-        text: "Creating Links",
-        link: "en/usage-and-integration/creating-links",
+        text: "Routing",
+        link: "en/usage/routing",
       },
       {
-        text: "Utilizing Search/Route Params",
-        link: "en/usage-and-integration/utilizing-search-route-params",
+        text: "Search/Route Params",
+        link: "en/usage/search-route-params",
       },
     ],
     Reference: [{ text: "API Reference", link: "en/api-reference" }],

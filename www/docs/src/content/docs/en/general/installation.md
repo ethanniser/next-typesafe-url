@@ -18,7 +18,9 @@ yarn add next-typesafe-url
 pnpm add next-typesafe-url
 ```
 
-_If you don't already have it installed,`zod` is a peer dependency used for type validation you'll also need to have._
+---
+
+_If you don't already have it installed,`zod` is a peer dependency used for type validation you'll also need to have installed._
 
 ```bash
 npm install zod
@@ -28,4 +30,6 @@ yarn add zod
 pnpm add zod
 ```
 
-#### Now lets get typesafe!
+---
+
+<h4>Now lets get typesafe!<h4>
