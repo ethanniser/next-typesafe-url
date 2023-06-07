@@ -121,7 +121,7 @@ type PathOptions<T extends AllRoutes> = { route: T } & AppRouter[T];
 
 ### `$path`
 
-Generates a path for a given route, route params, and search params.
+Generates a path string for a given route, route params, and search params.
 
 ```ts
 declare function $path<T extends AllRoutes>({
@@ -133,9 +133,9 @@ declare function $path<T extends AllRoutes>({
 
 ### `useParamsResult`
 
-Return type for all of the `use<Serach/Route>Params` hooks.
+Return type for all of the `use<Search/Route>Params` hooks.
 
-````ts
+```ts
 type UseParamsResult<T extends z.AnyZodObject> =
   | {
       data: undefined;
@@ -159,7 +159,7 @@ type UseParamsResult<T extends z.AnyZodObject> =
 
 ### `ServerParseParamsResult`
 
-Return type for `parseServerSide<Seach/Route>Params`.
+Return type for all `parseServerSide<Search/Route>Params`.
 
 ```ts
 type ServerParseParamsResult<T extends z.AnyZodObject> =
@@ -203,7 +203,7 @@ For HOC to type input and output components.
 
 ```ts
 type SomeReactComponent = (...args: any) => JSX.Element | Promise<JSX.Element>;
-````
+```
 
 ### `withParamValidation`
 
