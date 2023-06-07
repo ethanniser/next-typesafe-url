@@ -1,93 +1,7 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
-import {
-  parseServerSideRouteParams,
-  parseServerSideSearchParams,
-} from "./utils";
-import type { DynamicRoute, DynamicLayout, UseParamsResult } from "./types";
-import { createElement, useRef, type ReactElement } from "react";
-
-type NextAppPageProps = {
-  params: Record<string, string | string[]>;
-  searchParams: { [key: string]: string | string[] | undefined };
-} & Record<string, unknown>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- I think this is reasonable here
-type SomeReactComponent = (...args: any) => ReactElement;
-
-export function withParamValidation(
-  Component: SomeReactComponent,
-  validator: DynamicRoute
-): SomeReactComponent {
-  const ValidatedPageComponent: SomeReactComponent = (
-    props: NextAppPageProps
-  ) => {
-    const { params, searchParams, ...otherProps } = props;
-
-    let parsedRouteParams = undefined;
-
-    if (validator.routeParams) {
-      parsedRouteParams = parseServerSideRouteParams({
-        params,
-        validator: validator.routeParams,
-      });
-    }
-
-    let parsedSearchParams = undefined;
-    if (validator.searchParams) {
-      parsedSearchParams = parseServerSideSearchParams({
-        query: searchParams ?? {},
-        validator: validator.searchParams,
-      });
-    }
-
-    if (parsedRouteParams?.isError) {
-      throw parsedRouteParams.error;
-    } else if (parsedSearchParams?.isError) {
-      throw parsedSearchParams.error;
-    }
-
-    return createElement(Component, {
-      routeParams: parsedRouteParams?.data,
-      searchParams: parsedSearchParams?.data,
-      ...otherProps,
-    });
-  };
-
-  return ValidatedPageComponent;
-}
-
-export function withLayoutParamValidation(
-  Component: SomeReactComponent,
-  validator: DynamicLayout
-): SomeReactComponent {
-  const ValidatedPageComponent: SomeReactComponent = (
-    props: Pick<NextAppPageProps, "params"> & { children: ReactElement }
-  ) => {
-    const { params, children, ...otherProps } = props;
-
-    let parsedRouteParams = undefined;
-
-    if (validator.routeParams) {
-      parsedRouteParams = parseServerSideRouteParams({
-        params,
-        validator: validator.routeParams,
-      });
-    }
-
-    if (parsedRouteParams?.isError) {
-      throw parsedRouteParams.error;
-    }
-
-    return createElement(Component, {
-      routeParams: parsedRouteParams?.data,
-      children,
-      ...otherProps,
-    });
-  };
-
-  return ValidatedPageComponent;
-}
-
+import type { UseParamsResult } from "./types";
+import { useRef } from "react";
 import {
   useParams,
   useSearchParams as useNextSearchParams,
@@ -108,6 +22,11 @@ function usePrevious<T>(value: T) {
   // Return previous value (happens before update in useEffect above)
   return ref.current;
 }
+
+export {
+  withLayoutParamValidation,
+  withParamValidation,
+} from "./appComponents";
 
 export function useRouteParams<T extends z.AnyZodObject>(
   validator: T
