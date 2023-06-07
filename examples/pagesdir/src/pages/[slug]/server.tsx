@@ -28,6 +28,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async ({
   query,
   params,
 }) => {
+  await Promise.resolve();
   const routeParams = parseServerSideRouteParams({
     params,
     validator: Route.routeParams,

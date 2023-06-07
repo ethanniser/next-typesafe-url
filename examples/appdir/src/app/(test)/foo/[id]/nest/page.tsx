@@ -1,8 +1,6 @@
 import { withParamValidation } from "next-typesafe-url/app";
 import { InferPagePropsType } from "next-typesafe-url";
 import { Route, RouteType } from "./routeType";
-import { $path } from "next-typesafe-url";
-import Link from "next/link";
 
 type PageProps = InferPagePropsType<RouteType>;
 

@@ -17,7 +17,7 @@ const Page = ({ routeParams, searchParams }: PageProps) => {
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
       <br />
       <div>{`data: ${JSON.stringify(searchParams)}`}</div>
-      {/* <Client /> */}
+      <Client />
     </>
   );
 };

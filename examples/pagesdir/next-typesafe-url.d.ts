@@ -6,8 +6,8 @@
 // prettier-ignore
 /* eslint-disable */
 
-import { type RouteType as Route_0 } from "./src/pages/[slug]/server;"
-import { type RouteType as Route_1 } from "./src/pages/[slug]/[...foo];"
+import { type RouteType as Route_0 } from "./src/pages/[slug]/server";
+import { type RouteType as Route_1 } from "./src/pages/[slug]/[...foo]";
 import type { InferRoute, StaticRoute } from "next-typesafe-url";
 
 declare module "@@@next-typesafe-url" {
