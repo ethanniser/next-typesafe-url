@@ -2,8 +2,8 @@
 title: "Getting Started"
 description: "how to install and setup next-typesafe-url"
 nextPage:
-  text: "Next: Defining Your Routes"
-  link: "en/route-setup/defining-your-routes"
+  text: "Next: Groundwork"
+  link: "en/setup/groundwork"
 ---
 
 ## Installation
@@ -16,6 +16,16 @@ npm install next-typesafe-url
 yarn add next-typesafe-url
 # or
 pnpm add next-typesafe-url
+```
+
+_If you don't already have it installed,`zod` is a peer dependency used for type validation you'll also need to have._
+
+```bash
+npm install zod
+# or
+yarn add zod
+# or
+pnpm add zod
 ```
 
 #### Now lets get typesafe!

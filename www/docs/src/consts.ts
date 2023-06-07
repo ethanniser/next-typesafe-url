@@ -43,12 +43,16 @@ export const SIDEBAR: Sidebar = {
       { text: "Motivations", link: "en/general/motivations" },
       { text: "Installation", link: "en/general/installation" },
     ],
-    "Route Setup": [
+    Setup: [
+      {
+        text: "Groundwork",
+        link: "en/setup/groundwork",
+      },
       {
         text: "Defining Your Routes",
-        link: "en/route-setup/defining-your-routes",
+        link: "en/setup/defining-your-routes",
       },
-      { text: "Running the CLI", link: "en/route-setup/running-the-cli" },
+      { text: "Running the CLI", link: "en/setup/running-the-cli" },
     ],
     "Usage and Integration": [
       {

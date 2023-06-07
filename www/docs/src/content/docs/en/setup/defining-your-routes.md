@@ -3,7 +3,7 @@ title: "Defining Your Routes"
 description: "How to define the valid types for your routes"
 nextPage:
   text: "Next: Running the CLI"
-  link: "en/route-setup/running-the-cli"
+  link: "en/setup/running-the-cli"
 ---
 
 ## An Enforced Schema
