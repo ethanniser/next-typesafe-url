@@ -67,10 +67,6 @@ export const SIDEBAR: Sidebar = {
         text: "Search/Route Params- Pages",
         link: "en/usage/search-route-params-pages",
       },
-      {
-        text: "Additional Types",
-        link: "en/usage/additional-types",
-      },
     ],
     Reference: [{ text: "API Reference", link: "en/api-reference" }],
   },

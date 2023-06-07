@@ -14,6 +14,8 @@ import type {
   InferLayoutPropsType,
   DynamicLayout,
   StaticRoute,
+  UseParamsResult,
+  ServerParseParamsResult,
 } from "./types";
 
 export type {
@@ -26,6 +28,8 @@ export type {
   InferLayoutPropsType,
   DynamicLayout,
   StaticRoute,
+  UseParamsResult,
+  ServerParseParamsResult,
 };
 
 export function $path<T extends AllRoutes>({
