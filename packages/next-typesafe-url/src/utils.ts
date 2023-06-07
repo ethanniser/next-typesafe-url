@@ -21,7 +21,9 @@ export function encodeRouteParamsToObj(
 ): Record<string, string | string[]> {
   const params: Record<string, string | string[]> = {};
   for (const [key, value] of Object.entries(obj)) {
-    if (Array.isArray(value)) {
+    if (value === undefined) {
+      continue;
+    } else if (Array.isArray(value)) {
       params[key] = value.map((item) => encodeValue(item));
     } else {
       const encodedValue = encodeValue(value);
@@ -37,10 +39,9 @@ export function generateParamStringFromSearchParamObj(
   const params: string[] = [];
 
   for (const [key, value] of Object.entries(obj)) {
-    const encodedValue = encodeValue(value);
-    if (encodedValue !== null) {
-      params.push(`${key}=${encodedValue}`);
-    }
+    params.push(
+      `${key}${value === undefined ? "" : `=${encodeValue(value)}`}}`
+    );
   }
 
   const finalString = `?${params.join("&")}`;
