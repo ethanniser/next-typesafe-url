@@ -151,7 +151,7 @@ export function generateTypesFile({
       // ensure relative paths start with "./"
       .replace(/^(?!\.\.\/)/, "./");
     importStatements.push(
-      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath};"`
+      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath}";`
     );
     routeCounter++;
   }
