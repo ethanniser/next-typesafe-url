@@ -10,7 +10,8 @@ import { createElement, useRef, type ReactElement } from "react";
 type NextAppPageProps = {
   params: Record<string, string | string[]>;
   searchParams: { [key: string]: string | string[] | undefined };
-} & Record<string, any>;
+} & Record<string, unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- I think this is reasonable here
 type SomeReactComponent = (...args: any) => ReactElement;
 
 export function withParamValidation(

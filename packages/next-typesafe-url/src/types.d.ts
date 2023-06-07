@@ -23,7 +23,7 @@ type HandleUndefined<T extends DynamicRoute> =
   T["routeParams"] extends undefined
     ? T["searchParams"] extends undefined
       ? // Both are undefined
-        Option4<T>
+        Option4
       : // Only routeParams is undefined
         Option2<T>
     : T["searchParams"] extends undefined
@@ -61,7 +61,7 @@ type Option3<T extends DynamicRoutes> = {
   routeParams: T["routeParams"];
 };
 
-type Option4<T extends DynamicRoutes> = {
+type Option4 = {
   searchParams?: undefined;
   routeParams?: undefined;
 };
@@ -116,7 +116,7 @@ type UseParamsResult<T extends z.AnyZodObject> =
       data: undefined;
       isLoading: false;
       isError: true;
-      error: z.ZodError<T>;
+      error: z.ZodError;
     };
 
 type ServerParseParamsResult<T extends z.AnyZodObject> =
@@ -128,7 +128,7 @@ type ServerParseParamsResult<T extends z.AnyZodObject> =
   | {
       data: undefined;
       isError: true;
-      error: z.ZodError<T>;
+      error: z.ZodError;
     };
 
 type InferPagePropsType<T extends DynamicRoute> = {

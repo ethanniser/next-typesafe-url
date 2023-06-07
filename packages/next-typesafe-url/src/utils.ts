@@ -286,7 +286,7 @@ export function parseServerSideSearchParams<T extends z.AnyZodObject>({
     return {
       data: undefined,
       isError: true,
-      error: validatedDynamicSearchParams.error as z.ZodError,
+      error: validatedDynamicSearchParams.error,
     };
   }
 }
@@ -325,7 +325,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
     return {
       data: undefined,
       isError: true,
-      error: validatedDynamicRouteParams.error as z.ZodError,
+      error: validatedDynamicRouteParams.error,
     };
   }
 }

@@ -122,7 +122,7 @@ export function generateTypesFile({
   pagesRoutesInfo: RouteInformation | null;
   paths: Paths;
 }): void {
-  let importStatements: string[] = [];
+  const importStatements: string[] = [];
   let routeCounter = 0;
 
   const allHasRoute = [
@@ -151,7 +151,7 @@ export function generateTypesFile({
       // ensure relative paths start with "./"
       .replace(/^(?!\.\.\/)/, "./");
     importStatements.push(
-      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath}"`
+      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath};"`
     );
     routeCounter++;
   }

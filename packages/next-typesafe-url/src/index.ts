@@ -44,6 +44,7 @@ export function $path<T extends AllRoutes>({
     return routeString;
   } else if (searchParams && !routeParams) {
     const searchString = generateParamStringFromSearchParamObj(searchParams);
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- route is always a string
     return `${route}${searchString}`;
   } else {
     //both are undefined
