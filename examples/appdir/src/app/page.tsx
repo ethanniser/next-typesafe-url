@@ -3,6 +3,8 @@
 import { $path, type AppRouter } from "next-typesafe-url";
 import Link from "next/link";
 
+type _ThisIsHelpful = AppRouter["/[slug]/[...foo]"]["routeParams"];
+
 export default function Page() {
   return (
     <>
@@ -29,6 +31,14 @@ export default function Page() {
         })}
       >
         link2
+      </Link>
+      <Link
+        href={$path({
+          route: "/jsonRoute/[foo]",
+          routeParams: { foo: { foo: "bar" } },
+        })}
+      >
+        json
       </Link>
     </>
   );

@@ -1,100 +1,130 @@
-export function generateParamStringFromObject(
+function encodeValue(value: unknown): string {
+  if (typeof value === "string" && value !== "") {
+    return encodeURIComponent(value);
+  } else if (typeof value === "number" || typeof value === "boolean") {
+    return encodeURIComponent(value.toString());
+  } else if (
+    Array.isArray(value) ||
+    typeof value === "object" ||
+    value === null
+  ) {
+    return encodeURIComponent(JSON.stringify(value));
+  } else {
+    throw new Error(
+      "only null, string, number, boolean, array, and object allowed"
+    );
+  }
+}
+
+export function encodeRouteParamsToObj(
+  obj: Record<string, unknown>
+): Record<string, string | string[]> {
+  const params: Record<string, string | string[]> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value === undefined) {
+      continue;
+    } else if (Array.isArray(value)) {
+      params[key] = value.map((item) => encodeValue(item));
+    } else {
+      const encodedValue = encodeValue(value);
+      params[key] = encodedValue;
+    }
+  }
+  return params;
+}
+
+export function generateParamStringFromSearchParamObj(
   obj: Record<string, unknown>
 ): string {
   const params: string[] = [];
+
   for (const [key, value] of Object.entries(obj)) {
-    if (typeof value === "string" && value !== "") {
-      params.push(`${key}=${encodeURIComponent(value)}`);
-    } else if (typeof value === "number" || typeof value === "boolean") {
-      params.push(`${key}=${encodeURIComponent(value.toString())}`);
-    } else if (Array.isArray(value)) {
-      params.push(`${key}=${encodeURIComponent(JSON.stringify(value))}`);
-    } else if (typeof value === "object") {
-      params.push(`${key}=${encodeURIComponent(JSON.stringify(value))}`);
-    }
+    params.push(
+      `${key}${value === undefined ? "" : `=${encodeValue(value)}`}}`
+    );
   }
+
   const finalString = `?${params.join("&")}`;
   return finalString === "?" ? "" : finalString;
+}
+
+function safeJSONParse(value: string | undefined): unknown {
+  if (value === undefined) {
+    return value;
+  }
+  try {
+    return JSON.parse(decodeURIComponent(value));
+  } catch {
+    return value;
+  }
+}
+
+function parseOrMapParse(
+  obj: string | string[] | undefined
+): unknown | unknown[] {
+  if (Array.isArray(obj)) {
+    return obj.map(safeJSONParse);
+  } else {
+    return safeJSONParse(obj);
+  }
+}
+
+function parseTopLevelObject(
+  obj: Record<string, string | string[] | undefined>
+): Record<string, unknown | unknown[]> {
+  const result: Record<string, unknown | unknown[]> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[key] = parseOrMapParse(value);
+  }
+  return result;
+}
+
+function handleSearchParamMultipleKeys(
+  urlParams: URLSearchParams | ReadonlyURLSearchParams
+): Record<string, string | string[]> {
+  const result: Record<string, string | string[]> = {};
+
+  urlParams.forEach((value, key) => {
+    const valueAtKey = result[key];
+    if (Array.isArray(valueAtKey)) {
+      valueAtKey.push(value);
+    } else if (valueAtKey) {
+      result[key] = [valueAtKey, value];
+    } else {
+      result[key] = value;
+    }
+  });
+
+  return result;
 }
 
 export function parseObjectFromParamString(
   paramString: string
 ): Record<string, unknown> {
   const params = new URLSearchParams(paramString);
-  const obj: Record<string, unknown> = {};
-  for (const [key, value] of params.entries()) {
-    let parsedValue: unknown;
-    if (value === "true") {
-      parsedValue = true;
-    } else if (value === "false") {
-      parsedValue = false;
-    } else if (value === "null") {
-      parsedValue = null;
-    } else {
-      try {
-        parsedValue = JSON.parse(value);
-      } catch {
-        parsedValue = value;
-      }
-    }
-    obj[key] = parsedValue;
-  }
-  return obj;
+  const handledParams = handleSearchParamMultipleKeys(params);
+  return parseTopLevelObject(handledParams);
 }
 
-export function parseObjectFromURLParamObj(
+export function parseObjectFromReadonlyURLParams(
   params: ReadonlyURLSearchParams
 ): Record<string, unknown> {
-  const obj: Record<string, unknown> = {};
-  for (const [key, value] of params.entries()) {
-    let parsedValue: unknown;
-    if (value === "true") {
-      parsedValue = true;
-    } else if (value === "false") {
-      parsedValue = false;
-    } else if (value === "null") {
-      parsedValue = null;
-    } else {
-      try {
-        parsedValue = JSON.parse(value);
-      } catch {
-        parsedValue = value;
-      }
-    }
-    obj[key] = parsedValue;
-  }
-  return obj;
+  const handledParams = handleSearchParamMultipleKeys(params);
+  return parseTopLevelObject(handledParams);
 }
 
-export function parseObjectFromParamObj(
-  params: Params
+export function parseObjectFromUseParams(
+  params: ReturnType<typeof useParams>
 ): Record<string, unknown> {
-  const obj: Record<string, unknown> = {};
-  for (const [key, value2] of Object.entries(params)) {
-    let value = (value2 as string).split("/");
-    let parsedValue: unknown;
-    if (value.length > 1) {
-      parsedValue = value.map((e) => reservedParse(e));
-    } else {
-      parsedValue = reservedParse(value[0]!);
-    }
-    obj[key] = parsedValue;
-  }
-  return obj;
+  return parseTopLevelObject(params);
 }
 
-type Query = {
-  [key: string]: string | string[] | undefined;
-};
-
-type DynamicParam2s = {
-  [key: string]: unknown;
-};
+import type { NextRouter } from "next/router";
 
 export function getDynamicRouteParams(
-  path: string,
-  query: Query
-): DynamicParam2s {
+  path: NextRouter["route"],
+  query: NextRouter["query"]
+): Record<string, unknown> {
   const segments = path.split("/");
 
   // Extract dynamic segments from the path
@@ -133,86 +163,24 @@ export function getDynamicRouteParams(
     ...optionalCatchAllParamNames,
     ...catchAllParamNames,
   ];
-  // Retrieve values of dynamic params from query object
-  const dynamicParams: DynamicParam2s = {};
-  for (const paramName of allCatchAllNames) {
-    const value = query[paramName];
-    let parsedValue: unknown;
-    if (value === undefined) {
-      parsedValue = undefined;
-    } else if (Array.isArray(value)) {
-      parsedValue = value.map((x) => reservedParse(x));
-    } else {
-      parsedValue = [reservedParse(value)];
-    }
-    dynamicParams[paramName] = parsedValue;
+
+  const parsedCatchAll: Record<string, unknown[]> = {};
+
+  for (const name of allCatchAllNames) {
+    const value = query[name];
+    const result = parseOrMapParse(value);
+    parsedCatchAll[name] = Array.isArray(result) ? result : [result];
   }
 
-  for (const paramName of dynamicParamNames) {
-    const value = query[paramName];
-    //value should always be string but check anyway
-    let parsedValue: unknown;
-    if (value === undefined) {
-      parsedValue = undefined;
-    } else if (Array.isArray(value)) {
-      parsedValue = value.map((x) => reservedParse(x));
-    } else {
-      parsedValue = reservedParse(value);
-    }
-    dynamicParams[paramName] = parsedValue;
+  const parsedNonCatchAll: Record<string, unknown> = {};
+
+  for (const name of dynamicParamNames) {
+    const value = query[name];
+    parsedNonCatchAll[name] = parseOrMapParse(value);
   }
 
-  return dynamicParams;
+  return { ...parsedNonCatchAll, ...parsedCatchAll };
 }
-
-function reservedParse(value: string): unknown {
-  let parsedValue: unknown;
-
-  if (value !== undefined) {
-    if (value === "true") {
-      parsedValue = true;
-    } else if (value === "false") {
-      parsedValue = false;
-    } else if (value === "null") {
-      parsedValue = null;
-    } else {
-      try {
-        parsedValue = JSON.parse(value);
-      } catch {
-        parsedValue = value;
-      }
-    }
-  }
-  return parsedValue;
-}
-
-export function parse3(value: string | string[] | undefined) {
-  let parsedValue: unknown;
-  if (value === undefined) {
-    parsedValue = undefined;
-  } else if (Array.isArray(value)) {
-    parsedValue = value.map((x) => parse2(x));
-  } else {
-    parsedValue = parse2(value);
-  }
-  return parsedValue;
-}
-
-export function parse2(value: string | string[] | undefined) {
-  let parsedValue: unknown;
-  if (value === undefined) {
-    parsedValue = undefined;
-  } else if (Array.isArray(value)) {
-    parsedValue = value.map((x) => reservedParse(x));
-  } else {
-    parsedValue = reservedParse(value);
-  }
-  return parsedValue;
-}
-
-type RouteParamsInput = {
-  [key: string]: string | number | boolean | (string | number | boolean)[];
-};
 
 type Segment = {
   type: "static" | "dynamic" | "catchAll" | "optionalCatchAll";
@@ -255,7 +223,10 @@ function parseSegment(segment: string): Segment {
   }
 }
 
-export function fillPath(path: string, data: RouteParamsInput): string {
+export function fillPath(
+  path: string,
+  data: Record<string, string | string[]>
+): string {
   const segments = path.split("/");
   const parsed = segments.map((e) => parseSegment(e));
   const parts: string[] = [];
@@ -297,37 +268,20 @@ export function fillPath(path: string, data: RouteParamsInput): string {
   return parts.join("/");
 }
 
-import type { ParsedUrlQuery } from "querystring";
 import { z } from "zod";
 import type { ServerParseParamsResult } from "./types";
-import { ReadonlyURLSearchParams } from "next/navigation";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { ReadonlyURLSearchParams, useParams } from "next/navigation";
+import type { GetServerSidePropsContext } from "next";
 
 // takes gssp context.query
 export function parseServerSideSearchParams<T extends z.AnyZodObject>({
   query,
   validator,
 }: {
-  query: ParsedUrlQuery;
+  query: GetServerSidePropsContext["query"];
   validator: T;
 }): ServerParseParamsResult<T> {
-  if (!query) {
-    return {
-      data: undefined,
-      isError: true,
-      error: new z.ZodError([
-        {
-          path: [],
-          code: "custom",
-          message: "No query context found",
-        },
-      ]),
-    };
-  }
-  const parsedParams = Object.fromEntries(
-    Object.entries(query).map(([key, value]) => [key, parse3(value)])
-  );
-
+  const parsedParams = parseTopLevelObject(query);
   const validatedDynamicSearchParams = validator.safeParse(parsedParams);
   if (validatedDynamicSearchParams.success) {
     return {
@@ -339,7 +293,7 @@ export function parseServerSideSearchParams<T extends z.AnyZodObject>({
     return {
       data: undefined,
       isError: true,
-      error: validatedDynamicSearchParams.error as z.ZodError,
+      error: validatedDynamicSearchParams.error,
     };
   }
 }
@@ -349,7 +303,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
   params,
   validator,
 }: {
-  params: ParsedUrlQuery | undefined;
+  params: GetServerSidePropsContext["params"];
   validator: T;
 }): ServerParseParamsResult<T> {
   if (!params) {
@@ -360,16 +314,13 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
         {
           path: [],
           code: "custom",
-          message: "No param context found",
+          message: "Params field of gSSP context is undefined",
         },
       ]),
     };
   }
 
-  const parsedParams = Object.fromEntries(
-    Object.entries(params).map(([key, value]) => [key, parse2(value)])
-  );
-
+  const parsedParams = parseTopLevelObject(params);
   const validatedDynamicRouteParams = validator.safeParse(parsedParams);
   if (validatedDynamicRouteParams.success) {
     return {
@@ -381,7 +332,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
     return {
       data: undefined,
       isError: true,
-      error: validatedDynamicRouteParams.error as z.ZodError,
+      error: validatedDynamicRouteParams.error,
     };
   }
 }

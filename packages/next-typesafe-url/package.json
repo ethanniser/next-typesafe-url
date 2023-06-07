@@ -18,7 +18,7 @@
     "zod"
   ],
   "bin": "./dist/cli.js",
-  "typings": "./dist/index.d.ts",
+  "types": "./root.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.js",
@@ -44,15 +44,20 @@
     }
   },
   "scripts": {
-    "build": "tsup src/cli.ts src/index.ts src/app.ts src/pages.ts --format cjs,esm --dts",
-    "lint": "tsc --noEmit",
-    "dev": "npm run build -- --watch"
+    "build": "tsup",
+    "typecheck": "tsc",
+    "dev": "npm run build -- --watch",
+    "test:watch": "vitest",
+    "lint": "eslint src/**"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
     "meow": "9.0.0"
   },
   "devDependencies": {
+    "@types/react": "18.2.5",
+    "@types/react-dom": "18.2.3",
+    "eslint": "8.39.0",
     "next": "13.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

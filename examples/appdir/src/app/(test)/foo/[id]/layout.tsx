@@ -1,9 +1,6 @@
 import { z } from "zod";
-import {
-  withLayoutParamValidation,
-  type DynamicLayout,
-  type InferLayoutPropsType,
-} from "next-typesafe-url/app";
+import { withLayoutParamValidation } from "next-typesafe-url/app";
+import type { DynamicLayout, InferLayoutPropsType } from "next-typesafe-url";
 
 const LayoutRoute = {
   routeParams: z.object({

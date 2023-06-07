@@ -1,16 +1,15 @@
 import { withParamValidation } from "next-typesafe-url/app";
 import { InferPagePropsType } from "next-typesafe-url";
-import { Route, RouteType } from "../routeType";
+import { Route, RouteType } from "./routeType";
 
 type PageProps = InferPagePropsType<RouteType>;
 
 const Page = ({ routeParams }: PageProps) => {
+  console.log(routeParams.foo === undefined);
+
   return (
     <>
-      <div className="border border-black">
-        <h1>PARALLELROUTE</h1>
-        <div>{`route: ${JSON.stringify(routeParams)}`}</div>
-      </div>
+      <div>{`data: ${JSON.stringify(routeParams)}`}</div>
     </>
   );
 };

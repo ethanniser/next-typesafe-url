@@ -1,5 +1,5 @@
 import { withParamValidation } from "next-typesafe-url/app";
-import { InferPagePropsType } from "next-typesafe-url/app";
+import { InferPagePropsType } from "next-typesafe-url";
 import { Route, RouteType } from "./routeType";
 import { Client } from "./client";
 
@@ -17,7 +17,7 @@ const Page = ({ routeParams, searchParams }: PageProps) => {
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
       <br />
       <div>{`data: ${JSON.stringify(searchParams)}`}</div>
-      {/* <Client /> */}
+      <Client />
     </>
   );
 };

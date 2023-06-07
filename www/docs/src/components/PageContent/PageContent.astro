@@ -7,9 +7,13 @@ type Props = {
   title: string;
   headings: MarkdownHeading[];
   githubEditUrl: string;
+  nextPage?: {
+    text: string;
+    link: string;
+  };
 };
 
-const { title, headings, githubEditUrl } = Astro.props;
+const { title, headings, githubEditUrl, nextPage } = Astro.props;
 ---
 
 <article id="article" class="content">
@@ -20,12 +24,37 @@ const { title, headings, githubEditUrl } = Astro.props;
     </nav>
     <slot />
   </section>
+  {
+    nextPage && (
+      <>
+        <a href={Astro.site?.pathname + nextPage.link} class="next-page-link">
+          {nextPage.text}
+        </a>
+      </>
+    )
+  }
   <nav class="block sm:hidden">
     <MoreMenu editHref={githubEditUrl} />
   </nav>
 </article>
 
 <style>
+  .next-page-link {
+    font-size: 2em;
+    display: inline-block;
+    padding: 15px;
+    margin-top: -80px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    border: 2px solid var(--theme-text-accent);
+    border-radius: 5px;
+    transition: background-color 0.2s ease-out, color 0.2s ease-out;
+  }
+
+  .next-page-link:hover {
+    background-color: var(--theme-text-accent);
+    color: #fff;
+  }
   .content {
     padding: 0;
     max-width: 75ch;

@@ -7,25 +7,60 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          fetch-depth: 0
+
+      - name: Use PNPM
+        uses: pnpm/action-setup@v2.2.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "pnpm"
 
-      - run: pnpm install
-      - run: pnpm turbo lint build --filter="./packages/*"
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
         with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install deps (with cache)
+        run: pnpm install
+
+      - name: Build
+        run: pnpm turbo --filter "./packages/*" build
+
+      # Using custom token `MY_GITHUB_TOKEN` with more access to avoid rate limiting
+      - name: Create Release
+        id: changeset
+        uses: changesets/action@v1.4.4
+        with:
+          commit: "chore(release): 📦 version packages"
+          title: "chore(release): 📦  version packages"
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Changeset has some issues with pnpm so we sync it up manually
+      - name: Sync lockfile if necessary
+        if: steps.changeset.outputs.hasChangesets == 'true'
+        run: |
+          git checkout changeset-release/main
+          pnpm install --no-frozen-lockfile
+          git add .
+          git commit -m "chore(release): 📦 sync lockfile"
+          git push origin changeset-release/main

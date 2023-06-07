@@ -56,7 +56,7 @@ const Page: NextPage = () => {
       <h1>routeParams</h1>
       <div>{`data: ${JSON.stringify(routeData)}`}</div>
       <div>{`error: ${JSON.stringify(routeError) ?? "no error"}`}</div>
-      <br />
+      <br className="bg-black" />
       <h1>searchParams</h1>
       <div>{`data: ${JSON.stringify(searchData)}`}</div>
       <div>{`error: ${JSON.stringify(searchError) ?? "no error"}`}</div>
