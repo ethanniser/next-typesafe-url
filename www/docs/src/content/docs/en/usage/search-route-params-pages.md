@@ -6,6 +6,16 @@ nextPage:
   link: "en/api-reference"
 ---
 
+## Versions
+
+While the apis for `app` and `pages` are very similar, there are some important differences.
+
+<h4>Make sure you follow the docs for your use case</h4>
+
+### This page: `pages` version
+
+View the `app` version [here](en/usage/search-route-params-app)
+
 ## Hooks
 
 `next-typesafe-url/pages` exports a `useRouteParams` and `useSearchParams` hook that will return the route params / search params for the current route. They take one argument, the zod schema for either route params or search params from the Route object.

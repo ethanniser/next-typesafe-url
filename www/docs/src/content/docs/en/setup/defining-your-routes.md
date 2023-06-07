@@ -68,7 +68,7 @@ Each key in `routeParams` should be the name of a dynamic route segment for the 
 **Note:** Catch all and optional catch all routes are interepted as arrays or tuples.
 
 ```ts
-// app/dashboard/[...options]/routeType.ts
+// route: /dashboard/[...options]
 export const Route = {
   routeParams: z.object({
     options: z.tuple([z.string(), z.number()]),

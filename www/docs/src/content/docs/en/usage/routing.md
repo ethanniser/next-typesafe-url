@@ -39,11 +39,11 @@ _This should never happen if you are not ignoring the many typescript errors tha
 
 ---
 
-**Note:** Explicitly passing `"undefined"` in searchParams or routeParams
+**Note:** Explicitly passing `undefined` in searchParams or routeParams
 
-If `"undefined"` is explictly passed as a **route param** it behaves the same as if that key was not listed at all: essentially ignored (only possibly used for optional catch all routes)
+If `undefined` is explictly passed as a **route param** it behaves the same as if that key was not listed at all: essentially ignored (only possibly used for optional catch all routes)
 
-If `"undefined"` is explictly passed as a **search param**, it will be passed to the url without a corresponding value. This is different from leaving it out entirely, which will not include the search param in the url at all.
+If `undefined` is explictly passed as a **search param**, it will be passed to the url without a corresponding value. This is different from leaving it out entirely, which will not include the search param in the url at all.
 
 ---
 
