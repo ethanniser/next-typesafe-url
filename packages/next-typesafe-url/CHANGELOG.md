@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 2.1.3
+
+### Patch Changes
+
+- 77f7d0d: this is a test for ci
+
 ## 2.1.2
 
 ### Patch Changes
