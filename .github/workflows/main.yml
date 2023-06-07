@@ -37,8 +37,11 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Build, lint and type-check
-        run: pnpm turbo build lint typecheck test
+      - name: Build
+        run: pnpm turbo --filter "./packages/*" build
+
+      - name: Test, lint and type-check
+        run: pnpm turbo lint typecheck test
 
       # manypkg doesnt work with workspaces
       # - name: Check workspaces
