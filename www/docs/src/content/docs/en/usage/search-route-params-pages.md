@@ -14,7 +14,7 @@ While the apis for `app` and `pages` are very similar, there are some important 
 
 ### This page: `pages` version
 
-View the `app` version [here](en/usage/search-route-params-app)
+View the `app` version [here](search-route-params-app)
 
 ## Hooks
 
