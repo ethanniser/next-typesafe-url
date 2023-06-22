@@ -23,30 +23,26 @@ View the `app` version [here](search-route-params-app)
 ```tsx
 import { useSearchParams, useRouteParams } from "next-typesafe-url/pages";
 
-function Component = () => {
+function Component() {
+  const routeParams = useRouteParams(Route.routeParams);
   const searchParams = useSearchParams(Route.searchParams);
-  const { data, isLoading, isError, error } = params;
-  const _routeParams = useRouteParams(Route.routeParams);
+  const { data, isLoading, isError, error } = searchParams;
 
   if (isLoading) {
     return <div>loading...</div>;
   } else if (isError) {
     return <div>Invalid search params {error.message}</div>;
-  } else if (isValid) {
+  } else {
     return <div>{data.userInfo.name}</div>;
   }
-};
+}
 ```
+
+### Errors
 
 `isLoading` is the loading state of the internal Next router, and `isError` is a boolean that is true if the params do not match the schema. If `isError` is true, then `error` will be a `ZodError` object you can use to get more information about the error. (_also check out [zod-validation-error](https://github.com/causaly/zod-validation-error) to get a nice error message_)
 
----
-
-**Note:** If `isLoading` is false and `isError` is false, then `data` will always be valid and match the schema.
-
-**Note:** Be mindful when using `useSearchParams` and `useRouteParams` in components used in multiple routes, making sure you pass the correct validator
-
----
+**If `isLoading` is false and `isError` is false, then `data` will always be valid and match the schema.**
 
 ### IMPORT WARNING
 
