@@ -92,7 +92,7 @@ _its of course built with `next-typesafe-url`, and the source can be found [here
 
 ---
 
-**Note:** as a result of this certain strings will not remain strings when parsed:
+**Note:** as a result of using JSON certain strings will not remain strings when parsed:
 
 - `"true"` -> `true`
 - `"false"` -> `false`
