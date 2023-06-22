@@ -45,7 +45,7 @@ import Link from "next/link";
 
 #### Fully Typesafe
 
-Typesafe routing for nextjs has existed in the past with packages like [next-static-paths](https://github.com/Schniz/next-static-paths), [pathpida](https://github.com/aspida/pathpida), and even an [experimental official implementation](https://github.com/aspida/pathpida).
+Typesafe routing for nextjs has existed in the past with packages like [next-static-paths](https://github.com/Schniz/next-static-paths), [pathpida](https://github.com/aspida/pathpida), and even an [experimental official implementation](https://nextjs.org/docs/app/building-your-application/configuring/typescript#statically-typed-links).
 
 However, these packages all have one thing in common, they only provide typesafety to the path you pass to `next/link`.
 
