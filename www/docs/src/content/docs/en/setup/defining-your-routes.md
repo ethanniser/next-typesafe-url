@@ -69,7 +69,7 @@ Each key in `routeParams` should be the name of a dynamic route segment for the 
 
 ```ts
 // route: /dashboard/[...options]
-export const Route = {
+const Route = {
   routeParams: z.object({
     options: z.tuple([z.string(), z.number()]),
   }),
@@ -89,8 +89,8 @@ Each key in `searchParams` should be the name of a valid search param for the ro
 **Note:** When the same search param is used multiple times, it is interpreted as an array or tuple.
 
 ```ts
-// app/dashboard/routeType.ts
-export const Route = {
+// route: /dashboard
+const Route = {
   searchParams: z.object({
     names: z.array(z.string()),
   }),
