@@ -16,6 +16,8 @@ type Props = CollectionEntry<"docs">["data"] & {
 
 const { headings, ...data } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const formattedContentTitle =
+  data.title == SITE.title ? data.title : `${data.title} - ${SITE.title}`;
 const currentPage =
   Astro.url.pathname === "/" ? "/en/index" : Astro.url.pathname;
 const currentFile = `src/content/docs${currentPage.replace(/\/$/, "")}.md`;
@@ -27,7 +29,7 @@ const githubEditUrl = `${GITHUB_EDIT_URL}/${currentFile}`;
     <HeadCommon />
     <HeadSEO {...data} canonicalUrl={canonicalURL} />
     <title>
-      {data.title == SITE.title ? data.title : `${data.title} - ${SITE.title}`}
+      {formattedContentTitle}
     </title>
     <style>
       body {
