@@ -86,7 +86,7 @@ That's why `next-typesafe-url` embraces JSON as the primary data format for rout
 
 **Any valid JSON type can be passed as a search or route param. That means: strings, numbers, booleans, nulls, arrays, and objects.**
 
-To spark your curiosity, here's a [tic-tac-toe game I made](https://tictactoe-tomfoolery.vercel.app/) that uses zero client side react, and instead a single search param of type `number[][]` to store the state of the game.
+To spark your curiosity, here's a [tic-tac-toe game I made](https://tictactoe-tomfoolery.vercel.app/) that uses zero client side react, and instead a single search param of type `("X" | "O" | "_")[][]` to store the state of the game.
 
 _its of course built with `next-typesafe-url`, and the source can be found [here](https://github.com/ethanniser/tictactoe-tomfoolery)_
 
