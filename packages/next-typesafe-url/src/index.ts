@@ -7,7 +7,8 @@ import {
 import type {
   AllRoutes,
   PathOptions,
-  AppRouter,
+  RouterInputs,
+  RouterOutputs,
   InferRoute,
   DynamicRoute,
   InferPagePropsType,
@@ -21,7 +22,8 @@ import type {
 export type {
   AllRoutes,
   PathOptions,
-  AppRouter,
+  RouterInputs,
+  RouterOutputs,
   InferRoute,
   DynamicRoute,
   InferPagePropsType,

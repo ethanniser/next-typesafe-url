@@ -3,19 +3,39 @@ import { z } from "zod";
 
 type AppRouter = StaticRouter & DynamicRouter;
 
+type RouterInputs = {
+  [K in keyof AppRouter]: AppRouter[K]["input"];
+};
+
+type RouterOutputs = {
+  [K in keyof AppRouter]: AppRouter[K]["output"];
+};
+
 type StaticRoutes = keyof StaticRouter;
 type DynamicRoutes = keyof DynamicRouter;
 
-type InferRoute<T extends DynamicRoute> = HandleUndefined<Helper<T>>;
+type InferRoute<T extends DynamicRoute> = {
+  input: HandleUndefined<HelperInput<T>>;
+  output: HandleUndefined<HelperOutput<T>>;
+};
 
 type HasProperty<T, K extends string> = K extends keyof T ? true : false;
 
-type Helper<T extends DynamicRoute> = {
+type HelperInput<T extends DynamicRoute> = {
   searchParams: HasProperty<T, "searchParams"> extends true
-    ? z.infer<T["searchParams"]>
+    ? z.input<T["searchParams"]>
     : undefined;
   routeParams: HasProperty<T, "routeParams"> extends true
-    ? z.infer<T["routeParams"]>
+    ? z.input<T["routeParams"]>
+    : undefined;
+};
+
+type HelperOutput<T extends DynamicRoute> = {
+  searchParams: HasProperty<T, "searchParams"> extends true
+    ? z.output<T["searchParams"]>
+    : undefined;
+  routeParams: HasProperty<T, "routeParams"> extends true
+    ? z.output<T["routeParams"]>
     : undefined;
 };
 
@@ -79,13 +99,13 @@ type DynamicRoute = {
 type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
 
 type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
-  routeParams: z.infer<T["routeParams"]>;
+  routeParams: z.output<T["routeParams"]>;
   children: React.ReactNode;
 } & { [P in K]: React.ReactNode };
 
 type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   ? StaticPathOptions<T>
-  : { route: T } & AppRouter[T];
+  : { route: T } & RouterInputs[T];
 
 type AllPossiblyUndefined<T> = Exclude<Partial<T>, undefined> extends T
   ? undefined
@@ -107,7 +127,7 @@ type UseParamsResult<T extends z.AnyZodObject> =
       error: undefined;
     }
   | {
-      data: z.infer<T>;
+      data: z.output<T>;
       isError: false;
       isLoading: false;
       error: undefined;
@@ -121,7 +141,7 @@ type UseParamsResult<T extends z.AnyZodObject> =
 
 type ServerParseParamsResult<T extends z.AnyZodObject> =
   | {
-      data: z.infer<T>;
+      data: z.output<T>;
       isError: false;
       error: undefined;
     }
@@ -133,16 +153,17 @@ type ServerParseParamsResult<T extends z.AnyZodObject> =
 
 type InferPagePropsType<T extends DynamicRoute> = {
   searchParams: T["searchParams"] extends z.AnyZodObject
-    ? z.infer<T["searchParams"]>
+    ? z.output<T["searchParams"]>
     : undefined;
   routeParams: T["routeParams"] extends z.AnyZodObject
-    ? z.infer<T["routeParams"]>
+    ? z.output<T["routeParams"]>
     : undefined;
 };
 
 export {
   // shared types
-  AppRouter,
+  RouterInputs,
+  RouterOutputs,
   AllRoutes,
   DynamicRoute,
 
