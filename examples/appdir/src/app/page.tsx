@@ -1,9 +1,9 @@
 "use client";
 
-import { $path, type AppRouter } from "next-typesafe-url";
+import { $path, type RouterOutputs } from "next-typesafe-url";
 import Link from "next/link";
 
-type _ThisIsHelpful = AppRouter["/[slug]/[...foo]"]["routeParams"];
+type _ThisIsHelpful = RouterOutputs["/[slug]/[...foo]"]["routeParams"];
 
 export default function Page() {
   return (

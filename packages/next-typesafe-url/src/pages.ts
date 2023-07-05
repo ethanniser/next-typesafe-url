@@ -18,7 +18,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
   const router = useRouter();
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.infer<T> | undefined>(undefined);
+  const [data, setData] = useState<z.output<T> | undefined>(undefined);
 
   useEffect(() => {
     if (router.isReady) {
@@ -66,7 +66,7 @@ export function useSearchParams<T extends z.AnyZodObject>(
   const router = useRouter();
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.infer<T> | undefined>(undefined);
+  const [data, setData] = useState<z.output<T> | undefined>(undefined);
 
   useEffect(() => {
     if (router.isReady) {

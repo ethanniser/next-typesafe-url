@@ -36,7 +36,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
   const same = JSON.stringify(prev) === JSON.stringify(params);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.infer<T> | undefined>(undefined);
+  const [data, setData] = useState<z.output<T> | undefined>(undefined);
 
   useEffect(() => {
     const parsedRouteParams = parseObjectFromUseParams(params);
@@ -84,7 +84,7 @@ export function useSearchParams<T extends z.AnyZodObject>(
   const params = useNextSearchParams();
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.infer<T> | undefined>(undefined);
+  const [data, setData] = useState<z.output<T> | undefined>(undefined);
 
   useEffect(() => {
     const parsedSearchParams = parseObjectFromReadonlyURLParams(params);
