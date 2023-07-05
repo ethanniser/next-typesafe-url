@@ -31,17 +31,40 @@ type StaticRoute = {
 };
 ```
 
-### `AppRouter`
+### `RouterInputs`
+
+The input types of the zod schema for each of the routes in your app.
 
 ```ts
-type __Routes = "/" | "/foo"; // ... all of the routes in your app
-type AppRouter = Record<__Routes, DynamicRoute | StaticRoute>;
+type __AllRoutes = "/" | "/foo"; // ... all of the routes in your app
+type RouterInputs = Record<
+  __AllRoutes,
+  InferZodInput<DynamicRoute> | StaticRoute
+>;
 ```
 
 Usage:
 
 ```ts
-type FooSearchParams = AppRouter["/foo"]["searchParams"];
+type FooSearchParamsInput = RouterInputs["/foo"]["searchParams"];
+```
+
+### `RouterOutputs`
+
+The outputtypes of the zod schema for each of the routes in your app.
+
+```ts
+type __AllRoutes = "/" | "/foo"; // ... all of the routes in your app
+type RouterOutputs = Record<
+  __AllRoutes,
+  InferZodOutput<DynamicRoute> | StaticRoute
+>;
+```
+
+Usage:
+
+```ts
+type FooSearchParams = RouterOutputs["/foo"]["searchParams"];
 ```
 
 ### `AllRoutes`
@@ -116,7 +139,7 @@ type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
 Provides the input type for `$path` but could be useful for other things.
 
 ```ts
-type PathOptions<T extends AllRoutes> = { route: T } & AppRouter[T];
+type PathOptions<T extends AllRoutes> = { route: T } & RouterInputs[T];
 ```
 
 ### `$path`
