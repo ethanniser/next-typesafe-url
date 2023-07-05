@@ -4,7 +4,7 @@ import type {
   GetServerSideProps,
 } from "next";
 import { z } from "zod";
-import { $path, type AppRouter } from "next-typesafe-url";
+import { $path, type RouterOutputs } from "next-typesafe-url";
 import {
   parseServerSideRouteParams,
   parseServerSideSearchParams,
@@ -21,8 +21,8 @@ const Route = {
 };
 export type RouteType = typeof Route;
 
-type ServerSideProps = AppRouter["/[slug]/server"]["searchParams"] &
-  AppRouter["/[slug]/server"]["routeParams"];
+type ServerSideProps = RouterOutputs["/[slug]/server"]["searchParams"] &
+  RouterOutputs["/[slug]/server"]["routeParams"];
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async ({
   query,
