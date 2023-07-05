@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 3.1.0
+
+### Minor Changes
+
+- 491ed9e: correctly infers zod inputs and outputs, mainly affects using `$path` with zod coercion/transform. Now exposes seperate `RouterInputs` and `RouterOutputs` types to account for this change
+
 ## 3.0.0
 
 ### Major Changes
