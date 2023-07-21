@@ -9,16 +9,20 @@ import type { NextRouter } from "next/router";
  */
 export function encodeValue(value: unknown): string {
   if (typeof value === "string" && value !== "") {
+    // if its a non-empty string, uri encode it
     return encodeURIComponent(value);
   } else if (typeof value === "number" || typeof value === "boolean") {
+    // if its a number or boolean, uri encode it after converting it to a string
     return encodeURIComponent(value.toString());
   } else if (
     Array.isArray(value) ||
     typeof value === "object" ||
     value === null
   ) {
+    // if its an array, object, or null uri encode it after json stringifying it
     return encodeURIComponent(JSON.stringify(value));
   } else {
+    // if its anything else, throw
     throw new Error(
       "only null, non-empty string, number, boolean, array, and object are able to be encoded"
     );
@@ -239,8 +243,11 @@ export function encodeAndFillRoute(
   route: string,
   routeParams: Record<string, unknown>
 ): string {
+  // split the route into its segments
   const segments = route.split("/");
+  // parse each segment to a Segment object
   const parsed = segments.map((e) => parseSegment(e));
+  // the array to collect the encoded and filled segments
   const parts: string[] = [];
 
   for (const segment of parsed) {
@@ -286,5 +293,6 @@ export function encodeAndFillRoute(
     }
   }
 
+  // join the parts with a slash
   return parts.join("/");
 }
