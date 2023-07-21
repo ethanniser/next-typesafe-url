@@ -115,21 +115,36 @@ export function parseMapObject(
 /**
  * Takes a URLSearchParams object and returns a object of the keys and values in the URLSearchParams.
  * If a key has multiple values, the value is transformed to an array of the values.
+ * If a key does not have a value, and that is the only instance of the key, the value is set to undefined.
+ * If a key does not have a value, and that is not the only instance of the key, is it as if that instance of the key does not exist.
+ *
+ * @example handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz=flux&baz=corge")) -> { foo: "bar", baz: ["flux", "corge"] }
+ * @example handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz")) -> { foo: "bar", baz: undefined }
+ * @example handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz&baz=lux")) -> { foo: "bar", baz: "lux" }
+ * @example handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux")) -> { foo: "bar", baz: ["lux", "flux"] }
  */
 export function handleSearchParamMultipleKeys(
   urlParams: URLSearchParams | ReadonlyURLSearchParams
-): Record<string, string | string[]> {
-  const result: Record<string, string | string[]> = {};
+): Record<string, string | string[] | undefined> {
+  const result: Record<string, string | string[] | undefined> = {};
 
-  urlParams.forEach((value, key) => {
+  urlParams.forEach((rawValue, key) => {
+    // if a key has no value, URLSearchParams sets the value to an empty string
+    // if this is the case, set the value to undefined
+    const value = rawValue === "" ? undefined : rawValue;
+
     const valueAtKey = result[key];
 
     if (Array.isArray(valueAtKey)) {
-      // if the value in result is an array already, push the value
-      valueAtKey.push(value);
+      if (value) {
+        // if the value in result is an array already, push the value if its not undefined
+        valueAtKey.push(value);
+      }
     } else if (valueAtKey) {
-      // if there is a value and it is not an array, make it an array and push the value
-      result[key] = [valueAtKey, value];
+      // if there is a value and it is not an array, make it an array and push the value if its not undefined
+      if (value) {
+        result[key] = [valueAtKey, value];
+      }
     } else {
       // if there is no value, set the value
       result[key] = value;
@@ -139,6 +154,12 @@ export function handleSearchParamMultipleKeys(
   return result;
 }
 
+// * TESTED
+/**
+ * Takes a raw search string and returns a object of the keys and parsed values
+ *
+ * @example parseObjectFromParamString("?foo=true&baz=56&bar=hello") -> { foo: true, baz: 56, bar: "hello" }
+ */
 export function parseObjectFromParamString(
   paramString: string
 ): Record<string, unknown> {
