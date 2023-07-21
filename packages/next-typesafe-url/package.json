@@ -48,7 +48,9 @@
     "typecheck": "tsc",
     "dev": "npm run build -- --watch",
     "test:watch": "vitest",
-    "lint": "eslint src/**"
+    "test": "vitest run",
+    "lint": "eslint src/**",
+    "publish:beta": "npm build && npm publish --tag beta"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
