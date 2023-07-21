@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import {
   parseObjectFromParamString,
   getDynamicRouteParams,
-  parseTopLevelObject,
+  parseMapObject,
 } from "./utils";
 import type { UseParamsResult } from "./types";
 import type { ServerParseParamsResult } from "./types";
@@ -119,7 +119,7 @@ export function parseServerSideSearchParams<T extends z.AnyZodObject>({
   query: GetServerSidePropsContext["query"];
   validator: T;
 }): ServerParseParamsResult<T> {
-  const parsedParams = parseTopLevelObject(query);
+  const parsedParams = parseMapObject(query);
   const validatedDynamicSearchParams = validator.safeParse(parsedParams);
   if (validatedDynamicSearchParams.success) {
     return {
@@ -158,7 +158,7 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
     };
   }
 
-  const parsedParams = parseTopLevelObject(params);
+  const parsedParams = parseMapObject(params);
   const validatedDynamicRouteParams = validator.safeParse(parsedParams);
   if (validatedDynamicRouteParams.success) {
     return {

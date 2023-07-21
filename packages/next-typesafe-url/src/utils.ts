@@ -90,7 +90,11 @@ export function parseOrMapParse(
   }
 }
 
-export function parseTopLevelObject(
+// * TESTED
+/**
+ * Maps over the object, calling parseOrMapParse on each value.
+ */
+export function parseMapObject(
   obj: Record<string, string | string[] | undefined>
 ): Record<string, unknown | unknown[]> {
   const result: Record<string, unknown | unknown[]> = {};
@@ -100,6 +104,10 @@ export function parseTopLevelObject(
   return result;
 }
 
+/**
+ * Takes a URLSearchParams object and returns a object of the keys and values in the URLSearchParams.
+ * If a key has multiple values, the value is transformed to an array of the values.
+ */
 export function handleSearchParamMultipleKeys(
   urlParams: URLSearchParams | ReadonlyURLSearchParams
 ): Record<string, string | string[]> {
@@ -124,20 +132,20 @@ export function parseObjectFromParamString(
 ): Record<string, unknown> {
   const params = new URLSearchParams(paramString);
   const handledParams = handleSearchParamMultipleKeys(params);
-  return parseTopLevelObject(handledParams);
+  return parseMapObject(handledParams);
 }
 
 export function parseObjectFromReadonlyURLParams(
   params: ReadonlyURLSearchParams
 ): Record<string, unknown> {
   const handledParams = handleSearchParamMultipleKeys(params);
-  return parseTopLevelObject(handledParams);
+  return parseMapObject(handledParams);
 }
 
 export function parseObjectFromUseParams(
   params: ReturnType<typeof useParams>
 ): Record<string, unknown> {
-  return parseTopLevelObject(params);
+  return parseMapObject(params);
 }
 
 export function getDynamicRouteParams(

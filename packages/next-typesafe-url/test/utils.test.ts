@@ -6,6 +6,7 @@ import {
   decodeAndTryJSONParse,
   generateSearchParamStringFromObj,
   parseOrMapParse,
+  parseMapObject,
 } from "../src/utils";
 
 describe("parseSegment", () => {
@@ -188,12 +189,34 @@ describe("generateSearchParamStringFromObj", () => {
 
 describe("parseOrMapParse", () => {
   test("string", () => {
-    expect(parseOrMapParse("foo")).toBe("foo");
+    expect(parseOrMapParse("%5B1%2C2%5D")).toStrictEqual([1, 2]);
   });
   test("array", () => {
-    expect(parseOrMapParse(["foo", "bar"])).toEqual(["foo", "bar"]);
+    expect(parseOrMapParse(["%5B1%2C2%5D", "%5B1%2C2%5D"])).toStrictEqual([
+      [1, 2],
+      [1, 2],
+    ]);
   });
   test("undefined", () => {
     expect(parseOrMapParse(undefined)).toBe(undefined);
+  });
+});
+
+describe("parseMapObject", () => {
+  test("standard use case", () => {
+    expect(
+      parseMapObject({
+        foo: "foo",
+        bar: "%5B1%2C2%5D",
+        baz: ["%5B1%2C2%5D", "%5B1%2C2%5D"],
+      })
+    ).toStrictEqual({
+      foo: "foo",
+      bar: [1, 2],
+      baz: [
+        [1, 2],
+        [1, 2],
+      ],
+    });
   });
 });
