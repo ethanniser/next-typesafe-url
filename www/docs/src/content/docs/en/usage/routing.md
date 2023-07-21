@@ -33,17 +33,53 @@ import { $path } from "next-typesafe-url";
 
 ### CAN THROW
 
-`$path` can throw at runtime if passed non-serializable values (functions, symbols, bigints) to any of the route or search params.
+`$path` can throw at runtime if:
 
-_This should never happen if you are not ignoring the many typescript errors that would be thrown at you._
+- If a dynamic segment or catch-all segment in the route does not have a corresponding value in routeParams.
+- If any of the passed values are not a non-empty string (except for search params), number, boolean, array, object, or null.
 
----
+_Neither should never happen if you are not ignoring the many typescript errors that would be thrown at you._
 
-**Note:** Explicitly passing `undefined` in searchParams or routeParams
+### Important Quirks
 
-If `undefined` is explictly passed as a **route param** it behaves the same as if that key was not listed at all: essentially ignored (only possibly used for optional catch all routes)
+#### Passing `undefined` for route params
 
-If `undefined` is explictly passed as a **search param**, it will be passed to the url without a corresponding value. This is different from leaving it out entirely, which will not include the search param in the url at all.
+If `undefined` is explictly passed as a **route param** for a dynamic or non-optinal catch-all segment, `$path` will throw at runtime to avoid something like `/foo//bar`. If undefined is passed for an optional catch-all segment, it will be ignored.
+
+```ts
+$path({ route: "/foo/[bar]", routeParams: { bar: undefined } });
+// THROWS! Cannot pass undefined for a dynamic segment
+
+$path({ route: "/foo/[...bar]", routeParams: { bar: undefined } });
+// THROWS! Cannot pass undefined for a catch-all segment
+
+$path({ route: "/foo/[[...bar]]", routeParams: { bar: undefined } });
+// "/foo" Optional catch-all segments are ignored if undefined is passed
+```
+
+#### Passing `undefined` or `""` for search params
+
+If `undefined` **OR** and empty string is explictly passed as a **search param**, it will be passed to the url without a corresponding value. This is different from leaving it out entirely, which will not include the search param in the url at all.
+
+```ts
+$path({ route: "/foo", searchParams: { bar: undefined } });
+// "/foo?bar" undefined is passed as a search param without a value
+
+$path({ route: "/foo", searchParams: { bar: "" } });
+// "/foo?bar" An empty string is passed as a search param without a value
+```
+
+#### Passing data to catch-all segments
+
+Catch all segments can be passed either an array or a value. If an array is passed, the values will be joined with a `/` in the url.
+
+```ts
+$path({ route: "/foo/[...bar]", routeParams: { bar: ["a", "b", "c"] } });
+// "/foo/a/b/c"
+
+$path({ route: "/foo/[...bar]", routeParams: { bar: "a" } });
+// "/foo/a"
+```
 
 ---
 
@@ -53,3 +89,4 @@ If `undefined` is explictly passed as a **search param**, it will be passed to t
     margin-bottom: 40px;
   }
 </style>
+```

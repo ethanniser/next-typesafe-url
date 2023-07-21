@@ -62,17 +62,25 @@ Feel free to use your state management library of choice to pass the data down t
 
 `next-typesafe-url` provides full support for validating route params and search params in `getStaticProps` and `getServerSideProps`.
 
-The `parseServerSideRouteParams` and `parseServerSideSearchParams` functions are used to parse the route params and search params on the server. They take the same schema from your `Route` object as the `useRouteParams` and `useSearchParams` hooks, as well as parts of `context` object from `getStaticProps` / `getServerSideProps`.
+The `parseServerSideParams` function is used to parse the route params and search params on the server. They take the same schema from your `Route` object as the `useRouteParams` and `useSearchParams` hooks, as well as parts of `context` object from `getStaticProps` / `getServerSideProps`.
+
+### Route Params
+
+To parse route params, pass the `params` field from the gssp context object, as well as the route params schema from your `Route` object. Note this field is possibly undefined, so you should check for that before passing it to `parseServerSideParams`.
+
+### Search Params
+
+To parse search params, pass the `query` field from the gssp context object, as well as the search params schema from your `Route` object.
 
 ### Errors
 
-Like the hooks, `parseServerSideRouteParams` and `parseServerSideSearchParams` have an `isError` flag, and if it is true, then `error` will be a `ZodError` you can use to get more information about the error.
+Like the hooks, `parseServerSideParams` have an `isError` flag, and if it is true, then `error` will be a `ZodError` you can use to get more information about the error.
 
 ---
 
 This is an example of how to use `next-typesafe-url` with `getServerSideProps`, but the same pattern can be used with `getStaticProps`.
 
-**_In this example I simply pass all of the params as props, but you can use the fully typed and validated `data` you get back from `parseServerSideRouteParams` and `parseServerSideSearchParams` however you wish._**
+**_In this example I simply pass all of the params as props, but you can use the fully typed and validated `data` you get back from `parseServerSideParams` however you wish._**
 
 ```tsx
 // pages/product/[productID].tsx
@@ -84,10 +92,7 @@ import type {
 } from "next";
 import { z } from "zod";
 import { type AppRouter } from "next-typesafe-url";
-import {
-  parseServerSideRouteParams,
-  parseServerSideSearchParams,
-} from "next-typesafe-url/pages";
+import { parseServerSideParams } from "next-typesafe-url/pages";
 
 const Route = {
   routeParams: z.object({
@@ -109,13 +114,13 @@ type ServerSideProps = AppRouter["/product/[productID]"]["searchParams"] &
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   context
 ) => {
-  const routeParams = parseServerSideRouteParams({
-    context.params,
+  const routeParams = parseServerSideParams({
+    params: context.params ?? {},
     validator: Route.routeParams,
   });
 
-  const searchParams = parseServerSideSearchParams({
-    context.query,
+  const searchParams = parseServerSideParams({
+    params: context.query,
     validator: Route.searchParams,
   });
 
@@ -134,11 +139,13 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 type PageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const Page: NextPage<PageProps> = ({searchParams, routeParams}) => {
+const Page: NextPage<PageProps> = ({ searchParams, routeParams }) => {
   return (
     <>
       <div>productID: {routeParams.productID}</div>
-      <div>user: {`${searchParams.userInfo.name} - ${searchParams.userInfo.age}`}</div>
+      <div>
+        user: {`${searchParams.userInfo.name} - ${searchParams.userInfo.age}`}
+      </div>
       <div>location: {searchParams.location}</div>
     </>
   );

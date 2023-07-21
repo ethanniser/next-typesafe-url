@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   });
 
   const searchParams = parseServerSideParams({
-    params: context.query ?? {},
+    params: context.query,
     validator: Route.searchParams,
   });
 

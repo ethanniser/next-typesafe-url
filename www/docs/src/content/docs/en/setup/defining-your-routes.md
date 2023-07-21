@@ -57,36 +57,93 @@ We import two things, first is `z` from [zod](https://zod.dev/), which gives us 
 
 `Route` should have two keys, `routeParams` and `searchParams`, both of which should be either zod objects or undefined (feel free to leave either key out if it can be left undefined).
 
+#### Valid Types
+
+**VERY IMPORTANT:**
+
+Route and seach params are serialized as JSON, so the raw input types of your zod schemas must be either: `string`, `number`, `boolean`, `null`, `object`, or `array`. If you wish to do zod transformations and have more complex output types, you can do so, but the input types must be one of the above.
+
+```ts
+// Valid
+const Route = {
+  routeParams: z.object({
+    productID: z.tuple([z.string(), z.number()]),
+  }),
+  searchParams: z.object({
+    timestamp: z.string().transform((val) => parseToDate(val)),
+  }),
+} satisfies DynamicRoute;
+
+// Invalid
+const Route = {
+  routeParams: z.object({
+    productID: z.bigint(),
+  }),
+  searchParams: z.object({
+    timestamp: z.date(),
+  }),
+} satisfies DynamicRoute;
+```
+
+##### Optional Params
+
+If you want search params or a optional catch-all route param to be optional, use `.optional()` on the zod type.
+
 **Don't make the top level zod objects optional**, if you wan't to make it so a route could _optionally_ take no search params or route params, then simply make each item inside the zod object optional, and `next-typesafe-url` will automatically infer the whole object as optional.
 
-##### `routeParams`
+```ts
+export const Route = {
+  searchParams: z.object({
+    location: z.enum(["us", "eu"]).optional(),
+    userInfo: z
+      .object({
+        name: z.string(),
+        age: z.number(),
+      })
+      .optional(),
+  }),
+} satisfies DynamicRoute;
+```
+
+^ This schema above will infer with the input type of:
+
+```ts
+type RouteInputType = {
+  searchParams?: {
+    location?: "us" | "eu";
+    userInfo?: {
+      name: string;
+      age: number;
+    };
+  };
+};
+```
+
+#### `routeParams`
 
 Each key in `routeParams` should be the name of a dynamic route segment for the route the schema is for, and each value should be a zod type that represents the valid type for that segment.
 
----
-
-**Note:** Catch all and optional catch all routes are interepted as arrays or tuples.
+Catch all and optional catch all routes are interepted as arrays or tuples IF multiple segments are matched. If only one segment is matched, it is interpreted as single value. So you you may want to use a pattern such `z.array(z.string()).or(z.string())` to match both cases
 
 ```ts
 // route: /dashboard/[...options]
 const Route = {
   routeParams: z.object({
-    options: z.tuple([z.string(), z.number()]),
+    options: z.tuple([z.string(), z.number()]).or(z.string()),
   }),
 };
 export type RouteType = typeof Route;
 // /dashboard/deployments/2 will match and return { options: ["deployments", 2] }
+// /dashboard/overview will match and return { options: "overview" }
 ```
 
----
-
-##### `searchParams`
+#### `searchParams`
 
 Each key in `searchParams` should be the name of a valid search param for the route the schema is for, and each value should be a zod type that represents the valid type for that search param.
 
----
+##### Same Key Multiple Times
 
-**Note:** When the same search param is used multiple times, it is interpreted as an array or tuple.
+If the same search param key appears multiple times, it is interpreted as an array or tuple.
 
 ```ts
 // route: /dashboard
@@ -101,11 +158,9 @@ export type RouteType = typeof Route;
 
 To be honest not sure why you would want to do this because of JSON support, but it's there if you need it.
 
----
+##### Key With No Value
 
-**Note:** A search param that exists in the url, but has no value ( `?foo` ) will be interpreted as `undefined`.
-
----
+A search param that exists in the url, but has no value ( `?foo` ) will be interpreted as explictly `undefined`, this is different from if the search param does not exist at all, as that would also be `undefined` but without the key present.
 
 ### Double Check Your Schema
 
