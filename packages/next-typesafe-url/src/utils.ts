@@ -1,3 +1,7 @@
+import { ReadonlyURLSearchParams, useParams } from "next/navigation";
+import type { NextRouter } from "next/router";
+
+// * TESTED
 export function encodeValue(value: unknown): string {
   if (typeof value === "string" && value !== "") {
     return encodeURIComponent(value);
@@ -29,7 +33,7 @@ export function generateParamStringFromSearchParamObj(
   return finalString === "?" ? "" : finalString;
 }
 
-function safeJSONParse(value: string | undefined): unknown {
+export function safeJSONParse(value: string | undefined): unknown {
   if (value === undefined) {
     return value;
   }
@@ -40,7 +44,7 @@ function safeJSONParse(value: string | undefined): unknown {
   }
 }
 
-function parseOrMapParse(
+export function parseOrMapParse(
   obj: string | string[] | undefined
 ): unknown | unknown[] {
   if (Array.isArray(obj)) {
@@ -50,7 +54,7 @@ function parseOrMapParse(
   }
 }
 
-function parseTopLevelObject(
+export function parseTopLevelObject(
   obj: Record<string, string | string[] | undefined>
 ): Record<string, unknown | unknown[]> {
   const result: Record<string, unknown | unknown[]> = {};
@@ -60,7 +64,7 @@ function parseTopLevelObject(
   return result;
 }
 
-function handleSearchParamMultipleKeys(
+export function handleSearchParamMultipleKeys(
   urlParams: URLSearchParams | ReadonlyURLSearchParams
 ): Record<string, string | string[]> {
   const result: Record<string, string | string[]> = {};
@@ -99,8 +103,6 @@ export function parseObjectFromUseParams(
 ): Record<string, unknown> {
   return parseTopLevelObject(params);
 }
-
-import type { NextRouter } from "next/router";
 
 export function getDynamicRouteParams(
   path: NextRouter["route"],
@@ -168,6 +170,7 @@ type Segment = {
   value: string;
 };
 
+// * TESTED
 export function parseSegment(segment: string): Segment {
   if (
     segment.startsWith("[") &&
@@ -208,6 +211,7 @@ export function parseSegment(segment: string): Segment {
   }
 }
 
+// * TESTED
 // ! THROWS if a dynamic or catch-all segment is missing from the routeParams
 export function encodeAndFillRoute(
   route: string,
@@ -261,73 +265,4 @@ export function encodeAndFillRoute(
   }
 
   return parts.join("/");
-}
-
-import { z } from "zod";
-import type { ServerParseParamsResult } from "./types";
-import { ReadonlyURLSearchParams, useParams } from "next/navigation";
-import type { GetServerSidePropsContext } from "next";
-
-// takes gssp context.query
-export function parseServerSideSearchParams<T extends z.AnyZodObject>({
-  query,
-  validator,
-}: {
-  query: GetServerSidePropsContext["query"];
-  validator: T;
-}): ServerParseParamsResult<T> {
-  const parsedParams = parseTopLevelObject(query);
-  const validatedDynamicSearchParams = validator.safeParse(parsedParams);
-  if (validatedDynamicSearchParams.success) {
-    return {
-      data: validatedDynamicSearchParams.data,
-      isError: false,
-      error: undefined,
-    };
-  } else {
-    return {
-      data: undefined,
-      isError: true,
-      error: validatedDynamicSearchParams.error,
-    };
-  }
-}
-
-// takes gssp context.params
-export function parseServerSideRouteParams<T extends z.AnyZodObject>({
-  params,
-  validator,
-}: {
-  params: GetServerSidePropsContext["params"];
-  validator: T;
-}): ServerParseParamsResult<T> {
-  if (!params) {
-    return {
-      data: undefined,
-      isError: true,
-      error: new z.ZodError([
-        {
-          path: [],
-          code: "custom",
-          message: "Params field of gSSP context is undefined",
-        },
-      ]),
-    };
-  }
-
-  const parsedParams = parseTopLevelObject(params);
-  const validatedDynamicRouteParams = validator.safeParse(parsedParams);
-  if (validatedDynamicRouteParams.success) {
-    return {
-      data: validatedDynamicRouteParams.data,
-      isError: false,
-      error: undefined,
-    };
-  } else {
-    return {
-      data: undefined,
-      isError: true,
-      error: validatedDynamicRouteParams.error,
-    };
-  }
 }

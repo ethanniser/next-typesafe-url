@@ -3,13 +3,14 @@
 import { useRouter } from "next/router";
 import { z } from "zod";
 import { useState, useEffect } from "react";
-import { parseObjectFromParamString, getDynamicRouteParams } from "./utils";
-import type { UseParamsResult } from "./types";
-
-export {
-  parseServerSideRouteParams,
-  parseServerSideSearchParams,
+import {
+  parseObjectFromParamString,
+  getDynamicRouteParams,
+  parseTopLevelObject,
 } from "./utils";
+import type { UseParamsResult } from "./types";
+import type { ServerParseParamsResult } from "./types";
+import type { GetServerSidePropsContext } from "next";
 
 // ! Should ideally only be used in top level route component
 export function useRouteParams<T extends z.AnyZodObject>(
@@ -107,5 +108,69 @@ export function useSearchParams<T extends z.AnyZodObject>(
         error: undefined,
       };
     }
+  }
+}
+
+// takes gssp context.query
+export function parseServerSideSearchParams<T extends z.AnyZodObject>({
+  query,
+  validator,
+}: {
+  query: GetServerSidePropsContext["query"];
+  validator: T;
+}): ServerParseParamsResult<T> {
+  const parsedParams = parseTopLevelObject(query);
+  const validatedDynamicSearchParams = validator.safeParse(parsedParams);
+  if (validatedDynamicSearchParams.success) {
+    return {
+      data: validatedDynamicSearchParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicSearchParams.error,
+    };
+  }
+}
+
+// takes gssp context.params
+export function parseServerSideRouteParams<T extends z.AnyZodObject>({
+  params,
+  validator,
+}: {
+  params: GetServerSidePropsContext["params"];
+  validator: T;
+}): ServerParseParamsResult<T> {
+  if (!params) {
+    return {
+      data: undefined,
+      isError: true,
+      error: new z.ZodError([
+        {
+          path: [],
+          code: "custom",
+          message: "Params field of gSSP context is undefined",
+        },
+      ]),
+    };
+  }
+
+  const parsedParams = parseTopLevelObject(params);
+  const validatedDynamicRouteParams = validator.safeParse(parsedParams);
+  if (validatedDynamicRouteParams.success) {
+    return {
+      data: validatedDynamicRouteParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicRouteParams.error,
+    };
   }
 }

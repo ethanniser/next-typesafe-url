@@ -33,6 +33,7 @@ export type {
   ServerParseParamsResult,
 };
 
+// * TESTED
 export function $path<T extends AllRoutes>({
   route,
   searchParams,
