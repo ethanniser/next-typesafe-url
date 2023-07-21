@@ -10,8 +10,10 @@ import {
   handleSearchParamMultipleKeys,
   parseObjectFromParamString,
   parseObjectFromStringRecord,
+  parseServerSideParams,
 } from "../src/utils";
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { ZodError, z } from "zod";
 
 describe("parseSegment", () => {
   test("static segment", () => {
@@ -378,5 +380,62 @@ describe("parseObjectFromStringRecord", () => {
       foo: "foo",
       bar: [1, 2],
     });
+  });
+});
+
+describe("parseServerSideParams", () => {
+  test("standard use case", () => {
+    expect(
+      parseServerSideParams({
+        params: {
+          string: "foo",
+          number: "1",
+          boolean: "true",
+          null: "null",
+          array: "%5B1%2C2%5D",
+          object: "%7B%22foo%22%3A%22bar%22%7D",
+          nestedObject: "%7B%22foo%22%3A%7B%22bar%22%3A%22baz%22%7D%7D",
+        },
+        validator: z.object({
+          string: z.string(),
+          number: z.number(),
+          boolean: z.boolean(),
+          null: z.null(),
+          array: z.array(z.number()),
+          object: z.object({ foo: z.string() }),
+          nestedObject: z.object({ foo: z.object({ bar: z.string() }) }),
+        }),
+      })
+    ).toStrictEqual({
+      data: {
+        string: "foo",
+        number: 1,
+        boolean: true,
+        null: null,
+        array: [1, 2],
+        object: { foo: "bar" },
+        nestedObject: { foo: { bar: "baz" } },
+      },
+      isError: false,
+      error: undefined,
+    });
+  });
+  test("validation fails", () => {
+    expect(
+      parseServerSideParams({
+        params: {
+          string: "68",
+          number: "foo",
+          boolean: "bar",
+          null: "baz",
+        },
+        validator: z.object({
+          string: z.string(),
+          number: z.number(),
+          boolean: z.boolean(),
+          null: z.null(),
+        }),
+      }).error
+    ).toBeInstanceOf(ZodError);
   });
 });

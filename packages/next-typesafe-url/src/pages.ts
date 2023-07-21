@@ -8,6 +8,7 @@ import {
   parseObjectFromStringRecord,
 } from "./utils";
 import type { UseParamsResult } from "./types";
+export { parseServerSideParams } from "./utils";
 
 // ! Should ideally only be used in top level route component
 export function useRouteParams<T extends z.AnyZodObject>(

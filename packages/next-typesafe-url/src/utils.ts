@@ -1,6 +1,5 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 import type { ServerParseParamsResult } from "./types";
-import type { GetServerSidePropsContext } from "next";
 import { z } from "zod";
 
 // * TESTED
@@ -315,29 +314,21 @@ export function encodeAndFillRoute(
   return parts.join("/");
 }
 
-// takes gssp context.params
-export function parseServerSideRouteParams<T extends z.AnyZodObject>({
+// * TESTED
+/**
+ * Takes an object of route params and a validator and returns a object of the validated route params.
+ * If using with in pages gssp, pass context.params (for route params) or context.query (for search params) as the params argument.
+ */
+export function parseServerSideParams<T extends z.AnyZodObject>({
   params,
   validator,
 }: {
-  params: GetServerSidePropsContext["params"];
+  params: Record<string, string | string[] | undefined>;
   validator: T;
 }): ServerParseParamsResult<T> {
-  if (!params) {
-    return {
-      data: undefined,
-      isError: true,
-      error: new z.ZodError([
-        {
-          path: [],
-          code: "custom",
-          message: "Params field of gSSP context is undefined",
-        },
-      ]),
-    };
-  }
-
-  const parsedParams = parseMapObject(params);
+  // parse the params to a Record<string, unknown>
+  const parsedParams = parseObjectFromStringRecord(params);
+  // validate the params with the validator
   const validatedDynamicRouteParams = validator.safeParse(parsedParams);
   if (validatedDynamicRouteParams.success) {
     return {
@@ -350,31 +341,6 @@ export function parseServerSideRouteParams<T extends z.AnyZodObject>({
       data: undefined,
       isError: true,
       error: validatedDynamicRouteParams.error,
-    };
-  }
-}
-
-// takes gssp context.query
-export function parseServerSideSearchParams<T extends z.AnyZodObject>({
-  query,
-  validator,
-}: {
-  query: GetServerSidePropsContext["query"];
-  validator: T;
-}): ServerParseParamsResult<T> {
-  const parsedParams = parseMapObject(query);
-  const validatedDynamicSearchParams = validator.safeParse(parsedParams);
-  if (validatedDynamicSearchParams.success) {
-    return {
-      data: validatedDynamicSearchParams.data,
-      isError: false,
-      error: undefined,
-    };
-  } else {
-    return {
-      data: undefined,
-      isError: true,
-      error: validatedDynamicSearchParams.error,
     };
   }
 }

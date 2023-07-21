@@ -1,7 +1,4 @@
-import {
-  parseServerSideRouteParams,
-  parseServerSideSearchParams,
-} from "./utils";
+import { parseServerSideParams } from "./utils";
 import type { DynamicRoute, DynamicLayout } from "./types";
 import { type ReactElement } from "react";
 
@@ -26,7 +23,7 @@ export function withParamValidation(
     let parsedRouteParams = undefined;
 
     if (validator.routeParams) {
-      parsedRouteParams = parseServerSideRouteParams({
+      parsedRouteParams = parseServerSideParams({
         params,
         validator: validator.routeParams,
       });
@@ -34,8 +31,8 @@ export function withParamValidation(
 
     let parsedSearchParams = undefined;
     if (validator.searchParams) {
-      parsedSearchParams = parseServerSideSearchParams({
-        query: searchParams ?? {},
+      parsedSearchParams = parseServerSideParams({
+        params: searchParams ?? {},
         validator: validator.searchParams,
       });
     }
@@ -71,7 +68,7 @@ export function withLayoutParamValidation(
     let parsedRouteParams = undefined;
 
     if (validator.routeParams) {
-      parsedRouteParams = parseServerSideRouteParams({
+      parsedRouteParams = parseServerSideParams({
         params,
         validator: validator.routeParams,
       });
