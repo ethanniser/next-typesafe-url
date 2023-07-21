@@ -46,23 +46,29 @@ export function encodeValue(value: unknown): string {
 export function generateSearchParamStringFromObj(
   obj: Record<string, unknown>
 ): string {
+  // array to collect the encoded params
   const params: string[] = [];
 
+  // loop over the object
   for (const [key, value] of Object.entries(obj)) {
     if (value === undefined || value === "") {
+      // if the value is undefined or an empty string, encode the key without a value
       params.push(key);
     } else {
+      // if the value is anything else, encode the key-value pair
       params.push(`${key}=${encodeValue(value)}`);
     }
   }
-
+  // join the params with an ampersand
   const finalString = `?${params.join("&")}`;
+  // if the string is just a question mark (original object was empty), return an empty string
   return finalString === "?" ? "" : finalString;
 }
 
 // * TESTED
 /**
- * First uri decodes the value, then tries to parse it as JSON. If it fails, returns the original value.
+ * If a string, first uri decodes the value, then tries to parse it as JSON. If it fails, returns the original value.
+ * If undefined, returns undefined.
  */
 export function decodeAndTryJSONParse(value: string | undefined): unknown {
   if (value === undefined) {
@@ -98,12 +104,14 @@ export function parseMapObject(
   obj: Record<string, string | string[] | undefined>
 ): Record<string, unknown | unknown[]> {
   const result: Record<string, unknown | unknown[]> = {};
+
   for (const [key, value] of Object.entries(obj)) {
     result[key] = parseOrMapParse(value);
   }
   return result;
 }
 
+// * TESTED
 /**
  * Takes a URLSearchParams object and returns a object of the keys and values in the URLSearchParams.
  * If a key has multiple values, the value is transformed to an array of the values.
@@ -115,11 +123,15 @@ export function handleSearchParamMultipleKeys(
 
   urlParams.forEach((value, key) => {
     const valueAtKey = result[key];
+
     if (Array.isArray(valueAtKey)) {
+      // if the value in result is an array already, push the value
       valueAtKey.push(value);
     } else if (valueAtKey) {
+      // if there is a value and it is not an array, make it an array and push the value
       result[key] = [valueAtKey, value];
     } else {
+      // if there is no value, set the value
       result[key] = value;
     }
   });

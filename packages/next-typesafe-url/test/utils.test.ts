@@ -7,6 +7,7 @@ import {
   generateSearchParamStringFromObj,
   parseOrMapParse,
   parseMapObject,
+  handleSearchParamMultipleKeys,
 } from "../src/utils";
 
 describe("parseSegment", () => {
@@ -174,7 +175,7 @@ describe("generateSearchParamStringFromObj", () => {
   test("empty string value", () => {
     expect(generateSearchParamStringFromObj({ foo: "" })).toBe("?foo");
   });
-  test("full example", () => {
+  test("standard use case", () => {
     expect(
       generateSearchParamStringFromObj({
         foo: "bar",
@@ -217,6 +218,17 @@ describe("parseMapObject", () => {
         [1, 2],
         [1, 2],
       ],
+    });
+  });
+});
+
+describe("handleSearchParamMultipleKeys", () => {
+  test("standard use case", () => {
+    expect(
+      handleSearchParamMultipleKeys(new URLSearchParams("foo=baz&bar=1&bar=2"))
+    ).toStrictEqual({
+      foo: "baz",
+      bar: ["1", "2"],
     });
   });
 });

@@ -294,8 +294,8 @@ describe("route params", () => {
   });
 });
 
-describe("example use cases", () => {
-  test("example 1", () => {
+describe("standard use cases", () => {
+  test("1", () => {
     expect(
       $testPath({
         route: "/foo/[bar]/hello/[baz]/[[...qux]]",
@@ -303,7 +303,7 @@ describe("example use cases", () => {
       })
     ).toBe("/foo/true/hello/65/null/goodbye");
   });
-  test("example 2", () => {
+  test("2", () => {
     expect(
       $testPath({
         route: "/product/[productID]",
