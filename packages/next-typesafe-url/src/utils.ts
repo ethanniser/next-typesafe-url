@@ -1,4 +1,4 @@
-function encodeValue(value: unknown): string {
+export function encodeValue(value: unknown): string {
   if (typeof value === "string" && value !== "") {
     return encodeURIComponent(value);
   } else if (typeof value === "number" || typeof value === "boolean") {
@@ -11,26 +11,9 @@ function encodeValue(value: unknown): string {
     return encodeURIComponent(JSON.stringify(value));
   } else {
     throw new Error(
-      "only null, string, number, boolean, array, and object allowed"
+      "only null, non-empty string, number, boolean, array, and object are able to be encoded"
     );
   }
-}
-
-export function encodeRouteParamsToObj(
-  obj: Record<string, unknown>
-): Record<string, string | string[]> {
-  const params: Record<string, string | string[]> = {};
-  for (const [key, value] of Object.entries(obj)) {
-    if (value === undefined) {
-      continue;
-    } else if (Array.isArray(value)) {
-      params[key] = value.map((item) => encodeValue(item));
-    } else {
-      const encodedValue = encodeValue(value);
-      params[key] = encodedValue;
-    }
-  }
-  return params;
 }
 
 export function generateParamStringFromSearchParamObj(
@@ -39,9 +22,7 @@ export function generateParamStringFromSearchParamObj(
   const params: string[] = [];
 
   for (const [key, value] of Object.entries(obj)) {
-    params.push(
-      `${key}${value === undefined ? "" : `=${encodeValue(value)}`}}`
-    );
+    params.push(`${key}${value === undefined ? "" : `=${encodeValue(value)}`}`);
   }
 
   const finalString = `?${params.join("&")}`;
@@ -187,12 +168,13 @@ type Segment = {
   value: string;
 };
 
-function parseSegment(segment: string): Segment {
+export function parseSegment(segment: string): Segment {
   if (
     segment.startsWith("[") &&
     segment.endsWith("]") &&
     !segment.includes("...")
   ) {
+    // dynamic segment ie [id] -> { type: "dynamic", value: "id"}
     return {
       type: "dynamic",
       value: segment.slice(1, -1),
@@ -202,6 +184,7 @@ function parseSegment(segment: string): Segment {
     segment.endsWith("]]") &&
     segment.includes("...")
   ) {
+    // optional catch-all segment ie [[...id]] -> { type: "optionalCatchAll", value: "id"}
     return {
       type: "optionalCatchAll",
       value: segment.slice(5, -2),
@@ -211,11 +194,13 @@ function parseSegment(segment: string): Segment {
     segment.endsWith("]") &&
     segment.includes("...")
   ) {
+    // catch-all segment ie [...id] -> { type: "catchAll", value: "id"}
     return {
       type: "catchAll",
       value: segment.slice(4, -1),
     };
   } else {
+    // static segment ie "foo" -> { type: "static", value: "foo"}
     return {
       type: "static",
       value: segment,
@@ -223,44 +208,54 @@ function parseSegment(segment: string): Segment {
   }
 }
 
-export function fillPath(
-  path: string,
-  data: Record<string, string | string[]>
+// ! THROWS if a dynamic or catch-all segment is missing from the routeParams
+export function encodeAndFillRoute(
+  route: string,
+  routeParams: Record<string, unknown>
 ): string {
-  const segments = path.split("/");
+  const segments = route.split("/");
   const parsed = segments.map((e) => parseSegment(e));
   const parts: string[] = [];
 
   for (const segment of parsed) {
     if (segment.type === "static") {
+      // static segment so just push the value
       parts.push(segment.value);
     } else if (segment.type === "dynamic") {
-      const paramName = segment.value;
-      const paramValue = data[paramName];
+      // dynamic segment so get the value from the routeParams, encode it, and push it
+      // if it's undefined, throw
+      const paramValue = routeParams[segment.value];
       if (paramValue !== undefined) {
-        parts.push(String(paramValue));
+        parts.push(encodeValue(paramValue));
       } else {
         throw new Error(`Missing value for dynamic segment "${segment.value}"`);
       }
     } else if (segment.type === "catchAll") {
-      const paramName = segment.value;
-      const paramValue = data[paramName];
+      // catch-all segment so get the value from the routeParams,
+      // if its not an array, encode and push
+      // if its an array, encode each item and push
+      // if its undefined, throw
+      const paramValue = routeParams[segment.value];
       if (Array.isArray(paramValue)) {
-        parts.push(...paramValue.map((e) => String(e)));
+        parts.push(...paramValue.map((e) => encodeValue(e)));
       } else if (paramValue !== undefined) {
-        parts.push(String(paramValue));
+        parts.push(encodeValue(paramValue));
       } else {
         throw new Error(
           `Missing value for catch-all segment "${segment.value}"`
         );
       }
     } else if (segment.type === "optionalCatchAll") {
-      const paramName = segment.value;
-      const paramValue = data[paramName];
+      // optional catch-all segment so get the value from the routeParams,
+      // if its not an array, encode and push
+      // if its an array, encode each item and push
+      // if its undefined don't push anything
+
+      const paramValue = routeParams[segment.value];
       if (Array.isArray(paramValue)) {
-        parts.push(...paramValue.map((e) => String(e)));
+        parts.push(...paramValue.map((e) => encodeValue(e)));
       } else if (paramValue !== undefined) {
-        parts.push(String(paramValue));
+        parts.push(encodeValue(paramValue));
       }
     }
   }
