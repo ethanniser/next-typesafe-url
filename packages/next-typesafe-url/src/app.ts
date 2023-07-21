@@ -29,10 +29,12 @@ function usePrevious<T>(value: T) {
 }
 
 /**
- * Parses the current dynamic route params and validates them against the provided zod schema.
+ * FOR APP DIRECTORY ONLY:
+ * Parses the current dynamic route params
+ * and validates them against the provided zod schema from your `Route` object.
  * Be careful if using this in a component that is used in multiple routes,
  * making sure you pass the correct validator for the current route.
- * @param validator - The zod schema to validate the params against, should come from your Route object
+ * @param validator - The zod schema to validate the params against, should come from your `Route` object
  *
  * @example
  * const routeParams = useRouteParams(Route.routeParams);
@@ -98,10 +100,12 @@ export function useRouteParams<T extends z.AnyZodObject>(
 }
 
 /**
- * Parses the current dynamic route params and validates them against the provided zod schema.
+ * FOR APP DIRECTORY ONLY:
+ * Parses the current search params
+ * and validates them against the provided zod schema from your `Route` object.
  * Be careful if using this in a component that is used in multiple routes,
  * making sure you pass the correct validator for the current route.
- * @param validator - The zod schema to validate the params against, should come from your Route object
+ * @param validator - The zod schema to validate the params against, should come from your `Route` object
  *
  * @example
  * const searchParams = useSearchParams(Route.searchParams);

@@ -11,6 +11,7 @@ import type { UseParamsResult } from "./types";
 export { parseServerSideParams } from "./utils";
 
 /**
+ * FOR PAGES DIRECTORY ONLY:
  * Parses the current dynamic route params and validates them against the provided zod schema.
  * Should only be used in the top level route component where your Route object is defined.
  * @param validator - The zod schema to validate the params against, should come from your Route object
@@ -77,7 +78,8 @@ export function useRouteParams<T extends z.AnyZodObject>(
 }
 
 /**
- * Parses the current dynamic route params and validates them against the provided zod schema.
+ * FOR PAGES DIRECTORY ONLY:
+ * Parses the current search params and validates them against the provided zod schema.
  * Should only be used in the top level route component where your Route object is defined.
  * @param validator - The zod schema to validate the params against, should come from your Route object
  *

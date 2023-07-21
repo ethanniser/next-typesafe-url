@@ -17,6 +17,7 @@ type SomeReactComponent = (
 /**
  * A HOC that validates the params passed to a page component.
  * The component you wrap with this should use `InferPagePropsType` for its props.
+ * It should be the default export of `page.tsx`.
  * @param Component - the page component to wrap
  * @param validator - the validator to use, this should be your `Route` object
  *
@@ -76,6 +77,7 @@ export function withParamValidation(
 
 /**
  * A HOC that validates the route params passed to a layout component.
+ * It should be the default export of `layout.tsx`.
  * The component you wrap with this should use `InferLayoutPropsType` for its props.
  * @param Component - the layour component to wrap
  * @param validator - the validator to use, this should be your `LayoutRoute` object
