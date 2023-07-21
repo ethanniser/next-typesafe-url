@@ -50,7 +50,8 @@
     "test:watch": "vitest",
     "test": "vitest run",
     "lint": "eslint src/**",
-    "publish:beta": "npm build && npm publish --tag beta"
+    "publish:beta": "npm build && npm publish --tag beta",
+    "clean:dist": "rm ./dist -r"
   },
   "dependencies": {
     "chokidar": "^3.5.3",

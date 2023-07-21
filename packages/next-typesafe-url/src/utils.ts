@@ -1,5 +1,7 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
-import type { NextRouter } from "next/router";
+import type { ServerParseParamsResult } from "./types";
+import type { GetServerSidePropsContext } from "next";
+import { z } from "zod";
 
 // * TESTED
 /**
@@ -188,70 +190,9 @@ export function parseObjectFromReadonlyURLParams(
  * @example parseObjectFromStringRecord({ foo: "true", baz: "56", bar: "hello" }) -> { foo: true, baz: 56, bar: "hello" }
  */
 export function parseObjectFromStringRecord(
-  params: Record<string, string>
+  params: Record<string, string | string[] | undefined>
 ): Record<string, unknown> {
   return parseMapObject(params);
-}
-
-export function getDynamicRouteParams(
-  path: NextRouter["route"],
-  query: NextRouter["query"]
-): Record<string, unknown> {
-  const segments = path.split("/");
-
-  // Extract dynamic segments from the path
-  const dynamicSegments = segments.filter(
-    (segment) =>
-      segment.startsWith("[") &&
-      segment.endsWith("]") &&
-      !segment.includes("...")
-  );
-  const optionalCatchAllSegments = segments.filter(
-    (segment) =>
-      segment.startsWith("[[") &&
-      segment.endsWith("]]") &&
-      segment.includes("...")
-  );
-  const catchAllSegments = segments.filter(
-    (segment) =>
-      segment.startsWith("[") &&
-      segment.endsWith("]") &&
-      segment.includes("...")
-  );
-  // Extract dynamic param names from dynamic segments
-  const dynamicParamNames = dynamicSegments.map((segment) =>
-    segment.slice(1, -1)
-  );
-
-  const optionalCatchAllParamNames = optionalCatchAllSegments.map((segment) =>
-    segment.slice(5, -2)
-  );
-
-  const catchAllParamNames = catchAllSegments.map((segment) =>
-    segment.slice(4, -1)
-  );
-
-  const allCatchAllNames = [
-    ...optionalCatchAllParamNames,
-    ...catchAllParamNames,
-  ];
-
-  const parsedCatchAll: Record<string, unknown[]> = {};
-
-  for (const name of allCatchAllNames) {
-    const value = query[name];
-    const result = parseOrMapParse(value);
-    parsedCatchAll[name] = Array.isArray(result) ? result : [result];
-  }
-
-  const parsedNonCatchAll: Record<string, unknown> = {};
-
-  for (const name of dynamicParamNames) {
-    const value = query[name];
-    parsedNonCatchAll[name] = parseOrMapParse(value);
-  }
-
-  return { ...parsedNonCatchAll, ...parsedCatchAll };
 }
 
 type Segment = {
@@ -372,4 +313,68 @@ export function encodeAndFillRoute(
 
   // join the parts with a slash
   return parts.join("/");
+}
+
+// takes gssp context.params
+export function parseServerSideRouteParams<T extends z.AnyZodObject>({
+  params,
+  validator,
+}: {
+  params: GetServerSidePropsContext["params"];
+  validator: T;
+}): ServerParseParamsResult<T> {
+  if (!params) {
+    return {
+      data: undefined,
+      isError: true,
+      error: new z.ZodError([
+        {
+          path: [],
+          code: "custom",
+          message: "Params field of gSSP context is undefined",
+        },
+      ]),
+    };
+  }
+
+  const parsedParams = parseMapObject(params);
+  const validatedDynamicRouteParams = validator.safeParse(parsedParams);
+  if (validatedDynamicRouteParams.success) {
+    return {
+      data: validatedDynamicRouteParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicRouteParams.error,
+    };
+  }
+}
+
+// takes gssp context.query
+export function parseServerSideSearchParams<T extends z.AnyZodObject>({
+  query,
+  validator,
+}: {
+  query: GetServerSidePropsContext["query"];
+  validator: T;
+}): ServerParseParamsResult<T> {
+  const parsedParams = parseMapObject(query);
+  const validatedDynamicSearchParams = validator.safeParse(parsedParams);
+  if (validatedDynamicSearchParams.success) {
+    return {
+      data: validatedDynamicSearchParams.data,
+      isError: false,
+      error: undefined,
+    };
+  } else {
+    return {
+      data: undefined,
+      isError: true,
+      error: validatedDynamicSearchParams.error,
+    };
+  }
 }

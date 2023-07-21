@@ -9,6 +9,7 @@ import {
   parseMapObject,
   handleSearchParamMultipleKeys,
   parseObjectFromParamString,
+  parseObjectFromStringRecord,
 } from "../src/utils";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -362,6 +363,20 @@ describe("parseObjectFromReadonlyURLParams", () => {
     ).toStrictEqual({
       foo: "bar",
       baz: ["lux", "flux"],
+    });
+  });
+});
+
+describe("parseObjectFromStringRecord", () => {
+  test("standard use case", () => {
+    expect(
+      parseObjectFromStringRecord({
+        foo: "foo",
+        bar: "%5B1%2C2%5D",
+      })
+    ).toStrictEqual({
+      foo: "foo",
+      bar: [1, 2],
     });
   });
 });
