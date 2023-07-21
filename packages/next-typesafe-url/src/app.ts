@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { z } from "zod";
 import {
   parseObjectFromReadonlyURLParams,
-  parseObjectFromUseParams,
+  parseObjectFromStringRecord,
 } from "./utils";
 
 function usePrevious<T>(value: T) {
@@ -39,7 +39,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
   const [data, setData] = useState<z.output<T> | undefined>(undefined);
 
   useEffect(() => {
-    const parsedRouteParams = parseObjectFromUseParams(params);
+    const parsedRouteParams = parseObjectFromStringRecord(params);
     const validatedRouteParams = validator.safeParse(parsedRouteParams);
 
     if (validatedRouteParams.success) {

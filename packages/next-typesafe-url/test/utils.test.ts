@@ -10,6 +10,7 @@ import {
   handleSearchParamMultipleKeys,
   parseObjectFromParamString,
 } from "../src/utils";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
 describe("parseSegment", () => {
   test("static segment", () => {
@@ -311,6 +312,56 @@ describe("parseObjectFromParamString", () => {
       baz: [1, 2],
       qux: true,
       lux: undefined,
+    });
+  });
+});
+
+describe("parseObjectFromReadonlyURLParams", () => {
+  test("multiple keys with multiple and single values", () => {
+    expect(
+      handleSearchParamMultipleKeys(
+        new ReadonlyURLSearchParams(
+          new URLSearchParams("?foo=bar&baz=flux&baz=corge")
+        )
+      )
+    ).toStrictEqual({
+      foo: "bar",
+      baz: ["flux", "corge"],
+    });
+  });
+
+  test("key without value", () => {
+    expect(
+      handleSearchParamMultipleKeys(
+        new ReadonlyURLSearchParams(new URLSearchParams("?foo=bar&baz"))
+      )
+    ).toStrictEqual({
+      foo: "bar",
+      baz: undefined,
+    });
+  });
+
+  test("key without value but appearing multiple times", () => {
+    expect(
+      handleSearchParamMultipleKeys(
+        new ReadonlyURLSearchParams(new URLSearchParams("?foo=bar&baz&baz=lux"))
+      )
+    ).toStrictEqual({
+      foo: "bar",
+      baz: "lux",
+    });
+  });
+
+  test("key without value but appearing multiple times with other keys", () => {
+    expect(
+      handleSearchParamMultipleKeys(
+        new ReadonlyURLSearchParams(
+          new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux")
+        )
+      )
+    ).toStrictEqual({
+      foo: "bar",
+      baz: ["lux", "flux"],
     });
   });
 });

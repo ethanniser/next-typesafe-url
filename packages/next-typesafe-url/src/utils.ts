@@ -1,4 +1,4 @@
-import { ReadonlyURLSearchParams, useParams } from "next/navigation";
+import { ReadonlyURLSearchParams } from "next/navigation";
 import type { NextRouter } from "next/router";
 
 // * TESTED
@@ -168,6 +168,12 @@ export function parseObjectFromParamString(
   return parseMapObject(handledParams);
 }
 
+// * TESTED
+/**
+ * Takes a ReadonlyURLSearchParams object and returns a object of the keys and parsed values
+ *
+ * @example parseObjectFromReadonlyURLParams(new ReadonlyURLSearchParams("?foo=true&baz=56&bar=hello")) -> { foo: true, baz: 56, bar: "hello" }
+ */
 export function parseObjectFromReadonlyURLParams(
   params: ReadonlyURLSearchParams
 ): Record<string, unknown> {
@@ -175,8 +181,14 @@ export function parseObjectFromReadonlyURLParams(
   return parseMapObject(handledParams);
 }
 
-export function parseObjectFromUseParams(
-  params: ReturnType<typeof useParams>
+// * TESTED
+/**
+ * Takes a Record<string, string> and returns a object of the keys and parsed values
+ *
+ * @example parseObjectFromStringRecord({ foo: "true", baz: "56", bar: "hello" }) -> { foo: true, baz: 56, bar: "hello" }
+ */
+export function parseObjectFromStringRecord(
+  params: Record<string, string>
 ): Record<string, unknown> {
   return parseMapObject(params);
 }
