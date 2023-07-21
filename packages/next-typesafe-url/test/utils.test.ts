@@ -3,8 +3,9 @@ import {
   parseSegment,
   encodeAndFillRoute,
   encodeValue,
-  safeJSONParse,
+  decodeAndTryJSONParse,
   generateSearchParamStringFromObj,
+  parseOrMapParse,
 } from "../src/utils";
 
 describe("parseSegment", () => {
@@ -124,33 +125,33 @@ describe("encodeValue", () => {
   });
 });
 
-describe("safeJSONParse", () => {
+describe("decodeAndTryJSONParse", () => {
   test("string", () => {
-    expect(safeJSONParse('"foo"')).toBe("foo");
+    expect(decodeAndTryJSONParse('"foo"')).toBe("foo");
   });
   test("number", () => {
-    expect(safeJSONParse("1")).toBe(1);
+    expect(decodeAndTryJSONParse("1")).toBe(1);
   });
   test("boolean", () => {
-    expect(safeJSONParse("true")).toBe(true);
+    expect(decodeAndTryJSONParse("true")).toBe(true);
   });
   test("null", () => {
-    expect(safeJSONParse("null")).toBe(null);
+    expect(decodeAndTryJSONParse("null")).toBe(null);
   });
   test("array", () => {
-    expect(safeJSONParse('["foo"]')).toEqual(["foo"]);
+    expect(decodeAndTryJSONParse('["foo"]')).toEqual(["foo"]);
   });
   test("object", () => {
-    expect(safeJSONParse('{"foo":"bar"}')).toEqual({ foo: "bar" });
+    expect(decodeAndTryJSONParse('{"foo":"bar"}')).toEqual({ foo: "bar" });
   });
   test("undefined as string", () => {
-    expect(safeJSONParse("undefined")).toBe("undefined");
+    expect(decodeAndTryJSONParse("undefined")).toBe("undefined");
   });
   test("undefined as undefined", () => {
-    expect(safeJSONParse(undefined)).toBe(undefined);
+    expect(decodeAndTryJSONParse(undefined)).toBe(undefined);
   });
   test("empty string", () => {
-    expect(safeJSONParse("")).toBe("");
+    expect(decodeAndTryJSONParse("")).toBe("");
   });
 });
 
@@ -182,5 +183,17 @@ describe("generateSearchParamStringFromObj", () => {
         flux: "",
       })
     ).toBe("?foo=bar&baz=%5B1%2C2%5D&qux=true&lux&flux");
+  });
+});
+
+describe("parseOrMapParse", () => {
+  test("string", () => {
+    expect(parseOrMapParse("foo")).toBe("foo");
+  });
+  test("array", () => {
+    expect(parseOrMapParse(["foo", "bar"])).toEqual(["foo", "bar"]);
+  });
+  test("undefined", () => {
+    expect(parseOrMapParse(undefined)).toBe(undefined);
   });
 });

@@ -60,10 +60,11 @@ export function generateSearchParamStringFromObj(
   return finalString === "?" ? "" : finalString;
 }
 
+// * TESTED
 /**
- * Safely parses a JSON string. If the string is undefined, returns undefined. If the string is not a valid JSON string, returns the string.
+ * First uri decodes the value, then tries to parse it as JSON. If it fails, returns the original value.
  */
-export function safeJSONParse(value: string | undefined): unknown {
+export function decodeAndTryJSONParse(value: string | undefined): unknown {
   if (value === undefined) {
     return value;
   }
@@ -74,13 +75,18 @@ export function safeJSONParse(value: string | undefined): unknown {
   }
 }
 
+// * TESTED
+/**
+ * If passed an array, maps over it and calls decodeAndTryJSONParse on each item.
+ * If passed a string, calls decodeAndTryJSONParse on it.
+ */
 export function parseOrMapParse(
   obj: string | string[] | undefined
 ): unknown | unknown[] {
   if (Array.isArray(obj)) {
-    return obj.map(safeJSONParse);
+    return obj.map(decodeAndTryJSONParse);
   } else {
-    return safeJSONParse(obj);
+    return decodeAndTryJSONParse(obj);
   }
 }
 
