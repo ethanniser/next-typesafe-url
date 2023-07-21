@@ -29,8 +29,12 @@
       "import": "./dist/pages.mjs"
     },
     "./app": {
-      "require": "./dist/app.js",
-      "import": "./dist/app.mjs"
+      "require": "./dist/app/index.js",
+      "import": "./dist/app/index.mjs"
+    },
+    "./app/hoc": {
+      "require": "./dist/app/hoc.js",
+      "import": "./dist/app/hoc.mjs"
     }
   },
   "typesVersions": {
@@ -39,7 +43,10 @@
         "./dist/pages.d.ts"
       ],
       "app": [
-        "./dist/app.d.ts"
+        "./dist/app/index.d.ts"
+      ],
+      "app/hoc": [
+        "./dist/app/hoc.d.ts"
       ]
     }
   },

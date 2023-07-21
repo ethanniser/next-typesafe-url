@@ -222,6 +222,14 @@ describe("route params", () => {
       "/foo/%7B%22hi%22%3A%7B%22bye%22%3A%22hi%22%7D%2C%22bye%22%3A%7B%22hi%22%3A%22bye%22%7D%7D"
     );
   });
+  test("catch all with non array", () => {
+    expect(
+      $testPath({
+        route: "/foo/[...bar]",
+        routeParams: { bar: "bye" },
+      })
+    ).toBe("/foo/bye");
+  });
   test("catch all", () => {
     expect(
       $testPath({
@@ -237,6 +245,14 @@ describe("route params", () => {
         routeParams: { bar: ["hi", "bye"] },
       })
     ).toBe("/foo/hi/bye");
+  });
+  test("optional catch all with non array", () => {
+    expect(
+      $testPath({
+        route: "/foo/[[...bar]]",
+        routeParams: { bar: "bye" },
+      })
+    ).toBe("/foo/bye");
   });
   test("optional catch all with undefined", () => {
     expect(

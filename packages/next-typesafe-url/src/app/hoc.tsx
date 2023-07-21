@@ -1,5 +1,5 @@
-import { parseServerSideParams } from "./utils";
-import type { DynamicRoute, DynamicLayout } from "./types";
+import { parseServerSideParams } from "../utils";
+import type { DynamicRoute, DynamicLayout } from "../types";
 import { type ReactElement } from "react";
 
 // the props passed to a page component by Next.js

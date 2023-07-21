@@ -1,6 +1,6 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
-import type { UseParamsResult } from "./types";
+import type { UseParamsResult } from "../types";
 import { useRef } from "react";
 import {
   useParams,
@@ -11,12 +11,7 @@ import { z } from "zod";
 import {
   parseObjectFromReadonlyURLParams,
   parseObjectFromStringRecord,
-} from "./utils";
-
-export {
-  withLayoutParamValidation,
-  withParamValidation,
-} from "./appComponents";
+} from "../utils";
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();

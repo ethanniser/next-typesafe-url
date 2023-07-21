@@ -1,4 +1,4 @@
-import { withParamValidation } from "next-typesafe-url/app";
+import { withParamValidation } from "next-typesafe-url/app/hoc";
 import { InferPagePropsType } from "next-typesafe-url";
 import { Route, RouteType } from "./routeType";
 import { $path } from "next-typesafe-url";

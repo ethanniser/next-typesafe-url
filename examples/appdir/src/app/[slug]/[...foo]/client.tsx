@@ -5,9 +5,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouteParams, useSearchParams } from "next-typesafe-url/app";
 import { Route } from "./routeType";
+import { useParams } from "next/navigation";
 
 export const Client = () => {
   const [input, setInput] = useState("");
+  const nextParams = useParams();
+  console.log("nextParams", nextParams);
 
   const params = useSearchParams(Route.searchParams);
   const routeParams = useRouteParams(Route.routeParams);

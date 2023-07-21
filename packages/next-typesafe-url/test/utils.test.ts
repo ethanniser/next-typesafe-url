@@ -381,6 +381,17 @@ describe("parseObjectFromStringRecord", () => {
       bar: [1, 2],
     });
   });
+  test("array", () => {
+    expect(
+      parseObjectFromStringRecord({
+        foo: "foo",
+        bar: ["1", "2"],
+      })
+    ).toStrictEqual({
+      foo: "foo",
+      bar: [1, 2],
+    });
+  });
 });
 
 describe("parseServerSideParams", () => {
