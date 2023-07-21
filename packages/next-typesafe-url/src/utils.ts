@@ -320,7 +320,10 @@ export function encodeAndFillRoute(
  * If using with in pages gssp, pass context.params (for route params) or context.query (for search params) as the params argument.
  *
  * @example
- * const result = parseServerSideParams({ params: context.params, validator: Route.params })
+ * const result = parseServerSideParams({
+ *    params: context.params ?? {},
+ *    validator: Route.params
+ * })
  * const { data, isError, error } = result;
  */
 export function parseServerSideParams<T extends z.AnyZodObject>({
