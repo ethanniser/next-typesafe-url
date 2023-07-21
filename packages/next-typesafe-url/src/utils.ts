@@ -29,13 +29,31 @@ export function encodeValue(value: unknown): string {
   }
 }
 
-export function generateParamStringFromSearchParamObj(
+// * TESTED
+/**
+ * Takes an object and returns a string of search params.
+ * If a value is undefined or an empty string, it is encoded as a key without a value.
+ * If a value is anything else, it is encoded as a key-value pair.
+ * If the object is empty, returns an empty string.
+ * @throws If the any value in the object is not a non-empty string, number, boolean, array, object, or null.
+ *
+ * @example generateSearchParamStringFromObj({ foo: "bar", baz: "lux" }) -> "?foo=bar&baz=lux"
+ * @example generateSearchParamStringFromObj({ foo: undefined, baz: "lux" }) -> "?foo&baz=lux"
+ * @example generateSearchParamStringFromObj({ foo: "", baz: "lux" }) -> "?foo&baz=lux"
+ * @example generateSearchParamStringFromObj({}) -> ""
+ *
+ */
+export function generateSearchParamStringFromObj(
   obj: Record<string, unknown>
 ): string {
   const params: string[] = [];
 
   for (const [key, value] of Object.entries(obj)) {
-    params.push(`${key}${value === undefined ? "" : `=${encodeValue(value)}`}`);
+    if (value === undefined || value === "") {
+      params.push(key);
+    } else {
+      params.push(`${key}=${encodeValue(value)}`);
+    }
   }
 
   const finalString = `?${params.join("&")}`;

@@ -61,12 +61,12 @@ describe("search params", () => {
     ).toBe("/foo/bar?baz=null");
   });
   test("empty string", () => {
-    expect(() =>
+    expect(
       $testPath({
         route: "/foo/bar",
         searchParams: { baz: "" },
       })
-    ).toThrow();
+    ).toBe("/foo/bar?baz");
   });
   test("flat array", () => {
     expect(

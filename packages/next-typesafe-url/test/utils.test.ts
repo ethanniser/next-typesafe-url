@@ -4,6 +4,7 @@ import {
   encodeAndFillRoute,
   encodeValue,
   safeJSONParse,
+  generateSearchParamStringFromObj,
 } from "../src/utils";
 
 describe("parseSegment", () => {
@@ -150,5 +151,36 @@ describe("safeJSONParse", () => {
   });
   test("empty string", () => {
     expect(safeJSONParse("")).toBe("");
+  });
+});
+
+describe("generateSearchParamStringFromObj", () => {
+  test("empty object", () => {
+    expect(generateSearchParamStringFromObj({})).toBe("");
+  });
+  test("single key-value pair", () => {
+    expect(generateSearchParamStringFromObj({ foo: "bar" })).toBe("?foo=bar");
+  });
+  test("multiple key-value pairs", () => {
+    expect(generateSearchParamStringFromObj({ foo: [1, 2], baz: true })).toBe(
+      "?foo=%5B1%2C2%5D&baz=true"
+    );
+  });
+  test("undefined value", () => {
+    expect(generateSearchParamStringFromObj({ foo: undefined })).toBe("?foo");
+  });
+  test("empty string value", () => {
+    expect(generateSearchParamStringFromObj({ foo: "" })).toBe("?foo");
+  });
+  test("full example", () => {
+    expect(
+      generateSearchParamStringFromObj({
+        foo: "bar",
+        baz: [1, 2],
+        qux: true,
+        lux: undefined,
+        flux: "",
+      })
+    ).toBe("?foo=bar&baz=%5B1%2C2%5D&qux=true&lux&flux");
   });
 });
