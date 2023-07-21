@@ -2,6 +2,11 @@ import { ReadonlyURLSearchParams, useParams } from "next/navigation";
 import type { NextRouter } from "next/router";
 
 // * TESTED
+/**
+ * Encodes a value to be used in a URL. If the value is a object or array, it is first stringified.
+ *
+ * @throws If the value is not a non-empty string, number, boolean, array, object, or null.
+ */
 export function encodeValue(value: unknown): string {
   if (typeof value === "string" && value !== "") {
     return encodeURIComponent(value);
@@ -33,6 +38,9 @@ export function generateParamStringFromSearchParamObj(
   return finalString === "?" ? "" : finalString;
 }
 
+/**
+ * Safely parses a JSON string. If the string is undefined, returns undefined. If the string is not a valid JSON string, returns the string.
+ */
 export function safeJSONParse(value: string | undefined): unknown {
   if (value === undefined) {
     return value;
@@ -171,6 +179,14 @@ type Segment = {
 };
 
 // * TESTED
+/**
+ * Takes a segment of a route and returns an object with the type of segment and the value of the segment.
+ *
+ * @example parseSegment("foo") -> { type: "static", value: "foo"}
+ * @example parseSegment("[bar]") -> { type: "dynamic", value: "bar"}
+ * @example parseSegment("[...baz]") -> { type: "catchAll", value: "baz"}
+ * @example parseSegment("[[...qux]]") -> { type: "optionalCatchAll", value: "qux"}
+ */
 export function parseSegment(segment: string): Segment {
   if (
     segment.startsWith("[") &&
@@ -212,7 +228,13 @@ export function parseSegment(segment: string): Segment {
 }
 
 // * TESTED
-// ! THROWS if a dynamic or catch-all segment is missing from the routeParams
+/**
+ * Takes a route and a object, filling the dynamic segments with the corresponding values from the object after encoding them.
+ *
+ * @throws If a dynamic segment or catch-all segment in the route does not have a corresponding value in routeParams.
+ *
+ * @example encodeAndFillRoute("/foo/[bar]/[...baz]", { bar: "qux", baz: ["quux", "corge"] }) -> "/foo/qux/quux/corge"
+ */
 export function encodeAndFillRoute(
   route: string,
   routeParams: Record<string, unknown>
