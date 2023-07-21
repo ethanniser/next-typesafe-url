@@ -1,5 +1,10 @@
 import { describe, expect, test } from "vitest";
-import { parseSegment, encodeAndFillRoute, encodeValue } from "../src/utils";
+import {
+  parseSegment,
+  encodeAndFillRoute,
+  encodeValue,
+  safeJSONParse,
+} from "../src/utils";
 
 describe("parseSegment", () => {
   test("static segment", () => {
@@ -115,5 +120,35 @@ describe("encodeValue", () => {
   });
   test("bigint", () => {
     expect(() => encodeValue(BigInt(1))).toThrow();
+  });
+});
+
+describe("safeJSONParse", () => {
+  test("string", () => {
+    expect(safeJSONParse('"foo"')).toBe("foo");
+  });
+  test("number", () => {
+    expect(safeJSONParse("1")).toBe(1);
+  });
+  test("boolean", () => {
+    expect(safeJSONParse("true")).toBe(true);
+  });
+  test("null", () => {
+    expect(safeJSONParse("null")).toBe(null);
+  });
+  test("array", () => {
+    expect(safeJSONParse('["foo"]')).toEqual(["foo"]);
+  });
+  test("object", () => {
+    expect(safeJSONParse('{"foo":"bar"}')).toEqual({ foo: "bar" });
+  });
+  test("undefined as string", () => {
+    expect(safeJSONParse("undefined")).toBe("undefined");
+  });
+  test("undefined as undefined", () => {
+    expect(safeJSONParse(undefined)).toBe(undefined);
+  });
+  test("empty string", () => {
+    expect(safeJSONParse("")).toBe("");
   });
 });
