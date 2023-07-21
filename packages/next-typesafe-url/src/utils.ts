@@ -185,7 +185,7 @@ type Segment = {
  * @example parseSegment("foo") -> { type: "static", value: "foo"}
  * @example parseSegment("[bar]") -> { type: "dynamic", value: "bar"}
  * @example parseSegment("[...baz]") -> { type: "catchAll", value: "baz"}
- * @example parseSegment("[[...qux]]") -> { type: "optionalCatchAll", value: "qux"}
+ * @example parseSegment("[[...lux]]") -> { type: "optionalCatchAll", value: "lux"}
  */
 export function parseSegment(segment: string): Segment {
   if (
@@ -233,7 +233,7 @@ export function parseSegment(segment: string): Segment {
  *
  * @throws If a dynamic segment or catch-all segment in the route does not have a corresponding value in routeParams.
  *
- * @example encodeAndFillRoute("/foo/[bar]/[...baz]", { bar: "qux", baz: ["quux", "corge"] }) -> "/foo/qux/quux/corge"
+ * @example encodeAndFillRoute("/foo/[bar]/[...baz]", { bar: "lux", baz: ["flux", "corge"] }) -> "/foo/lux/flux/corge"
  */
 export function encodeAndFillRoute(
   route: string,

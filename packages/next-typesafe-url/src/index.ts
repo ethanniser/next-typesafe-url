@@ -34,6 +34,13 @@ export type {
 };
 
 // * TESTED
+/**
+ * Serializes and encodes the passed search and route param objects and merges them with the route string.
+ *
+ * @example $path({ route: "/foo/[bar]", routeParams: { bar: "baz" } }) -> "/foo/baz"
+ * @example $path({ route: "/foo", searchParams: { bar: "baz" } }) -> "/foo?bar=baz"
+ * @example $path({ route: "/foo/[bar]", routeParams: { bar: "baz" }, searchParams: { lux: "flux" } }) -> "/foo/baz?lux=flux"
+ */
 export function $path<T extends AllRoutes>({
   route,
   searchParams,
