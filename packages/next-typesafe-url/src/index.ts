@@ -34,6 +34,9 @@ export type {
 /**
  * Serializes and encodes the passed search and route param objects and merges them with the route string.
  *
+ * @throws If a dynamic segment or catch-all segment in the route does not have a corresponding value in routeParams.
+ * @throws If any of the passed values are not a non-empty string, number, boolean, array, object, or null.
+ *
  * @example $path({ route: "/foo/[bar]", routeParams: { bar: "baz" } }) -> "/foo/baz"
  * @example $path({ route: "/foo", searchParams: { bar: "baz" } }) -> "/foo?bar=baz"
  * @example $path({ route: "/foo/[bar]", routeParams: { bar: "baz" }, searchParams: { lux: "flux" } }) -> "/foo/baz?lux=flux"

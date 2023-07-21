@@ -253,6 +253,7 @@ export function parseSegment(segment: string): Segment {
  * Takes a route and a object, filling the dynamic segments with the corresponding values from the object after encoding them.
  *
  * @throws If a dynamic segment or catch-all segment in the route does not have a corresponding value in routeParams.
+ * @throws If any of the passed values are not a non-empty string, number, boolean, array, object, or null.
  *
  * @example encodeAndFillRoute("/foo/[bar]/[...baz]", { bar: "lux", baz: ["flux", "corge"] }) -> "/foo/lux/flux/corge"
  */
