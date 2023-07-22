@@ -42,7 +42,7 @@ The `InferPagePropsType` helper type is passed `RouteType` as a generic to extra
 
 ```tsx
 // app/product/[productID]/page.tsx
-import { withParamValidation } from "next-typesafe-url/app";
+import { withParamValidation } from "next-typesafe-url/app/hoc";
 import type { InferPagePropsType } from "next-typesafe-url";
 import { Route, type RouteType } from "./routeType";
 
@@ -89,7 +89,7 @@ The `InferLayoutPropsType` helper type is passed the type of your LayoutRoute as
 ```tsx
 // app/product/[productID]/layout.tsx
 import { z } from "zod";
-import { withLayoutParamValidation } from "next-typesafe-url/app";
+import { withLayoutParamValidation } from "next-typesafe-url/app/hoc";
 import type { DynamicLayout, InferLayoutPropsType } from "next-typesafe-url";
 
 const LayoutRoute = {
