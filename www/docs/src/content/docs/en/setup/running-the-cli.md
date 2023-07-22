@@ -44,7 +44,7 @@ The path to your `src` directory relative to the cwd the cli is run from. DEFAUL
 
 #### --outputPath
 
-The path of the generated `.d.ts` file relative to the cwd the cli is run from. DEFAULT: `"./next-typesafe-url.d.ts"`
+The path of the generated `.d.ts` file relative to the cwd the cli is run from. DEFAULT: `"./next-typesafe-url_.d.ts"`
 
 #### --help
 
