@@ -16,7 +16,7 @@ Scans for routes in your app and pages directories and generates a types file fo
 Options:
 --watch / -w,  Watch for file changes in src/app and src/pages and regenerate the types file
 --srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
---outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./next-typesafe-url.d.ts"
+--outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./next-typesafe-url_.d.ts"
 --help,  Show this help message
 `;
 
@@ -28,7 +28,7 @@ const cli = meow(helpText, {
     },
     outputPath: {
       type: "string",
-      default: "./next-typesafe-url.d.ts",
+      default: "./_next-typesafe-url_.d.ts",
     },
     srcPath: {
       type: "string",

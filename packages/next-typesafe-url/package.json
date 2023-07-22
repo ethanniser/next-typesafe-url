@@ -2,7 +2,7 @@
   "name": "next-typesafe-url",
   "description": "Fully typesafe, JSON serializable, and zod validated URL search params, dynamic route params, and routing for NextJS pages directory",
   "license": "MIT",
-  "version": "4.0.0",
+  "version": "4.0.1-beta.0",
   "author": "Ethan Niser",
   "repository": {
     "type": "git",
@@ -57,7 +57,7 @@
     "test:watch": "vitest",
     "test": "vitest run",
     "lint": "eslint src/**",
-    "publish:beta": "npm build && npm publish --tag beta",
+    "publish:beta": "npm publish --tag beta",
     "clean:dist": "rm ./dist -r"
   },
   "dependencies": {
@@ -66,18 +66,18 @@
   },
   "devDependencies": {
     "@types/react": "18.2.5",
-    "@types/react-dom": "18.2.3",
-    "eslint": "8.39.0",
-    "next": "13.4.0",
+    "@types/react-dom": "18.2.7",
+    "eslint": "8.45.0",
+    "next": "13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tsup": "^6.6.3",
-    "typescript": "5.0.4",
-    "zod": "^3.20.2"
+    "tsup": "7.1.0",
+    "typescript": "5.1.6",
+    "zod": "3.21.4"
   },
   "peerDependencies": {
-    "next": "^13.2.3",
-    "react": "^18.0.0",
-    "zod": "^3.20.2"
+    "next": "^13.4.12",
+    "react": "^18.2.0",
+    "zod": "^3.21.4"
   }
 }
