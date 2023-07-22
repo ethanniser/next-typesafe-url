@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.1
+
+### Patch Changes
+
+- 56875fa: change default output file name to not conflict with package name and roll deps
+
 ## 4.0.0
 
 ### Major Changes
