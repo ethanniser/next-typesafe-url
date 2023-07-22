@@ -28,7 +28,7 @@ If you do not want this behavior (_i.e. you want some part of your page to be st
 
 #### withParamValidation
 
-`next-typesafe-url/app` provides a higher order component `withParamValidation` you can wrap your page with to provide runtime validation through your zod validator.
+`next-typesafe-url/app/hoc` provides a higher order component `withParamValidation` you can wrap your page with to provide runtime validation through your zod validator.
 
 The `InferPagePropsType` helper type is passed `RouteType` as a generic to extrapolate the valid types coming out of the zod validator.
 
@@ -74,7 +74,7 @@ Because of this, **you** must define a new zod validator for each layout, which 
 
 #### withLayoutParamValidation
 
-`next-typesafe-url/app` provides a higher order component `withLayoutParamValidation` you can wrap your layouts with to provide runtime validation through your zod validator.
+`next-typesafe-url/app/hoc` provides a higher order component `withLayoutParamValidation` you can wrap your layouts with to provide runtime validation through your zod validator.
 
 The `InferLayoutPropsType` helper type is passed the type of your LayoutRoute as a generic to extrapolate the valid types coming out of the zod validator.
 

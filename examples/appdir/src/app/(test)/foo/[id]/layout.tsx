@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { withLayoutParamValidation } from "next-typesafe-url/app";
+import { withLayoutParamValidation } from "next-typesafe-url/app/hoc";
 import type { DynamicLayout, InferLayoutPropsType } from "next-typesafe-url";
 
 const LayoutRoute = {

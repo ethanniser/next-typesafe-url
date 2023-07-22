@@ -5,10 +5,7 @@ import type {
 } from "next";
 import { z } from "zod";
 import { $path, type RouterOutputs } from "next-typesafe-url";
-import {
-  parseServerSideRouteParams,
-  parseServerSideSearchParams,
-} from "next-typesafe-url/pages";
+import { parseServerSideParams } from "next-typesafe-url/pages";
 import Link from "next/link";
 
 const Route = {
@@ -24,18 +21,17 @@ export type RouteType = typeof Route;
 type ServerSideProps = RouterOutputs["/[slug]/server"]["searchParams"] &
   RouterOutputs["/[slug]/server"]["routeParams"];
 
-export const getServerSideProps: GetServerSideProps<ServerSideProps> = async ({
-  query,
-  params,
-}) => {
+export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
+  context
+) => {
   await Promise.resolve();
-  const routeParams = parseServerSideRouteParams({
-    params,
+  const routeParams = parseServerSideParams({
+    params: context.params ?? {},
     validator: Route.routeParams,
   });
 
-  const searchParams = parseServerSideSearchParams({
-    query,
+  const searchParams = parseServerSideParams({
+    params: context.query,
     validator: Route.searchParams,
   });
 

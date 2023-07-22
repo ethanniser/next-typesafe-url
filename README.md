@@ -61,5 +61,5 @@ All contributions are welcome! Please open an issue or submit a PR.
 
 ## TODO
 
-- add tests
+- 100% test coverage
 - [`remix-routes` style typescript plugin](https://github.com/yesmeck/remix-routes/tree/master/packages/typescript-remix-routes-plugin) to improve autocomplete and add 'go to definition' to route string (would take you to the route file)

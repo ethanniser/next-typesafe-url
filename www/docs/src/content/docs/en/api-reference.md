@@ -202,7 +202,10 @@ type ServerParseParamsResult<T extends z.AnyZodObject> =
 
 ### `useSearchParams`
 
-Provides the search params for the current route. Uses `useSearchParams` from `next/navigation` under the hood.
+Parses the current search params
+and validates them against the provided zod schema from your `Route` object.
+Be careful if using this in a component that is used in multiple routes,
+making sure you pass the correct validator for the current route.
 
 ```ts
 declare function useSearchParams<T extends z.AnyZodObject>(
@@ -212,7 +215,9 @@ declare function useSearchParams<T extends z.AnyZodObject>(
 
 ### `useRouteParams`
 
-Provides the route params for the current route. Uses `useParams` from `next/navigation` under the hood.
+Parses the current dynamic route params and validates them against the provided zod schema from your `Route` object.
+Be careful if using this in a component that is used in multiple routes,
+making sure you pass the correct validator for the current route.
 
 ```ts
 declare function useRouteParams<T extends z.AnyZodObject>(
@@ -220,9 +225,11 @@ declare function useRouteParams<T extends z.AnyZodObject>(
 ): UseParamsResult<T>;
 ```
 
+## `next-typesafe-url/app/hoc`
+
 ### `SomeReactComponent`
 
-For HOC to type input and output components.
+The input type for the HOCs in this module. Represents any React component.
 
 ```ts
 type SomeReactComponent = (...args: any) => JSX.Element | Promise<JSX.Element>;
@@ -230,7 +237,9 @@ type SomeReactComponent = (...args: any) => JSX.Element | Promise<JSX.Element>;
 
 ### `withParamValidation`
 
-Wraps a `page.tsx` top level component and provides validation via the passed `DynamicRoute`.
+A HOC that validates the params passed to a page component.
+The component you wrap with this should use `InferPagePropsType` for its props.
+It should be the default export of `page.tsx`.
 
 ```ts
 declare function withParamValidation(
@@ -241,7 +250,9 @@ declare function withParamValidation(
 
 ### `withLayoutParamValidation`
 
-Wraps a `layout.tsx` top level component and provides validation via the passed `DynamicLayout`.
+A HOC that validates the route params passed to a layout component.
+It should be the default export of `layout.tsx`.
+The component you wrap with this should use `InferLayoutPropsType` for its props.
 
 ```ts
 declare function withLayoutParamValidation(
@@ -254,7 +265,8 @@ declare function withLayoutParamValidation(
 
 ### `useSearchParams`
 
-Provides the search params for the current route. Uses `useRouter` from `next/router` under the hood.
+Parses the current search params and validates them against the provided zod schema.
+Should only be used in the top level route component where your `Route` object is defined.
 
 ```ts
 declare function useSearchParams<T extends z.AnyZodObject>(
@@ -264,7 +276,8 @@ declare function useSearchParams<T extends z.AnyZodObject>(
 
 ### `useRouteParams`
 
-Provides the route params for the current route. Uses `useRouter` from `next/router` under the hood.
+Parses the current dynamic route params and validates them against the provided zod schema.
+Should only be used in the top level route component where your `Route` object is defined.
 
 ```ts
 declare function useRouteParams<T extends z.AnyZodObject>(
@@ -272,30 +285,17 @@ declare function useRouteParams<T extends z.AnyZodObject>(
 ): UseParamsResult<T>;
 ```
 
-### `parseServerSideSearchParams`
+### `parseServerSideParams`
 
-Takes `context.query` from `getServerSideProps` and validates it against the provided zod validator.
-
-```ts
-declare function parseServerSideSearchParams<T extends z.AnyZodObject>({
-  query,
-  validator,
-}: {
-  query: GetServerSidePropsContext["query"];
-  validator: T;
-}): ServerParseParamsResult<T>;
-```
-
-### `parseServerSideRouteParams`
-
-Takes `context.params` from `getServerSideProps` and validates it against the provided zod validator.
+Takes an object of route params and a validator and returns a object of the validated route params.
+If using with in pages gssp, pass context.params (for route params) or context.query (for search params) as the params argument.
 
 ```ts
-declare function parseServerSideRouteParams<T extends z.AnyZodObject>({
+declare function parseServerSideParams<T extends z.AnyZodObject>({
   params,
   validator,
 }: {
-  params: GetServerSidePropsContext["params"];
+  params: Record<string, string | string[] | undefined>;
   validator: T;
 }): ServerParseParamsResult<T>;
 ```
