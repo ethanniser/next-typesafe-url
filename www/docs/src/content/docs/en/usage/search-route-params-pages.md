@@ -23,7 +23,7 @@ View the `app` version [here](search-route-params-app)
 ```tsx
 import { useSearchParams, useRouteParams } from "next-typesafe-url/pages";
 
-function Component() {
+export default function Component() {
   const routeParams = useRouteParams(Route.routeParams);
   const searchParams = useSearchParams(Route.searchParams);
   const { data, isLoading, isError, error } = searchParams;
