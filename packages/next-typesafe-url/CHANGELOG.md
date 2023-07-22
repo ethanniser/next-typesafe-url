@@ -1,5 +1,20 @@
 # next-typesafe-url
 
+## 4.0.0
+
+### Major Changes
+
+- b5aad73: moved the HOC to /app/hoc to get around use client bundling issues
+
+### Minor Changes
+
+- 686cbe9: merged parseServerSide\*Params to a single function
+
+### Patch Changes
+
+- 686cbe9: fixed bugged with $path that added "}" to the end
+- 686cbe9: fixed issue with arrays being passed to non catch all portions of route params not being fully encoded
+
 ## 3.1.0
 
 ### Minor Changes
