@@ -173,7 +173,7 @@ export function generateTypesFile({
     .map((route) => `  "${route}": StaticRoute;`)
     .join("\n  ");
 
-  const fileContentString = `${infoText}\n${importStatements.join("\n")}
+  const fileContentString = `${infoText.trim()}\n${importStatements.join("\n")}
 
 declare module "@@@next-typesafe-url" {
   interface DynamicRouter {
