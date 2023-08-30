@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.2
+
+### Patch Changes
+
+- 34083ef: Remove empty first line in the auto-generated file
+
 ## 4.0.1
 
 ### Patch Changes
