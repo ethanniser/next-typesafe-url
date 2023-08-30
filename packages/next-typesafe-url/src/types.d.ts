@@ -1,5 +1,5 @@
 import type { StaticRouter, DynamicRouter } from "@@@next-typesafe-url";
-import { z } from "zod";
+import type {Infer, InferIn, Schema, ValidationIssue} from '@decs/typeschema';
 
 // a total map of every route and its input and output types (if it has any)
 type AppRouter = StaticRouter & DynamicRouter;
@@ -33,20 +33,20 @@ type HasProperty<T, K extends string> = K extends keyof T ? true : false;
 // this type infers the input types from a DynamicRoute
 type InferInput<T extends DynamicRoute> = {
   searchParams: HasProperty<T, "searchParams"> extends true
-    ? z.input<T["searchParams"]>
+    ? InferIn<T["searchParams"]>
     : undefined;
   routeParams: HasProperty<T, "routeParams"> extends true
-    ? z.input<T["routeParams"]>
+    ? InferIn<T["routeParams"]>
     : undefined;
 };
 
 // same thing as HelperInput but infers the output types instead of the input types
 type InferOutput<T extends DynamicRoute> = {
   searchParams: HasProperty<T, "searchParams"> extends true
-    ? z.output<T["searchParams"]>
+    ? Infer<T["searchParams"]>
     : undefined;
   routeParams: HasProperty<T, "routeParams"> extends true
-    ? z.output<T["routeParams"]>
+    ? Infer<T["routeParams"]>
     : undefined;
 };
 
@@ -121,8 +121,8 @@ type StaticRoute = {
 
 // Represents a route that has dynamic parameters
 type DynamicRoute = {
-  searchParams?: z.AnyZodObject;
-  routeParams?: z.AnyZodObject;
+  searchParams?: Schema;
+  routeParams?: Schema;
 };
 
 // basically just an object with a routeParams property that has a zod validator
@@ -133,7 +133,7 @@ type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
 // K represents a optional union of keys that can be passed to this type that
 // represents any parallel routes beneath the layout
 type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
-  routeParams: z.output<T["routeParams"]>;
+  routeParams: Infer<T["routeParams"]>;
   children: React.ReactNode;
 } & { [P in K]: React.ReactNode };
 
@@ -160,7 +160,7 @@ type StaticPathOptions<T extends StaticRoutes> = {
 type AllRoutes = keyof AppRouter;
 
 // a discriminated  union representing the return states of use*Params
-type UseParamsResult<T extends z.AnyZodObject> =
+type UseParamsResult<T extends Schema> =
   | {
       data: undefined;
       isLoading: true;
@@ -168,7 +168,7 @@ type UseParamsResult<T extends z.AnyZodObject> =
       error: undefined;
     }
   | {
-      data: z.output<T>;
+      data: Infer<T>;
       isError: false;
       isLoading: false;
       error: undefined;
@@ -177,30 +177,30 @@ type UseParamsResult<T extends z.AnyZodObject> =
       data: undefined;
       isLoading: false;
       isError: true;
-      error: z.ZodError;
+      error: ValidationIssue[];
     };
 
 // a discriminated  union representing the return states of parseServerSideParams
-type ServerParseParamsResult<T extends z.AnyZodObject> =
+type ServerParseParamsResult<T extends Schema> =
   | {
-      data: z.output<T>;
+      data: Infer<T>;
       isError: false;
       error: undefined;
     }
   | {
       data: undefined;
       isError: true;
-      error: z.ZodError;
+      error: ValidationIssue[];
     };
 
 // infers the props for a validated page component
 // infers the output types from the Route object
 type InferPagePropsType<T extends DynamicRoute> = {
-  searchParams: T["searchParams"] extends z.AnyZodObject
-    ? z.output<T["searchParams"]>
+  searchParams: T["searchParams"] extends Schema
+    ? Infer<T["searchParams"]>
     : undefined;
-  routeParams: T["routeParams"] extends z.AnyZodObject
-    ? z.output<T["routeParams"]>
+  routeParams: T["routeParams"] extends Schema
+    ? Infer<T["routeParams"]>
     : undefined;
 };
 

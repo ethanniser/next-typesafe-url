@@ -1,13 +1,13 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
 import { useRouter } from "next/router";
-import { z } from "zod";
 import { useState, useEffect } from "react";
 import {
   parseObjectFromParamString,
   parseObjectFromStringRecord,
 } from "./utils";
 import type { UseParamsResult } from "./types";
+import { type Schema, ValidationIssue, Infer, validate } from "@decs/typeschema";
 export { parseServerSideParams } from "./utils";
 
 /**
@@ -20,14 +20,14 @@ export { parseServerSideParams } from "./utils";
  * const routeParams = useRouteParams(Route.routeParams);
  * const { data, isLoading, isError, error } = routeParams;
  */
-export function useRouteParams<T extends z.AnyZodObject>(
+export function useRouteParams<T extends Schema>(
   validator: T
 ): UseParamsResult<T> {
   const router = useRouter();
   const [isError, setIsError] = useState(false);
   // not used if theres no error, but we need to initialize it so just use a dummy error
-  const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.output<T> | undefined>(undefined);
+  const [error, setError] = useState<ValidationIssue[]>([]);
+  const [data, setData] = useState<Infer<T> | undefined>(undefined);
 
   useEffect(() => {
     // next router is not ready while loading, during which query is undefined
@@ -35,15 +35,23 @@ export function useRouteParams<T extends z.AnyZodObject>(
     if (router.isReady) {
       // parse the params to a Record<string, unknown>
       const dynamicParams = parseObjectFromStringRecord(router.query);
-      // validate the params against the zod schema
-      const validatedDynamicRouteParams = validator.safeParse(dynamicParams);
-      // update state based on the validation result
-      if (validatedDynamicRouteParams.success) {
-        setData(validatedDynamicRouteParams.data);
-      } else {
+      // validate the params against the schema
+      validate(validator, dynamicParams).then((result) => {
+        // update the state based on the validation result
+        if (result.success) {
+          setData(result.data);
+          setIsError(false);
+          setError([]);
+        } else {
+          setData(undefined);
+          setIsError(true);
+          setError(result.issues);
+        }
+      }).catch(() => {
+        setData(undefined);
         setIsError(true);
-        setError(validatedDynamicRouteParams.error);
-      }
+        setError([{message: "validation promise rejected, source of error unknown"}]);
+      })
     }
     // rerun whenever the router or validator changes
   }, [router, validator]);
@@ -87,14 +95,14 @@ export function useRouteParams<T extends z.AnyZodObject>(
  * const searchParams = useSearchParams(Route.searchParams);
  * const { data, isLoading, isError, error } = searchParams;
  */
-export function useSearchParams<T extends z.AnyZodObject>(
+export function useSearchParams<T extends Schema>(
   searchValidator: T
 ): UseParamsResult<T> {
   const router = useRouter();
   const [isError, setIsError] = useState(false);
   // not used if theres no error, but we need to initialize it so just use a dummy error
-  const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.output<T> | undefined>(undefined);
+  const [error, setError] = useState<ValidationIssue[]>([]);
+  const [data, setData] = useState<Infer<T> | undefined>(undefined);
 
   useEffect(() => {
     // next router is not ready while loading, during which query is undefined
@@ -104,17 +112,23 @@ export function useSearchParams<T extends z.AnyZodObject>(
       const queryString = router.asPath.split("?")[1] ?? "";
       // parse the query string to a Record<string, unknown>
       const parsedSearchParams = parseObjectFromParamString(queryString);
-      // validate the params against the zod schema
-      const validatedSearchParams =
-        searchValidator.safeParse(parsedSearchParams);
-
-      // update state based on the validation result
-      if (validatedSearchParams.success) {
-        setData(validatedSearchParams.data);
-      } else {
+      // validate the params against the schema
+      validate(searchValidator, parsedSearchParams).then((result) => {
+        // update the state based on the validation result
+        if (result.success) {
+          setData(result.data);
+          setIsError(false);
+          setError([]);
+        } else {
+          setData(undefined);
+          setIsError(true);
+          setError(result.issues);
+        }
+      }).catch(() => {
+        setData(undefined);
         setIsError(true);
-        setError(validatedSearchParams.error);
-      }
+        setError([{message: "validation promise rejected, source of error unknown"}]);
+      })
     }
     // rerun whenever the router or validator changes
   }, [router, searchValidator]);

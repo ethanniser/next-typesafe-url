@@ -61,6 +61,7 @@
     "clean:dist": "rm ./dist -r"
   },
   "dependencies": {
+    "@decs/typeschema": "^0.10.0",
     "chokidar": "^3.5.3",
     "meow": "9.0.0"
   },
@@ -72,12 +73,10 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tsup": "7.1.0",
-    "typescript": "5.1.6",
-    "zod": "3.21.4"
+    "typescript": "5.1.6"
   },
   "peerDependencies": {
     "next": "^13.4.12",
-    "react": "^18.2.0",
-    "zod": "^3.21.4"
+    "react": "^18.2.0"
   }
 }

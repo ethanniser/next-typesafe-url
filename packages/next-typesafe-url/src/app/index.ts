@@ -7,7 +7,7 @@ import {
   useSearchParams as useNextSearchParams,
 } from "next/navigation";
 import { useState, useEffect } from "react";
-import { z } from "zod";
+import { type Schema, ValidationIssue, Infer, validate } from "@decs/typeschema";
 import {
   parseObjectFromReadonlyURLParams,
   parseObjectFromStringRecord,
@@ -35,7 +35,7 @@ function usePrevious<T>(value: T) {
  * const routeParams = useRouteParams(Route.routeParams);
  * const { data, isLoading, isError, error } = routeParams;
  */
-export function useRouteParams<T extends z.AnyZodObject>(
+export function useRouteParams<T extends Schema>(
   validator: T
 ): UseParamsResult<T> {
   const params = useParams();
@@ -44,24 +44,29 @@ export function useRouteParams<T extends z.AnyZodObject>(
   const same = JSON.stringify(prev) === JSON.stringify(params);
   const [isError, setIsError] = useState(false);
   // not used if theres no error, but we need to initialize it so just use a dummy error
-  const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.output<T> | undefined>(undefined);
+  const [error, setError] = useState<ValidationIssue[]>([]);
+  const [data, setData] = useState<Infer<T> | undefined>(undefined);
 
   useEffect(() => {
     // parse the params to a Record<string, unknown>
     const parsedRouteParams = parseObjectFromStringRecord(params);
-    // validate the params against the zod schema
-    const validatedRouteParams = validator.safeParse(parsedRouteParams);
-
-    // update state based on the validation result
-    if (validatedRouteParams.success) {
-      setData(validatedRouteParams.data);
-      setIsError(false);
-    } else {
-      setData(undefined);
-      setIsError(true);
-      setError(validatedRouteParams.error);
-    }
+    // validate the params against the schema
+    validate(validator, parsedRouteParams).then((result) => {
+      // update the state based on the validation result  
+      if (result.success) {
+          setData(result.data);
+          setIsError(false);
+          setError([]);
+        } else {
+          setData(undefined);
+          setIsError(true);
+          setError(result.issues);
+        }
+      }).catch(() => {
+        setData(undefined);
+        setIsError(true);
+        setError([{message: "validation promise rejected, source of error unknown"}]);
+      })
     // only rerun if the params have changed between renders
   }, [same]);
 
@@ -106,30 +111,35 @@ export function useRouteParams<T extends z.AnyZodObject>(
  * const searchParams = useSearchParams(Route.searchParams);
  * const { data, isLoading, isError, error } = searchParams;
  */
-export function useSearchParams<T extends z.AnyZodObject>(
+export function useSearchParams<T extends Schema>(
   searchValidator: T
 ): UseParamsResult<T> {
   const params = useNextSearchParams();
   const [isError, setIsError] = useState(false);
   // not used if theres no error, but we need to initialize it so just use a dummy error
-  const [error, setError] = useState<z.ZodError>(new z.ZodError([]));
-  const [data, setData] = useState<z.output<T> | undefined>(undefined);
+  const [error, setError] = useState<ValidationIssue[]>([]);
+  const [data, setData] = useState<Infer<T> | undefined>(undefined);
 
   useEffect(() => {
     // parse the params to a Record<string, unknown>
     const parsedSearchParams = parseObjectFromReadonlyURLParams(params);
-    // validate the params against the zod schema
-    const validatedSearchParams = searchValidator.safeParse(parsedSearchParams);
-
-    // update state based on the validation result
-    if (validatedSearchParams.success) {
-      setData(validatedSearchParams.data);
-      setIsError(false);
-    } else {
-      setData(undefined);
-      setIsError(true);
-      setError(validatedSearchParams.error);
-    }
+    // validate the params against the schema
+    validate(searchValidator, parsedSearchParams).then((result) => {
+      // update the state based on the validation result  
+      if (result.success) {
+          setData(result.data);
+          setIsError(false);
+          setError([]);
+        } else {
+          setData(undefined);
+          setIsError(true);
+          setError(result.issues);
+        }
+      }).catch(() => {
+        setData(undefined);
+        setIsError(true);
+        setError([{message: "validation promise rejected, source of error unknown"}]);
+      })
   }, [params]);
 
   if (isError) {

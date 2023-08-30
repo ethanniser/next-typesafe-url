@@ -1,6 +1,6 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 import type { ServerParseParamsResult } from "./types";
-import { z } from "zod";
+import { validate } from "@decs/typeschema";
 
 // * TESTED
 /**
@@ -337,7 +337,7 @@ export function parseServerSideParams<T extends z.AnyZodObject>({
   // parse the params to a Record<string, unknown>
   const parsedParams = parseObjectFromStringRecord(params);
   // validate the params with the validator
-  const validatedDynamicRouteParams = validator.safeParse(parsedParams);
+  const validatedDynamicRouteParams = validate(validator, parsedParams);
   if (validatedDynamicRouteParams.success) {
     return {
       data: validatedDynamicRouteParams.data,
@@ -348,7 +348,7 @@ export function parseServerSideParams<T extends z.AnyZodObject>({
     return {
       data: undefined,
       isError: true,
-      error: validatedDynamicRouteParams.error,
+      error: validatedDynamicRouteParams.issues,
     };
   }
 }
