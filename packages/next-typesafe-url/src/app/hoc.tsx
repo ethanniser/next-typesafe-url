@@ -28,7 +28,7 @@ export function withParamValidation(
   validator: DynamicRoute
 ): SomeReactComponent {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = (
+  const ValidatedPageComponent: SomeReactComponent = async (
     props: NextAppPageProps
   ) => {
     // pull out the params and searchParams from the props
@@ -37,7 +37,7 @@ export function withParamValidation(
     // if the validator has routeParams, parse them
     let parsedRouteParamsResult = undefined;
     if (validator.routeParams) {
-      parsedRouteParamsResult = parseServerSideParams({
+      parsedRouteParamsResult = await parseServerSideParams({
         params,
         validator: validator.routeParams,
       });
@@ -46,7 +46,7 @@ export function withParamValidation(
     // if the validator has searchParams, parse them
     let parsedSearchParamsResult = undefined;
     if (validator.searchParams) {
-      parsedSearchParamsResult = parseServerSideParams({
+      parsedSearchParamsResult = await parseServerSideParams({
         params: searchParams ?? {},
         validator: validator.searchParams,
       });
@@ -89,7 +89,7 @@ export function withLayoutParamValidation(
   validator: DynamicLayout
 ): SomeReactComponent {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = (
+  const ValidatedPageComponent: SomeReactComponent = async (
     props: Pick<NextAppPageProps, "params"> & { children: ReactElement }
   ) => {
     // pull out the params and children from the props
@@ -98,7 +98,7 @@ export function withLayoutParamValidation(
     // if the validator has routeParams, parse them
     let parsedRouteParamsResult = undefined;
     if (validator.routeParams) {
-      parsedRouteParamsResult = parseServerSideParams({
+      parsedRouteParamsResult = await parseServerSideParams({
         params,
         validator: validator.routeParams,
       });

@@ -1,6 +1,6 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 import type { ServerParseParamsResult } from "./types";
-import { validate } from "@decs/typeschema";
+import { Schema, validate } from "@decs/typeschema";
 
 // * TESTED
 /**
@@ -327,17 +327,17 @@ export function encodeAndFillRoute(
  * })
  * const { data, isError, error } = result;
  */
-export function parseServerSideParams<T extends z.AnyZodObject>({
+export async function parseServerSideParams<T extends Schema>({
   params,
   validator,
 }: {
   params: Record<string, string | string[] | undefined>;
   validator: T;
-}): ServerParseParamsResult<T> {
+}): Promise<ServerParseParamsResult<T>> {
   // parse the params to a Record<string, unknown>
   const parsedParams = parseObjectFromStringRecord(params);
   // validate the params with the validator
-  const validatedDynamicRouteParams = validate(validator, parsedParams);
+  const validatedDynamicRouteParams = await validate(validator, parsedParams);
   if (validatedDynamicRouteParams.success) {
     return {
       data: validatedDynamicRouteParams.data,
