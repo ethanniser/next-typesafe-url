@@ -14,6 +14,8 @@ import {
 } from "../src/utils";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { z } from "zod";
+import { array, boolean, nullType, number, object, string } from "valibot";
+import { Type as T } from "@sinclair/typebox";
 
 describe("parseSegment", () => {
   test("static segment", () => {
@@ -395,8 +397,8 @@ describe("parseObjectFromStringRecord", () => {
 });
 
 describe("parseServerSideParams", () => {
-  test("standard use case", () => {
-    expect(
+  test("zod - success", async () => {
+    await expect(
       parseServerSideParams({
         params: {
           string: "foo",
@@ -417,7 +419,7 @@ describe("parseServerSideParams", () => {
           nestedObject: z.object({ foo: z.object({ bar: z.string() }) }),
         }),
       })
-    ).toStrictEqual({
+    ).resolves.toStrictEqual({
       data: {
         string: "foo",
         number: 1,
@@ -431,22 +433,193 @@ describe("parseServerSideParams", () => {
       error: undefined,
     });
   });
-  test("validation fails", () => {
-    // expect(
-    //   parseServerSideParams({
-    //     params: {
-    //       string: "68",
-    //       number: "foo",
-    //       boolean: "bar",
-    //       null: "baz",
-    //     },
-    //     validator: z.object({
-    //       string: z.string(),
-    //       number: z.number(),
-    //       boolean: z.boolean(),
-    //       null: z.null(),
-    //     }),
-    //   }).error
-    // ).toBeInstanceOf(ZodError);
+  test("zod - fail", async () => {
+    await expect(
+      parseServerSideParams({
+        params: {
+          string: "68",
+          number: "foo",
+          boolean: "bar",
+          null: "baz",
+        },
+        validator: z.object({
+          string: z.string(),
+          number: z.number(),
+          boolean: z.boolean(),
+          null: z.null(),
+        }),
+      })
+    ).resolves.toStrictEqual({
+      data: undefined,
+      isError: true,
+      error: [
+        {
+          message: "Expected string, received number",
+          path: ["string"],
+        },
+        {
+          message: "Expected number, received string",
+          path: ["number"],
+        },
+        {
+          message: "Expected boolean, received string",
+          path: ["boolean"],
+        },
+        {
+          message: "Expected null, received string",
+          path: ["null"],
+        },
+      ],
+    });
+  });
+  test("valibot - success", async () => {
+    await expect(
+      parseServerSideParams({
+        params: {
+          string: "foo",
+          number: "1",
+          boolean: "true",
+          null: "null",
+          array: "%5B1%2C2%5D",
+          object: "%7B%22foo%22%3A%22bar%22%7D",
+          nestedObject: "%7B%22foo%22%3A%7B%22bar%22%3A%22baz%22%7D%7D",
+        },
+        validator: object({
+          string: string(),
+          number: number(),
+          boolean: boolean(),
+          null: nullType(),
+          array: array(number()),
+          object: object({ foo: string() }),
+          nestedObject: object({ foo: object({ bar: string() }) }),
+        }),
+      })
+    ).resolves.toStrictEqual({
+      data: {
+        string: "foo",
+        number: 1,
+        boolean: true,
+        null: null,
+        array: [1, 2],
+        object: { foo: "bar" },
+        nestedObject: { foo: { bar: "baz" } },
+      },
+      isError: false,
+      error: undefined,
+    });
+  });
+  test("valibot - fail", async () => {
+    await expect(
+      parseServerSideParams({
+        params: {
+          string: "68",
+          number: "foo",
+          boolean: "bar",
+          null: "baz",
+        },
+        validator: object({
+          string: string(),
+          number: number(),
+          boolean: boolean(),
+          null: nullType(),
+        }),
+      })
+    ).resolves.toStrictEqual({
+      data: undefined,
+      isError: true,
+      error: [
+        {
+          message: "Invalid type",
+          path: ["string"],
+        },
+        {
+          message: "Invalid type",
+          path: ["number"],
+        },
+        {
+          message: "Invalid type",
+          path: ["boolean"],
+        },
+        {
+          message: "Invalid type",
+          path: ["null"],
+        },
+      ],
+    });
+  });
+  test("typebox - success", async () => {
+    await expect(
+      parseServerSideParams({
+        params: {
+          string: "foo",
+          number: "1",
+          boolean: "true",
+          null: "null",
+          array: "%5B1%2C2%5D",
+          object: "%7B%22foo%22%3A%22bar%22%7D",
+          nestedObject: "%7B%22foo%22%3A%7B%22bar%22%3A%22baz%22%7D%7D",
+        },
+        validator: T.Object({
+          string: T.String(),
+          number: T.Number(),
+          boolean: T.Boolean(),
+          null: T.Null(),
+          array: T.Array(T.Number()),
+          object: T.Object({ foo: T.String() }),
+          nestedObject: T.Object({ foo: T.Object({ bar: T.String() }) }),
+        }),
+      })
+    ).resolves.toStrictEqual({
+      data: {
+        string: "foo",
+        number: 1,
+        boolean: true,
+        null: null,
+        array: [1, 2],
+        object: { foo: "bar" },
+        nestedObject: { foo: { bar: "baz" } },
+      },
+      isError: false,
+      error: undefined,
+    });
+  });
+  test("typebox - fail", async () => {
+    await expect(
+      parseServerSideParams({
+        params: {
+          string: "68",
+          number: "foo",
+          boolean: "bar",
+          null: "baz",
+        },
+        validator: T.Object({
+          string: T.String(),
+          number: T.Number(),
+          boolean: T.Boolean(),
+          null: T.Null(),
+        }),
+      })
+    ).resolves.toStrictEqual({
+      data: undefined,
+      isError: true,
+      error: [
+        {
+          message: "Expected string",
+          path: ["/string"],
+        },
+        {
+          message: "Expected number",
+          path: ["/number"],
+        },
+        {
+          message: "Expected boolean",
+          path: ["/boolean"],
+        },
+        {
+          message: "Expected null",
+          path: ["/null"],
+        },
+      ],
+    });
   });
 });
