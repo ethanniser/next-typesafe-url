@@ -34,3 +34,7 @@ yarn-error.log*
 
 #dist
 dist
+
+packages/next-typesafe-url/api-docs
+# Local Netlify folder
+.netlify

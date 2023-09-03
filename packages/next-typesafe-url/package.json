@@ -58,7 +58,8 @@
     "test": "vitest run",
     "lint": "eslint src/**",
     "publish:beta": "npm publish --tag beta",
-    "clean:dist": "rm ./dist -r"
+    "clean:dist": "rm ./dist -r",
+    "docs:gen": "typedoc --out ./api-docs ./src/index.ts ./src/app/index.ts ./src/pages.ts ./src/app/hoc.tsx --plugin typedoc-plugin-missing-exports"
   },
   "dependencies": {
     "@decs/typeschema": "^0.10.2",
@@ -66,6 +67,7 @@
     "meow": "9.0.0"
   },
   "devDependencies": {
+    "@sinclair/typebox": "^0.31.8",
     "@types/react": "18.2.5",
     "@types/react-dom": "18.2.7",
     "eslint": "8.45.0",
@@ -73,7 +75,10 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tsup": "7.1.0",
+    "typedoc": "^0.25.0",
+    "typedoc-plugin-missing-exports": "^2.1.0",
     "typescript": "5.1.6",
+    "valibot": "^0.13.1",
     "zod": "^3.20.2"
   },
   "peerDependencies": {
