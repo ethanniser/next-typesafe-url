@@ -2,8 +2,8 @@
 title: "Search/Route Params- Pages"
 description: "how to consume params in pages via next-typesafe-url"
 nextPage:
-  text: "Next: API Reference"
-  link: "en/api-reference"
+  text: "Finally (optional): Full API Reference"
+  link: "https://api.next-typesafe-url.dev"
 ---
 
 ## Versions
@@ -153,7 +153,7 @@ const Page: NextPage<PageProps> = ({ searchParams, routeParams }) => {
 export default Page;
 ```
 
-<h4 class="idk-why">Finally, explore the full API reference</h4>
+<h4 class="idk-why">If you want to view type signatures, descriptions and examples feel free to explore the full API reference</h4>
 <style>
   .idk-why {
     margin-bottom: 40px;

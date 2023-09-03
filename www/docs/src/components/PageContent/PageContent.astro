@@ -25,13 +25,22 @@ const { title, headings, githubEditUrl, nextPage } = Astro.props;
     <slot />
   </section>
   {
-    nextPage && (
+    nextPage && 
+    (nextPage.text === "Finally (optional): Full API Reference"  ?
+        <a
+          href={nextPage.link}
+          target="_blank"
+          class="next-page-link"
+        >
+          {nextPage.text}
+        </a>
+    : (
       <>
         <a href={Astro.site?.pathname + nextPage.link} class="next-page-link">
           {nextPage.text}
         </a>
       </>
-    )
+    ))
   }
   <nav class="block sm:hidden">
     <MoreMenu editHref={githubEditUrl} />

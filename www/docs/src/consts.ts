@@ -68,6 +68,8 @@ export const SIDEBAR: Sidebar = {
         link: "en/usage/search-route-params-pages",
       },
     ],
-    Reference: [{ text: "API Reference", link: "en/api-reference" }],
+    Reference: [
+      { text: "API Reference", link: "https://api.next-typesafe-url.dev" },
+    ],
   },
 };

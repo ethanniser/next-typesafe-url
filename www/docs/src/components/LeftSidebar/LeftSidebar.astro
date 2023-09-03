@@ -23,6 +23,21 @@ const sidebar = SIDEBAR[langCode];
             <h2 class="nav-group-title">{header}</h2>
             <ul>
               {children.map((child) => {
+
+                if (child.text === "API Reference") {
+                  return (
+                    <li class="nav-link">
+                      <a
+                        href={child.link}
+                        target="_blank"
+                      >
+                        {child.text}
+                      </a>
+                    </li>
+                  );
+                }
+
+
                 const url = Astro.site?.pathname + child.link;
                 return (
                   <li class="nav-link">
@@ -46,12 +61,12 @@ const sidebar = SIDEBAR[langCode];
 </nav>
 
 <script is:inline>
-  window.addEventListener("DOMContentLoaded", () => {
-    var target = document.querySelector('[aria-current="page"]');
-    if (target && target.offsetTop > window.innerHeight - 100) {
-      document.querySelector(".nav-groups").scrollTop = target.offsetTop;
-    }
-  });
+window.addEventListener("DOMContentLoaded", () => {
+  var target = document.querySelector('[aria-current="page"]');
+  if (target && target.offsetTop > window.innerHeight - 100) {
+    document.querySelector(".nav-groups").scrollTop = target.offsetTop;
+  }
+});
 </script>
 
 <style>
