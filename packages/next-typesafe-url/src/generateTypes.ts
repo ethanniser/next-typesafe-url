@@ -132,10 +132,8 @@ export function generateTypesFile({
       type: "pages",
     })),
   ].map((obj) => ({ ...obj, count: routeCounter++ }));
-  const allDoesntHaveRoute = [
-    ...(appRoutesInfo?.doesntHaveRoute ?? []),
-    ...(pagesRoutesInfo?.doesntHaveRoute ?? []),
-  ];
+  const allDoesntHaveRoute_app = appRoutesInfo?.doesntHaveRoute ?? [];
+  const allDoesntHaveRoute_pages = pagesRoutesInfo?.doesntHaveRoute ?? [];
 
   for (const { route, type, count } of allHasRoute) {
     const routeVariableName = `Route_${count}`;
@@ -169,9 +167,12 @@ export function generateTypesFile({
     )
     .join("\n  ");
 
-  const staticRoutesDeclarations = allDoesntHaveRoute
-    .map((route) => `  "${route}": StaticRoute;`)
-    .join("\n  ");
+  const staticRoutesDeclarations = [
+    ...allDoesntHaveRoute_app.map(
+      (route) => `  "${route.replace(/\/\([^()]+\)/g, "")}": StaticRoute;`
+    ),
+    ...allDoesntHaveRoute_pages.map((route) => `  "${route}": StaticRoute;`),
+  ].join("\n  ");
 
   const fileContentString = `${infoText.trim()}\n${importStatements.join("\n")}
 
