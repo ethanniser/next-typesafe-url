@@ -1,6 +1,12 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
-import type { ServerParseParamsResult } from "./types";
+import type { RouteOptions, ServerParseParamsResult } from "./types";
 import { z } from "zod";
+
+function validateArrayFormatSeparator(value: string) {
+  if (typeof value !== "string" || value.length !== 1) {
+    throw new TypeError("arrayFormatSeparator must be single character string");
+  }
+}
 
 // * TESTED
 /**
@@ -8,7 +14,7 @@ import { z } from "zod";
  *
  * @throws If the value is not a non-empty string, number, boolean, array, object, or null.
  */
-export function encodeValue(value: unknown): string {
+export function encodeValue(value: unknown, options?: RouteOptions): string {
   if (typeof value === "string" && value !== "") {
     // if its a non-empty string, uri encode it
     return encodeURIComponent(value);
@@ -20,12 +26,19 @@ export function encodeValue(value: unknown): string {
     typeof value === "object" ||
     value === null
   ) {
+    // if its an array and a formatSeparator is defined use that to join the array
+    if (Array.isArray(value) && options?.format?.arrayFormatSeparator) {
+      validateArrayFormatSeparator(options.format.arrayFormatSeparator);
+      return encodeURIComponent(
+        value.join(options.format.arrayFormatSeparator),
+      );
+    }
     // if its an array, object, or null uri encode it after json stringifying it
     return encodeURIComponent(JSON.stringify(value));
   } else {
     // if its anything else, throw
     throw new Error(
-      "only null, non-empty string, number, boolean, array, and object are able to be encoded"
+      "only null, non-empty string, number, boolean, array, and object are able to be encoded",
     );
   }
 }
@@ -45,7 +58,8 @@ export function encodeValue(value: unknown): string {
  *
  */
 export function generateSearchParamStringFromObj(
-  obj: Record<string, unknown>
+  obj: Record<string, unknown>,
+  options?: RouteOptions,
 ): string {
   // array to collect the encoded params
   const params: string[] = [];
@@ -57,7 +71,7 @@ export function generateSearchParamStringFromObj(
       params.push(key);
     } else {
       // if the value is anything else, encode the key-value pair
-      params.push(`${key}=${encodeValue(value)}`);
+      params.push(`${key}=${encodeValue(value, options)}`);
     }
   }
   // join the params with an ampersand
@@ -88,8 +102,19 @@ export function decodeAndTryJSONParse(value: string | undefined): unknown {
  * If passed a string, calls decodeAndTryJSONParse on it.
  */
 export function parseOrMapParse(
-  obj: string | string[] | undefined
+  obj: string | string[] | undefined,
+  options?: RouteOptions,
 ): unknown | unknown[] {
+  if (
+    options?.format?.arrayFormatSeparator &&
+    typeof obj === "string" &&
+    obj.includes(options.format.arrayFormatSeparator)
+  ) {
+    return obj
+      .split(options.format.arrayFormatSeparator)
+      .map(decodeAndTryJSONParse);
+  }
+
   if (Array.isArray(obj)) {
     return obj.map(decodeAndTryJSONParse);
   } else {
@@ -102,12 +127,13 @@ export function parseOrMapParse(
  * Maps over the object, calling parseOrMapParse on each value.
  */
 export function parseMapObject(
-  obj: Record<string, string | string[] | undefined>
+  obj: Record<string, string | string[] | undefined>,
+  options?: RouteOptions,
 ): Record<string, unknown | unknown[]> {
   const result: Record<string, unknown | unknown[]> = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    result[key] = parseOrMapParse(value);
+    result[key] = parseOrMapParse(value, options);
   }
   return result;
 }
@@ -125,7 +151,7 @@ export function parseMapObject(
  * @example handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux")) -> { foo: "bar", baz: ["lux", "flux"] }
  */
 export function handleSearchParamMultipleKeys(
-  urlParams: URLSearchParams | ReadonlyURLSearchParams
+  urlParams: URLSearchParams | ReadonlyURLSearchParams,
 ): Record<string, string | string[] | undefined> {
   const result: Record<string, string | string[] | undefined> = {};
 
@@ -162,7 +188,7 @@ export function handleSearchParamMultipleKeys(
  * @example parseObjectFromParamString("?foo=true&baz=56&bar=hello") -> { foo: true, baz: 56, bar: "hello" }
  */
 export function parseObjectFromParamString(
-  paramString: string
+  paramString: string,
 ): Record<string, unknown> {
   const params = new URLSearchParams(paramString);
   const handledParams = handleSearchParamMultipleKeys(params);
@@ -176,7 +202,7 @@ export function parseObjectFromParamString(
  * @example parseObjectFromReadonlyURLParams(new ReadonlyURLSearchParams("?foo=true&baz=56&bar=hello")) -> { foo: true, baz: 56, bar: "hello" }
  */
 export function parseObjectFromReadonlyURLParams(
-  params: ReadonlyURLSearchParams
+  params: ReadonlyURLSearchParams,
 ): Record<string, unknown> {
   const handledParams = handleSearchParamMultipleKeys(params);
   return parseMapObject(handledParams);
@@ -189,9 +215,10 @@ export function parseObjectFromReadonlyURLParams(
  * @example parseObjectFromStringRecord({ foo: "true", baz: "56", bar: "hello" }) -> { foo: true, baz: 56, bar: "hello" }
  */
 export function parseObjectFromStringRecord(
-  params: Record<string, string | string[] | undefined>
+  params: Record<string, string | string[] | undefined>,
+  options?: RouteOptions,
 ): Record<string, unknown> {
-  return parseMapObject(params);
+  return parseMapObject(params, options);
 }
 
 type Segment = {
@@ -259,7 +286,7 @@ export function parseSegment(segment: string): Segment {
  */
 export function encodeAndFillRoute(
   route: string,
-  routeParams: Record<string, unknown>
+  routeParams: Record<string, unknown>,
 ): string {
   // split the route into its segments
   const segments = route.split("/");
@@ -293,7 +320,7 @@ export function encodeAndFillRoute(
         parts.push(encodeValue(paramValue));
       } else {
         throw new Error(
-          `Missing value for catch-all segment "${segment.value}"`
+          `Missing value for catch-all segment "${segment.value}"`,
         );
       }
     } else if (segment.type === "optionalCatchAll") {
@@ -330,14 +357,18 @@ export function encodeAndFillRoute(
 export function parseServerSideParams<T extends z.AnyZodObject>({
   params,
   validator,
+  options,
 }: {
   params: Record<string, string | string[] | undefined>;
   validator: T;
+  options?: RouteOptions;
 }): ServerParseParamsResult<T> {
   // parse the params to a Record<string, unknown>
-  const parsedParams = parseObjectFromStringRecord(params);
+  const parsedParams = parseObjectFromStringRecord(params, options);
+
   // validate the params with the validator
   const validatedDynamicRouteParams = validator.safeParse(parsedParams);
+
   if (validatedDynamicRouteParams.success) {
     return {
       data: validatedDynamicRouteParams.data,

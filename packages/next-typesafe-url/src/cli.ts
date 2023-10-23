@@ -97,7 +97,7 @@ if (require.main === module) {
   const absoluteOutputPath = path.join(process.cwd(), outputPath);
   const relativePathFromOutputToSrc = path.relative(
     path.dirname(absoluteOutputPath),
-    absoluteSrcPath
+    absoluteSrcPath,
   );
 
   const appPath = path.join(absoluteSrcPath, "app");

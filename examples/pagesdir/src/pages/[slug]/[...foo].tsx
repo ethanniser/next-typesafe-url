@@ -25,11 +25,11 @@ const Page: NextPage = () => {
   const [input, setInput] = useState("");
 
   const { data: routeData, error: routeError } = useRouteParams(
-    Route.routeParams
+    Route.routeParams,
   );
 
   const { data: searchData, error: searchError } = useSearchParams(
-    Route.searchParams
+    Route.searchParams,
   );
 
   return (

@@ -112,7 +112,7 @@ type ServerSideProps = AppRouter["/product/[productID]"]["searchParams"] &
   AppRouter["/product/[productID]"]["routeParams"];
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
-  context
+  context,
 ) => {
   const routeParams = parseServerSideParams({
     params: context.params ?? {},

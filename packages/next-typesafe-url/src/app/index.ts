@@ -36,7 +36,7 @@ function usePrevious<T>(value: T) {
  * const { data, isLoading, isError, error } = routeParams;
  */
 export function useRouteParams<T extends z.AnyZodObject>(
-  validator: T
+  validator: T,
 ): UseParamsResult<T> {
   const params = useParams();
   const prev = usePrevious(params);
@@ -107,7 +107,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
  * const { data, isLoading, isError, error } = searchParams;
  */
 export function useSearchParams<T extends z.AnyZodObject>(
-  searchValidator: T
+  searchValidator: T,
 ): UseParamsResult<T> {
   const params = useNextSearchParams();
   const [isError, setIsError] = useState(false);

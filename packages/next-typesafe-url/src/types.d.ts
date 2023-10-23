@@ -117,12 +117,14 @@ type Option4 = {
 type StaticRoute = {
   searchParams: undefined;
   routeParams: undefined;
+  options: undefined;
 };
 
 // Represents a route that has dynamic parameters
 type DynamicRoute = {
   searchParams?: z.AnyZodObject;
   routeParams?: z.AnyZodObject;
+  options?: RouteOptions;
 };
 
 // basically just an object with a routeParams property that has a zod validator
@@ -137,12 +139,18 @@ type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
   children: React.ReactNode;
 } & { [P in K]: React.ReactNode };
 
+type RouteOptions = {
+  format: {
+    arrayFormatSeparator: string;
+  };
+};
+
 // the input type for $path
 // if a route is static, it only needs the route property
 // if a route is dynamic, it needs the route property and the input types for the route
-type PathOptions<T extends AllRoutes> = T extends StaticRoutes
+type PathOptions<T extends AllRoutes> = (T extends StaticRoutes
   ? StaticPathOptions<T>
-  : { route: T } & RouterInputs[T];
+  : { route: T } & RouterInputs[T]) & { options?: RouteOptions };
 
 // checks if all properties of T are undefined
 type AllPossiblyUndefined<T> = Exclude<Partial<T>, undefined> extends T
@@ -210,6 +218,7 @@ export {
   RouterOutputs,
   AllRoutes,
   DynamicRoute,
+  RouteOptions,
 
   // used by generated file
   StaticRoute,

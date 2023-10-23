@@ -209,7 +209,7 @@ making sure you pass the correct validator for the current route.
 
 ```ts
 declare function useSearchParams<T extends z.AnyZodObject>(
-  searchValidator: T
+  searchValidator: T,
 ): UseParamsResult<T>;
 ```
 
@@ -221,7 +221,7 @@ making sure you pass the correct validator for the current route.
 
 ```ts
 declare function useRouteParams<T extends z.AnyZodObject>(
-  validator: T
+  validator: T,
 ): UseParamsResult<T>;
 ```
 
@@ -244,7 +244,7 @@ It should be the default export of `page.tsx`.
 ```ts
 declare function withParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicRoute
+  validator: DynamicRoute,
 ): SomeReactComponent;
 ```
 
@@ -257,7 +257,7 @@ The component you wrap with this should use `InferLayoutPropsType` for its props
 ```ts
 declare function withLayoutParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicLayout
+  validator: DynamicLayout,
 ): SomeReactComponent;
 ```
 
@@ -270,7 +270,7 @@ Should only be used in the top level route component where your `Route` object i
 
 ```ts
 declare function useSearchParams<T extends z.AnyZodObject>(
-  searchValidator: T
+  searchValidator: T,
 ): UseParamsResult<T>;
 ```
 
@@ -281,7 +281,7 @@ Should only be used in the top level route component where your `Route` object i
 
 ```ts
 declare function useRouteParams<T extends z.AnyZodObject>(
-  validator: T
+  validator: T,
 ): UseParamsResult<T>;
 ```
 

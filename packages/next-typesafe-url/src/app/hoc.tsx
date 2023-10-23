@@ -25,11 +25,11 @@ type SomeReactComponent = (
  */
 export function withParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicRoute
+  validator: DynamicRoute,
 ): SomeReactComponent {
   // the new component that will be returned
   const ValidatedPageComponent: SomeReactComponent = (
-    props: NextAppPageProps
+    props: NextAppPageProps,
   ) => {
     // pull out the params and searchParams from the props
     const { params, searchParams, ...otherProps } = props;
@@ -49,6 +49,7 @@ export function withParamValidation(
       parsedSearchParamsResult = parseServerSideParams({
         params: searchParams ?? {},
         validator: validator.searchParams,
+        options: validator.options,
       });
     }
 
@@ -86,11 +87,11 @@ export function withParamValidation(
  */
 export function withLayoutParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicLayout
+  validator: DynamicLayout,
 ): SomeReactComponent {
   // the new component that will be returned
   const ValidatedPageComponent: SomeReactComponent = (
-    props: Pick<NextAppPageProps, "params"> & { children: ReactElement }
+    props: Pick<NextAppPageProps, "params"> & { children: ReactElement },
   ) => {
     // pull out the params and children from the props
     const { params, children, ...otherProps } = props;

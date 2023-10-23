@@ -6,7 +6,7 @@ export function getPAGESRoutesWithExportedRoute(
   basePath: string,
   dir: string,
   hasRoute: string[] = [],
-  doesntHaveRoute: string[] = []
+  doesntHaveRoute: string[] = [],
 ): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
@@ -15,7 +15,7 @@ export function getPAGESRoutesWithExportedRoute(
         basePath,
         fullPath,
         hasRoute,
-        doesntHaveRoute
+        doesntHaveRoute,
       );
     } else {
       const fileName = path.basename(fullPath);
@@ -30,7 +30,7 @@ export function getPAGESRoutesWithExportedRoute(
 
       const fileContent = fs.readFileSync(fullPath, "utf8");
       const hasExportedRouteType = /export\s+type\s+RouteType\b/.test(
-        fileContent
+        fileContent,
       );
 
       let routePath = fullPath
@@ -65,7 +65,7 @@ export function getAPPRoutesWithExportedRoute(
   basePath: string,
   dir: string = basePath,
   hasRoute: string[] = [],
-  doesntHaveRoute: string[] = []
+  doesntHaveRoute: string[] = [],
 ): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
@@ -89,7 +89,7 @@ export function getAPPRoutesWithExportedRoute(
         basePath,
         fullPath,
         hasRoute,
-        doesntHaveRoute
+        doesntHaveRoute,
       );
     } else if (file === "page.tsx") {
       const routeTypePath = path.join(dir, "routeType.ts");
@@ -142,7 +142,7 @@ export function generateTypesFile({
     const pathAfterSrc = path.join(
       type,
       route === "/" ? "" : route,
-      type === "app" ? "routeType" : ""
+      type === "app" ? "routeType" : "",
     );
     const finalRelativePath = path
       .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
@@ -151,13 +151,13 @@ export function generateTypesFile({
       // ensure relative paths start with "./"
       .replace(/^(?!\.\.\/)/, "./");
     importStatements.push(
-      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath}";`
+      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath}";`,
     );
     routeCounter++;
   }
 
   importStatements.push(
-    'import type { InferRoute, StaticRoute } from "next-typesafe-url";'
+    'import type { InferRoute, StaticRoute } from "next-typesafe-url";',
   );
 
   const routeTypeDeclarations = allHasRoute
@@ -165,7 +165,7 @@ export function generateTypesFile({
       ({ route, type, count }) =>
         `  "${
           type === "app" ? route.replace(/\/\([^()]+\)/g, "") : route
-        }": InferRoute<Route_${count}>;`
+        }": InferRoute<Route_${count}>;`,
     )
     .join("\n  ");
 
