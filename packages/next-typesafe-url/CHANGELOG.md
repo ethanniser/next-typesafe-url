@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.3
+
+### Patch Changes
+
+- 52d64c7: Remove route groups from Static Router
+
 ## 4.0.2
 
 ### Patch Changes
