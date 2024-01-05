@@ -34,12 +34,47 @@ Information that is passed to a route via the query string, in next they are den
 
 #### Routing
 
-Routing is the process of navigating between pages in your nextjs app. This is most often done either through the use of the `next/link` component.
+Routing is the process of navigating between pages in your nextjs app. This can be done through:
 
+1. using the `next/link` component **(Recommended)**
 ```tsx
-import Link from "next/link";
-<Link href={`/users/${id}`} />;
+import Link from "next/link"
+ 
+export default function Users() {
+  return (
+    <Link href={`/users/${id}`}>User A</>
+  )
+}
 ```
+
+2. using next router imperatively
+
+   a. In ***App router***
+      ```tsx
+      import { useRouter } from 'next/navigation'
+ 
+      export default function Users() {
+        const router = useRouter();
+      
+        return (
+          <button onClick={() => router.push(`/users/${id}`)}>User B</button>
+        )
+      }
+      ```
+   b. in ***Pages router***
+
+      ```tsx
+      import { useRouter } from 'next/router'
+       
+      export default function Users() {
+        const router = useRouter();
+       
+        return (
+          <button onClick={() => router.push(`/users/${id}`)}>User C</button>
+        )
+      }
+      ```
+
 
 ### Now the First 3 Big Points
 
