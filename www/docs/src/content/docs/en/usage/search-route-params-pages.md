@@ -50,7 +50,7 @@ export default function Component() {
 
 <h4>MAKE SURE YOU IMPORT FROM THE RIGHT PATH</h4>
 
-## Reccomended Usage
+## Recommended Usage
 
 As I mentioned earlier, it is important that only the `RouteType`, not the `Route` is exported to not break hot reloading.
 

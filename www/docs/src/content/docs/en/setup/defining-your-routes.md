@@ -89,7 +89,7 @@ const Route = {
 
 If you want search params or a optional catch-all route param to be optional, use `.optional()` on the zod type.
 
-**Don't make the top level zod objects optional**, if you wan't to make it so a route could _optionally_ take no search params or route params, then simply make each item inside the zod object optional, and `next-typesafe-url` will automatically infer the whole object as optional.
+**Don't make the top level zod objects optional**, if you want to make it so a route could _optionally_ take no search params or route params, then simply make each item inside the zod object optional, and `next-typesafe-url` will automatically infer the whole object as optional.
 
 ```ts
 export const Route = {

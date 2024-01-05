@@ -6,7 +6,7 @@ nextPage:
   link: "en/general/installation"
 ---
 
-## Whats wrong with curent solutions?
+## Whats wrong with current solutions?
 
 ### Routing
 
