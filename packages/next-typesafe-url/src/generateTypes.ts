@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import type { RouteInformation, Paths } from "./cli";
+import type { Paths, RouteInformation } from "./cli";
 
 export function getPAGESRoutesWithExportedRoute(
   basePath: string,
@@ -174,9 +174,11 @@ export function generateTypesFile({
     ...allDoesntHaveRoute_pages.map((route) => `  "${route}": StaticRoute;`),
   ].join("\n  ");
 
-  const fileContentString = `${infoText.trim()}\n${importStatements.join("\n")}
+  const fileContentString = `${infoText.trim()}\n
 
 declare module "@@@next-typesafe-url" {
+  ${importStatements.join("\n")}
+  
   interface DynamicRouter {
   ${routeTypeDeclarations}
   }
