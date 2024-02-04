@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.4
+
+### Patch Changes
+
+- 482346f: Ensure codegen produce an ambient .d.ts file. Thank you @lelabo-m PR: #85
+
 ## 4.0.3
 
 ### Patch Changes
