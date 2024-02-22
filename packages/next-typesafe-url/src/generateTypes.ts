@@ -176,8 +176,9 @@ export function generateTypesFile({
 
   const fileContentString = `${infoText.trim()}\n
 
+${importStatements.join("\n")}
+
 declare module "@@@next-typesafe-url" {
-  ${importStatements.join("\n")}
   
   interface DynamicRouter {
   ${routeTypeDeclarations}
