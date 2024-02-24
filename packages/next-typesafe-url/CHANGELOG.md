@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.5
+
+### Patch Changes
+
+- 3371794: revert previous change of import placements in generated .d.ts file
+
 ## 4.0.4
 
 ### Patch Changes
