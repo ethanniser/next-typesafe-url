@@ -28,9 +28,16 @@ const Page: NextPage = () => {
     Route.routeParams
   );
 
-  const { data: searchData, error: searchError } = useSearchParams(
+  const { updateSearchParams, searchParams: {data: searchData, error: searchError} } = useSearchParams(
     Route.searchParams
   );
+
+  const handleClick = () => {
+    void updateSearchParams({
+      location: "us",
+      userInfo: { name: "john", age: 22 },
+    })
+  }
 
   return (
     <>
@@ -46,13 +53,16 @@ const Page: NextPage = () => {
           },
           searchParams: {
             location: "us",
-            userInfo: { name: "string", age: 123 },
+            userInfo: { name: "harry", age: 123 },
           },
         })}
       >
-        hooks
+        Link hooks
       </Link>
       <br />
+      <button onClick={handleClick}>
+        Button hooks
+      </button>
       <h1>routeParams</h1>
       <div>{`data: ${JSON.stringify(routeData)}`}</div>
       <div>{`error: ${JSON.stringify(routeError) ?? "no error"}`}</div>

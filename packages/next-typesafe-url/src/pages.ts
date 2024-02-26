@@ -4,10 +4,11 @@ import { useRouter } from "next/router";
 import { z } from "zod";
 import { useState, useEffect } from "react";
 import {
+  generateSearchParamStringFromObj,
   parseObjectFromParamString,
   parseObjectFromStringRecord,
 } from "./utils";
-import type { UseParamsResult } from "./types";
+import type { UseParamsResult, UseSearchParamsResult } from "./types";
 export { parseServerSideParams } from "./utils";
 
 /**
@@ -89,7 +90,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
  */
 export function useSearchParams<T extends z.AnyZodObject>(
   searchValidator: T
-): UseParamsResult<T> {
+): UseSearchParamsResult<T> {
   const router = useRouter();
   const [isError, setIsError] = useState(false);
   // not used if theres no error, but we need to initialize it so just use a dummy error
@@ -119,30 +120,53 @@ export function useSearchParams<T extends z.AnyZodObject>(
     // rerun whenever the router or validator changes
   }, [router, searchValidator]);
 
+  function updateSearchParams(
+    newSearchParams: z.output<T>,
+    strategy: "push" | "replace" = "push"
+  ) {
+    const newParams: Record<string, unknown> = searchValidator.parse(newSearchParams);
+    const pathname = router.asPath.split("?")[0] ?? "";
+    const url = `${pathname}${generateSearchParamStringFromObj(newParams)}`
+    if (strategy === "push") {
+      return router.push(url);
+    }
+
+    return router.replace(url);
+  }
+
   if (isError) {
     // if there was an error, return the error
     return {
-      data: undefined,
-      isError: true,
-      error: error,
-      isLoading: false,
+      updateSearchParams,
+      searchParams: {
+        data: undefined,
+        isError: true,
+        error: error,
+        isLoading: false,
+      },
     };
   } else {
     if (!data) {
       // if there was no error but the data is undefined, we're still loading
       return {
-        data: undefined,
-        isError: false,
-        isLoading: true,
-        error: undefined,
+        updateSearchParams,
+        searchParams: {
+          data: undefined,
+          isError: false,
+          isLoading: true,
+          error: undefined,
+        },
       };
     } else {
       // if there was no error and the data is defined, return the data
       return {
-        data: data,
-        isError: false,
-        isLoading: false,
-        error: undefined,
+        updateSearchParams,
+        searchParams: {
+          data: data,
+          isError: false,
+          isLoading: false,
+          error: undefined,
+        },
       };
     }
   }

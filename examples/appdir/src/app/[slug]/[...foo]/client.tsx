@@ -12,8 +12,15 @@ export const Client = () => {
   const nextParams = useParams();
   console.log("nextParams", nextParams);
 
-  const params = useSearchParams(Route.searchParams);
+  const {searchParams, updateSearchParams} = useSearchParams(Route.searchParams);
   const routeParams = useRouteParams(Route.routeParams);
+
+  const handleClick = () => {
+    void updateSearchParams({
+      location: "us",
+      userInfo: { name: "harry", age: 123 },
+    })
+  }
 
   return (
     <>
@@ -33,11 +40,15 @@ export const Client = () => {
           },
         })}
       >
-        hooks
+        Link hooks
       </Link>
       <br />
+      <button onClick={handleClick}>
+        Button hooks
+      </button>
+      <br />
       <h1>searchParams</h1>
-      <div>{`data: ${JSON.stringify(params)}`}</div>
+      <div>{`data: ${JSON.stringify(searchParams)}`}</div>
       <h1>routeParams</h1>
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
     </>
