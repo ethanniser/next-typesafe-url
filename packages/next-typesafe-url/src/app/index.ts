@@ -1,6 +1,11 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
-import type { UseParamsResult } from "../types";
+import type {
+  AllRoutes,
+  RouterOutputs,
+  UseParamsResult,
+  DynamicRoute,
+} from "../types";
 import { useRef } from "react";
 import {
   useParams,
@@ -11,7 +16,9 @@ import { z } from "zod";
 import {
   parseObjectFromReadonlyURLParams,
   parseObjectFromStringRecord,
+  parseServerSideParams,
 } from "../utils";
+import { Metadata, ResolvingMetadata } from "next";
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -159,4 +166,59 @@ export function useSearchParams<T extends z.AnyZodObject>(
       };
     }
   }
+}
+
+// for use with `generateMetadata`
+type GenerateMetadataFunction = (
+  props: {
+    params: Record<string, string | string[]>;
+    searchParams: Record<string, string | string[] | undefined>;
+  },
+  parent: ResolvingMetadata
+) => Promise<Metadata>;
+export function withParamValidation<T extends AllRoutes>(
+  f: (props: RouterOutputs[T], parent: ResolvingMetadata) => Promise<Metadata>,
+  validator: DynamicRoute
+): GenerateMetadataFunction {
+  const returnFunction: GenerateMetadataFunction = async (props, parent) => {
+    // pull out the params and searchParams from the props
+    const { params, searchParams, ...otherProps } = props;
+
+    // if the validator has routeParams, parse them
+    let parsedRouteParamsResult = undefined;
+    if (validator.routeParams) {
+      parsedRouteParamsResult = parseServerSideParams({
+        params,
+        validator: validator.routeParams,
+      });
+    }
+
+    // if the validator has searchParams, parse them
+    let parsedSearchParamsResult = undefined;
+    if (validator.searchParams) {
+      parsedSearchParamsResult = parseServerSideParams({
+        params: searchParams ?? {},
+        validator: validator.searchParams,
+      });
+    }
+
+    // if either of the parsing results are errors, throw them
+    if (parsedRouteParamsResult?.isError) {
+      throw parsedRouteParamsResult.error;
+    } else if (parsedSearchParamsResult?.isError) {
+      throw parsedSearchParamsResult.error;
+    }
+
+    // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
+    const newProps = {
+      routeParams: parsedRouteParamsResult?.data,
+      searchParams: parsedSearchParamsResult?.data,
+      ...otherProps,
+    };
+
+    // call the original function with the new props
+    // @ts-expect-error we just parsed the params so they are guaranteed to match the types
+    return f(newProps, parent);
+  };
+  return returnFunction;
 }
