@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.6
+
+### Patch Changes
+
+- 367ac24: Fix cli ambient .d.ts file generation (building upon PR #85 and #87). Thanks to @chungweileong94.
+
 ## 4.0.5
 
 ### Patch Changes
