@@ -1,11 +1,6 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
-import type {
-  AllRoutes,
-  RouterOutputs,
-  UseParamsResult,
-  DynamicRoute,
-} from "../types";
+import type { UseParamsResult, DynamicRoute } from "../types";
 import { useRef } from "react";
 import {
   useParams,
@@ -177,13 +172,8 @@ type GenerateMetadataFunction = (
   parent: ResolvingMetadata
 ) => Promise<Metadata>;
 export function withParamValidation(
-  f: (
-    props: {
-      routeParams: any;
-      searchParams: any;
-    },
-    parent: ResolvingMetadata
-  ) => Promise<Metadata>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- its on you to use the right types in your function
+  f: (props: any, parent: ResolvingMetadata) => Promise<Metadata>,
   validator: DynamicRoute
 ): GenerateMetadataFunction {
   const returnFunction: GenerateMetadataFunction = async (props, parent) => {
