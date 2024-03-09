@@ -122,7 +122,6 @@ export function generateTypesFile({
   pagesRoutesInfo: RouteInformation | null;
   paths: Paths;
 }): void {
-  const importStatements: string[] = [];
   let routeCounter = 0;
 
   const allHasRoute = [
@@ -135,36 +134,23 @@ export function generateTypesFile({
   const allDoesntHaveRoute_app = appRoutesInfo?.doesntHaveRoute ?? [];
   const allDoesntHaveRoute_pages = pagesRoutesInfo?.doesntHaveRoute ?? [];
 
-  for (const { route, type, count } of allHasRoute) {
-    const routeVariableName = `Route_${count}`;
-    const pathAfterSrc = path.join(
-      type,
-      route === "/" ? "" : route,
-      type === "app" ? "routeType" : ""
-    );
-    const finalRelativePath = path
-      .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
-      // replace backslashes with forward slashes
-      .replace(/\\/g, "/")
-      // ensure relative paths start with "./"
-      .replace(/^(?!\.\.\/)/, "./");
-    importStatements.push(
-      `import { type RouteType as ${routeVariableName} } from "${finalRelativePath}";`
-    );
-    routeCounter++;
-  }
-
-  importStatements.push(
-    'import type { InferRoute, StaticRoute } from "next-typesafe-url";'
-  );
-
   const routeTypeDeclarations = allHasRoute
-    .map(
-      ({ route, type, count }) =>
-        `  "${
-          type === "app" ? route.replace(/\/\([^()]+\)/g, "") : route
-        }": InferRoute<Route_${count}>;`
-    )
+    .map(({ route, type }) => {
+      const pathAfterSrc = path.join(
+        type,
+        route === "/" ? "" : route,
+        type === "app" ? "routeType" : ""
+      );
+      const finalRelativePath = path
+        .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
+        // replace backslashes with forward slashes
+        .replace(/\\/g, "/")
+        // ensure relative paths start with "./"
+        .replace(/^(?!\.\.\/)/, "./");
+      return `  "${
+        type === "app" ? route.replace(/\/\([^()]+\)/g, "") : route
+      }": InferRoute<import("${finalRelativePath}").RouteType>;`;
+    })
     .join("\n  ");
 
   const staticRoutesDeclarations = [
@@ -176,9 +162,8 @@ export function generateTypesFile({
 
   const fileContentString = `${infoText.trim()}\n
 
-${importStatements.join("\n")}
-
 declare module "@@@next-typesafe-url" {
+  import type { InferRoute, StaticRoute } from "next-typesafe-url";
   
   interface DynamicRouter {
   ${routeTypeDeclarations}
