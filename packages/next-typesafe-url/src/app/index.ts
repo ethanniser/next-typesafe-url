@@ -176,8 +176,14 @@ type GenerateMetadataFunction = (
   },
   parent: ResolvingMetadata
 ) => Promise<Metadata>;
-export function withParamValidation<T extends AllRoutes>(
-  f: (props: RouterOutputs[T], parent: ResolvingMetadata) => Promise<Metadata>,
+export function withParamValidation(
+  f: (
+    props: {
+      routeParams: any;
+      searchParams: any;
+    },
+    parent: ResolvingMetadata
+  ) => Promise<Metadata>,
   validator: DynamicRoute
 ): GenerateMetadataFunction {
   const returnFunction: GenerateMetadataFunction = async (props, parent) => {
@@ -217,7 +223,6 @@ export function withParamValidation<T extends AllRoutes>(
     };
 
     // call the original function with the new props
-    // @ts-expect-error we just parsed the params so they are guaranteed to match the types
     return f(newProps, parent);
   };
   return returnFunction;
