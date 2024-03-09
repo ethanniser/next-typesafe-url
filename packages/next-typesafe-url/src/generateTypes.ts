@@ -122,7 +122,6 @@ export function generateTypesFile({
   pagesRoutesInfo: RouteInformation | null;
   paths: Paths;
 }): void {
-  const importStatements: string[] = [];
   let routeCounter = 0;
 
   const allHasRoute = [
@@ -162,8 +161,6 @@ export function generateTypesFile({
   ].join("\n  ");
 
   const fileContentString = `${infoText.trim()}\n
-
-${importStatements.join("\n")}
 
 declare module "@@@next-typesafe-url" {
   import type { InferRoute, StaticRoute } from "next-typesafe-url";
