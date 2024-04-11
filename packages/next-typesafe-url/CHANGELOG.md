@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.7
+
+### Patch Changes
+
+- 8a97b77: Remove next peer dep req on v13 (add v14)
+
 ## 4.0.6
 
 ### Patch Changes
