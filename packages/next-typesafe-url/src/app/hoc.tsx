@@ -1,6 +1,6 @@
+import type { ReactElement, ReactNode } from "react";
 import { parseServerSideParams } from "../utils";
 import type { DynamicRoute, DynamicLayout } from "../types";
-import { type ReactElement } from "react";
 
 // the props passed to a page component by Next.js
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
@@ -12,7 +12,7 @@ type NextAppPageProps = {
 type SomeReactComponent = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- describing a generic component
   ...args: any[]
-) => JSX.Element | Promise<JSX.Element>;
+) => ReactNode | Promise<ReactNode>;
 
 /**
  * A HOC that validates the params passed to a page component.
