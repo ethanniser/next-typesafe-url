@@ -10,7 +10,8 @@ type NextAppPageProps = {
 } & Record<string, unknown>;
 
 type SomeReactComponent = (
-  ...args: unknown[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- describing a generic component
+  ...args: any[]
 ) => ReactNode | Promise<ReactNode>;
 
 /**
