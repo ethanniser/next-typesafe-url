@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.0.8
+
+### Patch Changes
+
+- ef5ea79: fix `SomeReactComponent` typing- thanks @risk1996
+
 ## 4.0.7
 
 ### Patch Changes
