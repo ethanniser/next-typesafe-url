@@ -20,6 +20,8 @@ declare module "@@@next-typesafe-url" {
   }
 
   interface StaticRouter {
+    "/js-static-route": StaticRoute;
+    "/mdx-route": StaticRoute;
     "/": StaticRoute;
     "/static": StaticRoute;
   }

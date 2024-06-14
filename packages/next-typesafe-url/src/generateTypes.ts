@@ -112,10 +112,11 @@ export function getAPPRoutesWithExportedRoute({
       // Matches page files with the extensions from pageExtensions
       pageExtensions.map((p) => `page.${p}`).includes(file)
     ) {
+      // With custom pageExtension
       let routePath = fullPath
         .replace(basePath, "")
         .replace(/\\/g, "/")
-        .replace(/\/page\.tsx$/, "");
+        .replace(new RegExp(`/page\\.(${pageExtensions.join("|")})$`), "");
 
       if (dir === basePath) {
         routePath = "/";
