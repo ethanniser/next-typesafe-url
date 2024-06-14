@@ -96,14 +96,18 @@ function watch({
   const { absoluteAppPath, absolutePagesPath } = paths;
 
   if (absoluteAppPath) {
-    chokidar.watch([`${absoluteAppPath}/**/*.{ts,tsx}`]).on("change", () => {
-      build({ paths, pageExtensions });
-    });
+    chokidar
+      .watch([`${absoluteAppPath}/**/*.{${pageExtensions.join(",")}}`])
+      .on("change", () => {
+        build({ paths, pageExtensions });
+      });
   }
   if (absolutePagesPath) {
-    chokidar.watch([`${absolutePagesPath}/**/*.{ts,tsx}`]).on("change", () => {
-      build({ paths, pageExtensions });
-    });
+    chokidar
+      .watch([`${absolutePagesPath}/**/*.{${pageExtensions.join(",")}}`])
+      .on("change", () => {
+        build({ paths, pageExtensions });
+      });
   }
 
   console.log(`Watching for route changes`);

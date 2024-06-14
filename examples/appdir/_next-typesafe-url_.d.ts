@@ -10,31 +10,16 @@ declare module "@@@next-typesafe-url" {
   import type { InferRoute, StaticRoute } from "next-typesafe-url";
   
   interface DynamicRouter {
-    "/foo/[id]/layout.tsx": InferRoute<import("./src/app/(test)/foo/[id]/layout.tsx/routeType").RouteType>;
     "/foo/[id]/nest": InferRoute<import("./src/app/(test)/foo/[id]/nest/routeType").RouteType>;
-    "/foo/[id]/nest/routeType.ts": InferRoute<import("./src/app/(test)/foo/[id]/nest/routeType.ts/routeType").RouteType>;
     "/foo/[id]": InferRoute<import("./src/app/(test)/foo/[id]/routeType").RouteType>;
-    "/foo/[id]/routeType.ts": InferRoute<import("./src/app/(test)/foo/[id]/routeType.ts/routeType").RouteType>;
-    "/[slug]/[...foo]/client.tsx": InferRoute<import("./src/app/[slug]/[...foo]/client.tsx/routeType").RouteType>;
-    "/[slug]/[...foo]/error.tsx": InferRoute<import("./src/app/[slug]/[...foo]/error.tsx/routeType").RouteType>;
     "/[slug]/[...foo]": InferRoute<import("./src/app/[slug]/[...foo]/routeType").RouteType>;
-    "/[slug]/[...foo]/routeType.ts": InferRoute<import("./src/app/[slug]/[...foo]/routeType.ts/routeType").RouteType>;
-    "/client/[...client]/client.tsx": InferRoute<import("./src/app/client/[...client]/client.tsx/routeType").RouteType>;
     "/client/[...client]": InferRoute<import("./src/app/client/[...client]/routeType").RouteType>;
-    "/client/[...client]/routeType.ts": InferRoute<import("./src/app/client/[...client]/routeType.ts/routeType").RouteType>;
     "/jsonRoute/[foo]": InferRoute<import("./src/app/jsonRoute/[foo]/routeType").RouteType>;
-    "/jsonRoute/[foo]/routeType.ts": InferRoute<import("./src/app/jsonRoute/[foo]/routeType.ts/routeType").RouteType>;
     "/transform": InferRoute<import("./src/app/transform/routeType").RouteType>;
-    "/transform/routeType.ts": InferRoute<import("./src/app/transform/routeType.ts/routeType").RouteType>;
     "/dynamic": InferRoute<import("./src/pages/dynamic").RouteType>;
   }
 
   interface StaticRouter {
-    "/layout.tsx": StaticRoute;
-    "/[slug]/layout.tsx": StaticRoute;
-    "/": StaticRoute;
-    "/": StaticRoute;
-    "/": StaticRoute;
     "/": StaticRoute;
     "/static": StaticRoute;
   }

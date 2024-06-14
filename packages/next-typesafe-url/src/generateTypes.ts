@@ -110,7 +110,7 @@ export function getAPPRoutesWithExportedRoute({
       });
     } else if (
       // Matches page files with the extensions from pageExtensions
-      pageExtensions.map((p) => ["page", p].join(".").includes(file))
+      pageExtensions.map((p) => `page.${p}`).includes(file)
     ) {
       let routePath = fullPath
         .replace(basePath, "")
