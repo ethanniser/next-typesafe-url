@@ -16,7 +16,8 @@ Scans for routes in your app and pages directories and generates a types file fo
 Options:
 --watch / -w,  Watch for file changes in src/app and src/pages and regenerate the types file
 --srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
---outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./next-typesafe-url_.d.ts"
+--outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./_next-typesafe-url_.d.ts"
+--pageExtensions, A comma separated list of file extensions to consider as. DEFAULT: "tsx,ts,jsx,js"
 --help,  Show this help message
 `;
 
@@ -34,6 +35,10 @@ const cli = meow(helpText, {
       type: "string",
       default: "./src",
     },
+    pageExtensions: {
+      type: "string",
+      default: "tsx,ts,jsx,js",
+    },
   },
 });
 
@@ -49,14 +54,28 @@ export type RouteInformation = {
   doesntHaveRoute: string[];
 };
 
-function build(paths: Paths) {
+function build({
+  paths,
+  pageExtensions,
+}: {
+  paths: Paths;
+  pageExtensions: string[];
+}) {
   const { absoluteAppPath, absolutePagesPath } = paths;
 
   const appRoutesInfo = absoluteAppPath
-    ? getAPPRoutesWithExportedRoute(absoluteAppPath, absoluteAppPath)
+    ? getAPPRoutesWithExportedRoute({
+        basePath: absoluteAppPath,
+        dir: absoluteAppPath,
+        pageExtensions,
+      })
     : null;
   const pagesRoutesInfo = absolutePagesPath
-    ? getPAGESRoutesWithExportedRoute(absolutePagesPath, absolutePagesPath)
+    ? getPAGESRoutesWithExportedRoute({
+        basePath: absolutePagesPath,
+        dir: absolutePagesPath,
+        pageExtensions,
+      })
     : null;
 
   generateTypesFile({
@@ -67,17 +86,23 @@ function build(paths: Paths) {
   console.log(`Generated route types`);
 }
 
-function watch(paths: Paths) {
+function watch({
+  paths,
+  pageExtensions,
+}: {
+  paths: Paths;
+  pageExtensions: string[];
+}) {
   const { absoluteAppPath, absolutePagesPath } = paths;
 
   if (absoluteAppPath) {
     chokidar.watch([`${absoluteAppPath}/**/*.{ts,tsx}`]).on("change", () => {
-      build(paths);
+      build({ paths, pageExtensions });
     });
   }
   if (absolutePagesPath) {
     chokidar.watch([`${absolutePagesPath}/**/*.{ts,tsx}`]).on("change", () => {
-      build(paths);
+      build({ paths, pageExtensions });
     });
   }
 
@@ -86,6 +111,7 @@ function watch(paths: Paths) {
 
 if (require.main === module) {
   const { srcPath, outputPath } = cli.flags;
+  const pageExtensions = cli.flags.pageExtensions.split(",");
 
   const absoluteSrcPath = path.join(process.cwd(), srcPath);
 
@@ -114,10 +140,10 @@ if (require.main === module) {
   };
 
   if (cli.flags.watch) {
-    build(paths);
-    watch(paths);
+    build({ paths, pageExtensions });
+    watch({ paths, pageExtensions });
   } else {
-    build(paths);
+    build({ paths, pageExtensions });
   }
 }
 

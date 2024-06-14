@@ -2,21 +2,29 @@ import fs from "fs";
 import path from "path";
 import type { Paths, RouteInformation } from "./cli";
 
-export function getPAGESRoutesWithExportedRoute(
-  basePath: string,
-  dir: string,
-  hasRoute: string[] = [],
-  doesntHaveRoute: string[] = []
-): RouteInformation {
+export function getPAGESRoutesWithExportedRoute({
+  basePath,
+  dir,
+  hasRoute = [],
+  doesntHaveRoute = [],
+  pageExtensions,
+}: {
+  basePath: string;
+  dir: string;
+  hasRoute?: string[];
+  doesntHaveRoute?: string[];
+  pageExtensions: string[];
+}): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
-      getPAGESRoutesWithExportedRoute(
+      getPAGESRoutesWithExportedRoute({
         basePath,
-        fullPath,
+        dir: fullPath,
         hasRoute,
-        doesntHaveRoute
-      );
+        doesntHaveRoute,
+        pageExtensions,
+      });
     } else {
       const fileName = path.basename(fullPath);
       if (
@@ -39,7 +47,8 @@ export function getPAGESRoutesWithExportedRoute(
         .replace(/\/index\.(tsx|js)$/, "")
         .replace(/\.(tsx|js)$/, "");
 
-      if (fileName === "index.tsx" || fileName === "index.js") {
+      // Matches all the index files with extensions from the pageExtensions
+      if (pageExtensions.map((ext) => `index.${ext}`).includes(fileName)) {
         if (dir === basePath) {
           routePath = "/";
         } else {
@@ -61,12 +70,19 @@ export function getPAGESRoutesWithExportedRoute(
   };
 }
 
-export function getAPPRoutesWithExportedRoute(
-  basePath: string,
-  dir: string = basePath,
-  hasRoute: string[] = [],
-  doesntHaveRoute: string[] = []
-): RouteInformation {
+export function getAPPRoutesWithExportedRoute({
+  basePath,
+  dir = basePath,
+  hasRoute = [],
+  doesntHaveRoute = [],
+  pageExtensions,
+}: {
+  basePath: string;
+  dir: string;
+  hasRoute?: string[];
+  doesntHaveRoute?: string[];
+  pageExtensions: string[];
+}): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
 
@@ -85,14 +101,17 @@ export function getAPPRoutesWithExportedRoute(
         return;
       }
 
-      getAPPRoutesWithExportedRoute(
+      getAPPRoutesWithExportedRoute({
         basePath,
-        fullPath,
+        dir: fullPath,
         hasRoute,
-        doesntHaveRoute
-      );
-    } else if (file === "page.tsx") {
-      const routeTypePath = path.join(dir, "routeType.ts");
+        doesntHaveRoute,
+        pageExtensions,
+      });
+    } else if (
+      // Matches page files with the extensions from pageExtensions
+      pageExtensions.map((p) => ["page", p].join(".").includes(file))
+    ) {
       let routePath = fullPath
         .replace(basePath, "")
         .replace(/\\/g, "/")
@@ -102,9 +121,22 @@ export function getAPPRoutesWithExportedRoute(
         routePath = "/";
       }
 
-      if (fs.existsSync(routeTypePath)) {
-        hasRoute.push(routePath);
-      } else {
+      const routeTypePaths = ["ts", "tsx"].map((ext) =>
+        path.join(dir, `routeType.${ext}`)
+      );
+      const didAddRoute = routeTypePaths.reduce((didAdd, routeTypePath) => {
+        // Avoid adding the same route twice
+        if (didAdd) return true;
+
+        if (fs.existsSync(routeTypePath)) {
+          hasRoute.push(routePath);
+          return true;
+        }
+
+        return false;
+      }, false);
+
+      if (!didAddRoute) {
         doesntHaveRoute.push(routePath);
       }
     }
