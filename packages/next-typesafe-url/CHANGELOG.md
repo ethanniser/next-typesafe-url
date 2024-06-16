@@ -1,5 +1,12 @@
 # next-typesafe-url
 
+## 4.1.0
+
+### Minor Changes
+
+- fb7e555: - Added pageExtensions CLI flag.
+  - Added .tsx extension support for routeType files.
+
 ## 4.0.8
 
 ### Patch Changes
