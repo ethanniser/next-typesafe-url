@@ -1,5 +1,5 @@
 ---
-"next-typesafe-url": patch
+"next-typesafe-url": minor
 ---
 
 - Added pageExtensions CLI flag.
