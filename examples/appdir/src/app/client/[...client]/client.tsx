@@ -14,7 +14,7 @@ export const Client = () => {
   const [input, setInput] = useState("");
   const [input2, setInput2] = useState("");
 
-  const params = useSearchParams(Route.searchParams);
+  const {searchParams} = useSearchParams(Route.searchParams);
   const routeParams = useRouteParams(Route.routeParams);
 
   return (
@@ -37,7 +37,7 @@ export const Client = () => {
       </Link>
       <br />
       <h1>searchParams</h1>
-      <div>{`data: ${JSON.stringify(params)}`}</div>
+      <div>{`data: ${JSON.stringify(searchParams)}`}</div>
       <h1>routeParams</h1>
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
     </>

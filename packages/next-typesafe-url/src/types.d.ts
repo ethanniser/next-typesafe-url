@@ -160,25 +160,30 @@ type StaticPathOptions<T extends StaticRoutes> = {
 type AllRoutes = keyof AppRouter;
 
 // a discriminated  union representing the return states of use*Params
-type UseParamsResult<T extends z.AnyZodObject> =
-  | {
-      data: undefined;
-      isLoading: true;
-      isError: false;
-      error: undefined;
-    }
-  | {
-      data: z.output<T>;
-      isError: false;
-      isLoading: false;
-      error: undefined;
-    }
-  | {
-      data: undefined;
-      isLoading: false;
-      isError: true;
-      error: z.ZodError;
-    };
+type UseParamsResult<T extends z.AnyZodObject> = 
+    | {
+        data: undefined;
+        isLoading: true;
+        isError: false;
+        error: undefined;
+      }
+    | {
+        data: z.output<T>;
+        isError: false;
+        isLoading: false;
+        error: undefined;
+      }
+    | {
+        data: undefined;
+        isLoading: false;
+        isError: true;
+        error: z.ZodError;
+      };
+
+export type UseSearchParamsResult<T extends z.AnyZodObject> = {
+  searchParams: UseParamsResult<T>
+  updateSearchParams: (newSearchParams: z.output<T>, strategy?: "push" | "replace") => Promise<boolean> | void;
+};
 
 // a discriminated  union representing the return states of parseServerSideParams
 type ServerParseParamsResult<T extends z.AnyZodObject> =
