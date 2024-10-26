@@ -39,6 +39,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
       const validatedDynamicRouteParams = validator.safeParse(dynamicParams);
       // update state based on the validation result
       if (validatedDynamicRouteParams.success) {
+        setIsError(false);
         setData(validatedDynamicRouteParams.data);
       } else {
         setIsError(true);
