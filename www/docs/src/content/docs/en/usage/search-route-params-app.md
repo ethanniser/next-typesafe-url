@@ -180,7 +180,7 @@ app
 
 #### Adjusting Layout Props
 
-`InferLayoutPropsType` takes an optional second generic of `string` or a union of `string`s (for multiple parallel routes) that should represent any parallel routes beneath the layout.
+`InferLayoutPropsType` and `withLayoutParamValidation` take an optional second generic of `string` or a union of `string`s (for multiple parallel routes) that should represent any parallel routes beneath the layout.
 
 ```tsx
 type Props = InferLayoutPropsType<LayoutType, "analytics">;
@@ -193,7 +193,7 @@ function Layout({ children, routeParams, analytics }: Props) {
     </div>
   );
 }
-export default withLayoutParamValidation(Layout, LayoutRoute);
+export default withLayoutParamValidation<"analytics">(Layout, LayoutRoute);
 ```
 
 ### Intercepted Routes
