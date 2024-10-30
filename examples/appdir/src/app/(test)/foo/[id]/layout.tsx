@@ -29,4 +29,4 @@ async function Layout({ children, routeParams, modal }: Props) {
   );
 }
 
-export default withLayoutParamValidation(Layout, LayoutRoute);
+export default withLayoutParamValidation<"modal">(Layout, LayoutRoute);
