@@ -26,47 +26,52 @@ type SomeReactComponent = (
 export function withParamValidation(
   Component: SomeReactComponent,
   validator: DynamicRoute,
-): (props: NextAppPageProps) => Promise<ReactNode> {
+): (props: NextAppPageProps) => JSX.Element {
   // the new component that will be returned
-  const ValidatedPageComponent = async (props: NextAppPageProps) => {
+  const ValidatedPageComponent = (props: NextAppPageProps) => {
     // pull out the params and searchParams from the props
     const {
       params: paramsPromise,
       searchParams: searchParamsPromise,
       ...otherProps
     } = props;
-    const params = await paramsPromise;
-    const searchParams = await searchParamsPromise;
-
-    // if the validator has routeParams, parse them
-    let parsedRouteParamsResult = undefined;
-    if (validator.routeParams) {
-      parsedRouteParamsResult = parseServerSideParams({
-        params,
-        validator: validator.routeParams,
-      });
-    }
-
-    // if the validator has searchParams, parse them
-    let parsedSearchParamsResult = undefined;
-    if (validator.searchParams) {
-      parsedSearchParamsResult = parseServerSideParams({
-        params: searchParams ?? {},
-        validator: validator.searchParams,
-      });
-    }
-
-    // if either of the parsing results are errors, throw them
-    if (parsedRouteParamsResult?.isError) {
-      throw parsedRouteParamsResult.error;
-    } else if (parsedSearchParamsResult?.isError) {
-      throw parsedSearchParamsResult.error;
-    }
+    const routeParams = paramsPromise.then((rawParams) => {
+      // if the validator has routeParams, parse them
+      let parsedRouteParamsResult = undefined;
+      if (validator.routeParams) {
+        parsedRouteParamsResult = parseServerSideParams({
+          params: rawParams,
+          validator: validator.routeParams,
+        });
+      }
+      // if there are parsing errors, throw them
+      if (parsedRouteParamsResult?.isError) {
+        throw parsedRouteParamsResult.error;
+      } else {
+        return parsedRouteParamsResult?.data;
+      }
+    });
+    const searchParams = searchParamsPromise.then((rawSearchParams) => {
+      // if the validator has searchParams, parse them
+      let parsedSearchParamsResult = undefined;
+      if (validator.searchParams) {
+        parsedSearchParamsResult = parseServerSideParams({
+          params: rawSearchParams ?? {},
+          validator: validator.searchParams,
+        });
+      }
+      // if there are parsing errors, throw them
+      if (parsedSearchParamsResult?.isError) {
+        throw parsedSearchParamsResult.error;
+      } else {
+        return parsedSearchParamsResult?.data;
+      }
+    });
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
-      routeParams: parsedRouteParamsResult?.data,
-      searchParams: parsedSearchParamsResult?.data,
+      routeParams,
+      searchParams,
       ...otherProps,
     };
 
@@ -95,30 +100,32 @@ type NextAppLayoutProps = Pick<NextAppPageProps, "params"> & {
 export function withLayoutParamValidation(
   Component: SomeReactComponent,
   validator: DynamicLayout,
-): (props: NextAppLayoutProps) => Promise<ReactNode> {
+): (props: NextAppLayoutProps) => JSX.Element {
   // the new component that will be returned
-  const ValidatedLayoutComponent = async (props: NextAppLayoutProps) => {
+  const ValidatedLayoutComponent = (props: NextAppLayoutProps) => {
     // pull out the params and children from the props
     const { params: paramsPromise, children, ...otherProps } = props;
-    const params = await paramsPromise;
+    const routeParams = paramsPromise.then((rawParams) => {
+      // if the validator has routeParams, parse them
+      let parsedRouteParamsResult = undefined;
+      if (validator.routeParams) {
+        parsedRouteParamsResult = parseServerSideParams({
+          params: rawParams,
+          validator: validator.routeParams,
+        });
+      }
 
-    // if the validator has routeParams, parse them
-    let parsedRouteParamsResult = undefined;
-    if (validator.routeParams) {
-      parsedRouteParamsResult = parseServerSideParams({
-        params,
-        validator: validator.routeParams,
-      });
-    }
-
-    // if the parsing result is an error, throw it
-    if (parsedRouteParamsResult?.isError) {
-      throw parsedRouteParamsResult.error;
-    }
+      // if the parsing result is an error, throw it
+      if (parsedRouteParamsResult?.isError) {
+        throw parsedRouteParamsResult.error;
+      } else {
+        return parsedRouteParamsResult?.data;
+      }
+    });
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
-      routeParams: parsedRouteParamsResult?.data,
+      routeParams,
       children,
       ...otherProps,
     };
