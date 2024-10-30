@@ -70,36 +70,34 @@ type HandleUndefined<T extends DynamicRoute> =
       : // Only routeParams is undefined
         Option2<T>
     : T["searchParams"] extends undefined
-    ? // Only searchParams is undefined
-      Option3<T>
-    : // Neither are undefined
-      Option1<T>;
+      ? // Only searchParams is undefined
+        Option3<T>
+      : // Neither are undefined
+        Option1<T>;
 
 // Neither are undefined
-type Option1<T extends DynamicRoute> = AllPossiblyUndefined<
-  T["searchParams"]
-> extends undefined
-  ? {
-      searchParams?: T["searchParams"] | undefined;
-      routeParams: T["routeParams"];
-    }
-  : {
-      searchParams: T["searchParams"];
-      routeParams: T["routeParams"];
-    };
+type Option1<T extends DynamicRoute> =
+  AllPossiblyUndefined<T["searchParams"]> extends undefined
+    ? {
+        searchParams?: T["searchParams"] | undefined;
+        routeParams: T["routeParams"];
+      }
+    : {
+        searchParams: T["searchParams"];
+        routeParams: T["routeParams"];
+      };
 
 // Only routeParams is undefined
-type Option2<T extends DynamicRoute> = AllPossiblyUndefined<
-  T["searchParams"]
-> extends undefined
-  ? {
-      searchParams?: T["searchParams"] | undefined;
-      routeParams?: undefined;
-    }
-  : {
-      searchParams: T["searchParams"];
-      routeParams?: undefined;
-    };
+type Option2<T extends DynamicRoute> =
+  AllPossiblyUndefined<T["searchParams"]> extends undefined
+    ? {
+        searchParams?: T["searchParams"] | undefined;
+        routeParams?: undefined;
+      }
+    : {
+        searchParams: T["searchParams"];
+        routeParams?: undefined;
+      };
 
 // Only searchParams is undefined
 type Option3<T extends DynamicRoutes> = {
@@ -133,7 +131,7 @@ type DynamicLayout = Required<Pick<DynamicRoute, "routeParams">>;
 // K represents a optional union of keys that can be passed to this type that
 // represents any parallel routes beneath the layout
 type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
-  routeParams: z.output<T["routeParams"]>;
+  routeParams: Promise<z.output<T["routeParams"]>>;
   children: React.ReactNode;
 } & { [P in K]: React.ReactNode };
 
@@ -145,9 +143,8 @@ type PathOptions<T extends AllRoutes> = T extends StaticRoutes
   : { route: T } & RouterInputs[T];
 
 // checks if all properties of T are undefined
-type AllPossiblyUndefined<T> = Exclude<Partial<T>, undefined> extends T
-  ? undefined
-  : T;
+type AllPossiblyUndefined<T> =
+  Exclude<Partial<T>, undefined> extends T ? undefined : T;
 
 // just the route, with the other properties set to optional and undefined
 type StaticPathOptions<T extends StaticRoutes> = {
@@ -197,10 +194,10 @@ type ServerParseParamsResult<T extends z.AnyZodObject> =
 // infers the output types from the Route object
 type InferPagePropsType<T extends DynamicRoute> = {
   searchParams: T["searchParams"] extends z.AnyZodObject
-    ? z.output<T["searchParams"]>
+    ? Promise<z.output<T["searchParams"]>>
     : undefined;
   routeParams: T["routeParams"] extends z.AnyZodObject
-    ? z.output<T["routeParams"]>
+    ? Promise<z.output<T["routeParams"]>>
     : undefined;
 };
 
