@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 4.1.1
+
+### Patch Changes
+
+- 5ee638f: Fixed page useRouteParams error status not reset issue.
+
 ## 4.1.0
 
 ### Minor Changes
