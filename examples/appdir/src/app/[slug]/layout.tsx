@@ -24,4 +24,4 @@ async function Layout({ children, routeParams }: Props) {
   );
 }
 
-export default withLayoutParamValidation(Layout, LayoutRoute);
+export default withLayoutParamValidation<LayoutType>(Layout, LayoutRoute);

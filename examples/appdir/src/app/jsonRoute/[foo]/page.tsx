@@ -5,13 +5,21 @@ import { Suspense } from "react";
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = async ({ routeParams }: PageProps) => {
+const Inner = async ({ routeParams }: PageProps) => {
   const params = await routeParams;
   console.log(params.foo === undefined);
 
   return (
-    <Suspense>
+    <>
       <div>{`data: ${JSON.stringify(params)}`}</div>
+    </>
+  );
+};
+
+const Page = (props: PageProps) => {
+  return (
+    <Suspense>
+      <Inner {...props} />
     </Suspense>
   );
 };

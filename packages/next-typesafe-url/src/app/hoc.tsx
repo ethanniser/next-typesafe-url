@@ -1,6 +1,11 @@
 import type { ReactNode } from "react";
 import { parseServerSideParams } from "../utils";
-import type { DynamicRoute, DynamicLayout } from "../types";
+import type {
+  DynamicRoute,
+  DynamicLayout,
+  InferPagePropsType,
+  InferLayoutPropsType,
+} from "../types";
 
 // the props passed to a page component by Next.js
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
@@ -9,11 +14,6 @@ type NextAppPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
   // [key: string]: unknown;
 };
-
-type SomeReactComponent = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- describing a generic component
-  ...args: any[]
-) => ReactNode | Promise<ReactNode>;
 
 /**
  * A HOC that validates the params passed to a page component.
@@ -24,9 +24,11 @@ type SomeReactComponent = (
  *
  * @example export default withParamValidation(Page, Route);
  */
-export function withParamValidation(
-  Component: SomeReactComponent,
-  validator: DynamicRoute,
+export function withParamValidation<Validator extends DynamicRoute>(
+  Component: (
+    props: InferPagePropsType<Validator>,
+  ) => ReactNode | Promise<ReactNode>,
+  validator: Validator,
 ): (props: NextAppPageProps) => JSX.Element {
   // the new component that will be returned
   const ValidatedPageComponent = (props: NextAppPageProps) => {
@@ -104,9 +106,12 @@ type NextAppLayoutProps<AdditionalKeys extends string = never> = Pick<
  * @example export default withLayoutParamValidation(Layout, LayoutRoute);
  */
 export function withLayoutParamValidation<
+  Validator extends DynamicLayout,
   const AdditionalKeys extends string = never,
 >(
-  Component: SomeReactComponent,
+  Component: (
+    props: InferLayoutPropsType<Validator, AdditionalKeys>,
+  ) => ReactNode | Promise<ReactNode>,
   validator: DynamicLayout,
 ): (props: NextAppLayoutProps<AdditionalKeys>) => JSX.Element {
   // the new component that will be returned
