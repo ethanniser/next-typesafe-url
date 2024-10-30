@@ -5,8 +5,8 @@ import type { DynamicRoute, DynamicLayout } from "../types";
 // the props passed to a page component by Next.js
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
 type NextAppPageProps = {
-  params: Record<string, string | string[]>;
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<Record<string, string | string[]>>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 } & Record<string, unknown>;
 
 type SomeReactComponent = (
@@ -23,16 +23,22 @@ type SomeReactComponent = (
  *
  * @example export default withParamValidation(Page, Route);
  */
-export function withParamValidation(
+export async function withParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicRoute
-): SomeReactComponent {
+  validator: DynamicRoute,
+): Promise<SomeReactComponent> {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = (
-    props: NextAppPageProps
+  const ValidatedPageComponent: SomeReactComponent = async (
+    props: NextAppPageProps,
   ) => {
     // pull out the params and searchParams from the props
-    const { params, searchParams, ...otherProps } = props;
+    const {
+      params: paramsPromise,
+      searchParams: searchParamsPromise,
+      ...otherProps
+    } = props;
+    const params = await paramsPromise;
+    const searchParams = await searchParamsPromise;
 
     // if the validator has routeParams, parse them
     let parsedRouteParamsResult = undefined;
@@ -84,16 +90,17 @@ export function withParamValidation(
  *
  * @example export default withLayoutParamValidation(Layout, LayoutRoute);
  */
-export function withLayoutParamValidation(
+export async function withLayoutParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicLayout
-): SomeReactComponent {
+  validator: DynamicLayout,
+): Promise<SomeReactComponent> {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = (
-    props: Pick<NextAppPageProps, "params"> & { children: ReactElement }
+  const ValidatedPageComponent: SomeReactComponent = async (
+    props: Pick<NextAppPageProps, "params"> & { children: ReactElement },
   ) => {
     // pull out the params and children from the props
-    const { params, children, ...otherProps } = props;
+    const { params: paramsPromise, children, ...otherProps } = props;
+    const params = await paramsPromise;
 
     // if the validator has routeParams, parse them
     let parsedRouteParamsResult = undefined;
@@ -117,7 +124,6 @@ export function withLayoutParamValidation(
     };
 
     // render the original component with the new props
-    // @ts-expect-error async server component
     return <Component {...newProps} />;
   };
 
