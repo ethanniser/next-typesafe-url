@@ -1,5 +1,6 @@
 name: CI
-on:
+on: 
+  pull_request:
   push:
     branches:
       - "**"
@@ -36,6 +37,9 @@ jobs:
 
       - name: Test, lint and type-check
         run: pnpm turbo lint typecheck test
+        
+      - name: Publish snapshot package
+        run: pnpm release:snapshot
 
       # manypkg doesnt work with workspaces
       # - name: Check workspaces
