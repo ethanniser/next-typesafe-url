@@ -7,7 +7,8 @@ import type { DynamicRoute, DynamicLayout } from "../types";
 type NextAppPageProps = {
   params: Promise<Record<string, string | string[]>>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-} & Record<string, unknown>;
+  // [key: string]: unknown;
+};
 
 type SomeReactComponent = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- describing a generic component
@@ -84,8 +85,13 @@ export function withParamValidation(
   return ValidatedPageComponent;
 }
 
-type NextAppLayoutProps = Pick<NextAppPageProps, "params"> & {
-  children: ReactElement;
+type NextAppLayoutProps<AdditionalKeys extends string = never> = Pick<
+  NextAppPageProps,
+  "params"
+> & {
+  children: ReactNode;
+} & {
+  [key in AdditionalKeys]: ReactNode;
 };
 
 /**
@@ -97,12 +103,16 @@ type NextAppLayoutProps = Pick<NextAppPageProps, "params"> & {
  *
  * @example export default withLayoutParamValidation(Layout, LayoutRoute);
  */
-export function withLayoutParamValidation(
+export function withLayoutParamValidation<
+  const AdditionalKeys extends string = never,
+>(
   Component: SomeReactComponent,
   validator: DynamicLayout,
-): (props: NextAppLayoutProps) => JSX.Element {
+): (props: NextAppLayoutProps<AdditionalKeys>) => JSX.Element {
   // the new component that will be returned
-  const ValidatedLayoutComponent = (props: NextAppLayoutProps) => {
+  const ValidatedLayoutComponent = (
+    props: NextAppLayoutProps<AdditionalKeys>,
+  ) => {
     // pull out the params and children from the props
     const { params: paramsPromise, children, ...otherProps } = props;
     const routeParams = paramsPromise.then((rawParams) => {
