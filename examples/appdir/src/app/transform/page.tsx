@@ -12,7 +12,7 @@ type _TestOutput = RouterOutputs["/transform"];
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = ({ searchParams }: PageProps) => {
+const Page = async ({ searchParams }: PageProps) => {
   const _test = $path({
     route: "/transform",
     searchParams: {
@@ -22,7 +22,7 @@ const Page = ({ searchParams }: PageProps) => {
 
   return (
     <>
-      <div>{`data: ${JSON.stringify(searchParams)}`}</div>
+      <div>{`data: ${JSON.stringify(await searchParams)}`}</div>
     </>
   );
 };

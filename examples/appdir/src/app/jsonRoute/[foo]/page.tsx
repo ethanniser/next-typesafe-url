@@ -5,12 +5,13 @@ import { Suspense } from "react";
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = ({ routeParams }: PageProps) => {
-  console.log(routeParams.foo === undefined);
+const Page = async ({ routeParams }: PageProps) => {
+  const params = await routeParams;
+  console.log(params.foo === undefined);
 
   return (
     <Suspense>
-      <div>{`data: ${JSON.stringify(routeParams)}`}</div>
+      <div>{`data: ${JSON.stringify(params)}`}</div>
     </Suspense>
   );
 };

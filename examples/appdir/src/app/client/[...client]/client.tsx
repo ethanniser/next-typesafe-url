@@ -18,7 +18,7 @@ export const Client = () => {
   const routeParams = useRouteParams(Route.routeParams);
 
   return (
-    <>
+    <div className="flex flex-col space-y-5">
       <Link href={$path({ route: "/" })}>Back</Link>
       <br />
       <input value={input} onChange={(e) => setInput(e.target.value)} />
@@ -40,6 +40,6 @@ export const Client = () => {
       <div>{`data: ${JSON.stringify(params)}`}</div>
       <h1>routeParams</h1>
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
-    </>
+    </div>
   );
 };

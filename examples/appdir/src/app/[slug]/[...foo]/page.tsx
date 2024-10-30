@@ -7,16 +7,18 @@ type PageProps = InferPagePropsType<RouteType>;
 
 let count = 0;
 
-const Page = ({ routeParams, searchParams }: PageProps) => {
+const Page = async ({ routeParams, searchParams }: PageProps) => {
   console.log("render", count++);
-  console.log(JSON.stringify(routeParams));
-  console.log(JSON.stringify(searchParams));
+  const params = await routeParams;
+  const search = await searchParams;
+  console.log(JSON.stringify(params));
+  console.log(JSON.stringify(search));
 
   return (
     <>
-      <div>{`data: ${JSON.stringify(routeParams)}`}</div>
+      <div>{`data: ${JSON.stringify(params)}`}</div>
       <br />
-      <div>{`data: ${JSON.stringify(searchParams)}`}</div>
+      <div>{`data: ${JSON.stringify(search)}`}</div>
       <Client />
     </>
   );
