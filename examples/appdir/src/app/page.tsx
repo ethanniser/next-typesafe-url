@@ -7,7 +7,7 @@ type _ThisIsHelpful = RouterOutputs["/[slug]/[...foo]"]["routeParams"];
 
 export default function Page() {
   return (
-    <>
+    <div className="flex flex-col space-y-5">
       <div>test</div>
       <Link
         href={$path({
@@ -18,6 +18,7 @@ export default function Page() {
             userInfo: { name: "string", age: 123 },
           },
         })}
+        className="hover:underline"
       >
         server component!
       </Link>
@@ -29,6 +30,7 @@ export default function Page() {
             location: "us",
           },
         })}
+        className="hover:underline"
       >
         link2
       </Link>
@@ -37,9 +39,10 @@ export default function Page() {
           route: "/jsonRoute/[foo]",
           routeParams: { foo: { foo: "bar" } },
         })}
+        className="hover:underline"
       >
         json
       </Link>
-    </>
+    </div>
   );
 }
