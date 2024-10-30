@@ -20,9 +20,9 @@ View the `pages` version [here](search-route-params-pages)
 
 ### Forced Dynamic Rendering
 
-In `page.tsx`, search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by Next ([see the "good to know" section at the very bottom](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know))
+In `page.tsx`, search params are accessible through asynchronous props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering**.
 
-If you do not want this behavior (_i.e. you want some part of your page to be statically generated at build time or ISR'd_), you are forced to place the search param logic **in a client component**. [Check out the 'Client Components' section below](#client-components) to see more.
+If you do not want this behavior (_i.e. you want some part of your page to be statically generated at build time or ISR'd_), you can either cache your component with [`"use cache"`](https://nextjs.org/docs/app/api-reference/directives/use-cache), or can place the search param logic **in a client component**. [Check out the 'Client Components' section below](#client-components) to see more.
 
 ### Usage in page.tsx
 
