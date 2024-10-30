@@ -23,14 +23,12 @@ type SomeReactComponent = (
  *
  * @example export default withParamValidation(Page, Route);
  */
-export async function withParamValidation(
+export function withParamValidation(
   Component: SomeReactComponent,
   validator: DynamicRoute,
-): Promise<SomeReactComponent> {
+): (props: NextAppPageProps) => Promise<ReactNode> {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = async (
-    props: NextAppPageProps,
-  ) => {
+  const ValidatedPageComponent = async (props: NextAppPageProps) => {
     // pull out the params and searchParams from the props
     const {
       params: paramsPromise,
@@ -73,13 +71,17 @@ export async function withParamValidation(
     };
 
     // render the original component with the new props
+    // return Component(newProps);
     // @ts-expect-error async server component
     return <Component {...newProps} />;
   };
-
   // return the new component
   return ValidatedPageComponent;
 }
+
+type NextAppLayoutProps = Pick<NextAppPageProps, "params"> & {
+  children: ReactElement;
+};
 
 /**
  * A HOC that validates the route params passed to a layout component.
@@ -90,14 +92,12 @@ export async function withParamValidation(
  *
  * @example export default withLayoutParamValidation(Layout, LayoutRoute);
  */
-export async function withLayoutParamValidation(
+export function withLayoutParamValidation(
   Component: SomeReactComponent,
   validator: DynamicLayout,
-): Promise<SomeReactComponent> {
+): (props: NextAppLayoutProps) => Promise<ReactNode> {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = async (
-    props: Pick<NextAppPageProps, "params"> & { children: ReactElement },
-  ) => {
+  const ValidatedLayoutComponent = async (props: NextAppLayoutProps) => {
     // pull out the params and children from the props
     const { params: paramsPromise, children, ...otherProps } = props;
     const params = await paramsPromise;
@@ -124,9 +124,10 @@ export async function withLayoutParamValidation(
     };
 
     // render the original component with the new props
+    // @ts-expect-error async server component
     return <Component {...newProps} />;
   };
 
   // return the new component
-  return ValidatedPageComponent;
+  return ValidatedLayoutComponent;
 }
