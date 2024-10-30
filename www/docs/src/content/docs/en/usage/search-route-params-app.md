@@ -51,8 +51,8 @@ type PageProps = InferPagePropsType<RouteType>;
 async function Page({ routeParams, searchParams }: PageProps) {
   return (
     <>
-      <div>{JSON.stringify(routeParams)}</div>
-      <div>{JSON.stringify(searchParams)}</div>
+      <div>{JSON.stringify(await routeParams)}</div>
+      <div>{JSON.stringify(await searchParams)}</div>
     </>
   );
 }
@@ -62,7 +62,7 @@ export default withParamValidation(Page, Route);
 
 #### Errors
 
-If the zod validation fails, `withParamValidation` will throw a `ZodError`. Use Next's `error.tsx` to handle these thrown errors.
+If the zod validation fails, the promise for `searchParams`/`routeParams` will reject with a `ZodError`.
 
 ### Usage in layout.tsx
 
@@ -103,7 +103,7 @@ type Props = InferLayoutPropsType<LayoutType>;
 async function Layout({ children, routeParams }: Props) {
   return (
     <div>
-      <p>{JSON.stringify(routeParams)}</p>
+      <p>{JSON.stringify(await routeParams)}</p>
       <div>{children}</div>
     </div>
   );
@@ -114,7 +114,7 @@ export default withLayoutParamValidation(Layout, LayoutRoute);
 
 #### Errors
 
-If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`. Use Next's `error.tsx` to handle these thrown errors.
+If the zod validation fails, the promise for `searchParams`/`routeParams` will reject with a `ZodError`.
 
 ## Client Components
 
