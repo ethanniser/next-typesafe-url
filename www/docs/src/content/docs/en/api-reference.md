@@ -115,10 +115,10 @@ Infers the prop types for `page.tsx` top level components when wrapped with `wit
 ```ts
 type InferPagePropsType<T extends DynamicRoute> = {
   searchParams: T["searchParams"] extends z.AnyZodObject
-    ? z.infer<T["searchParams"]>
+    ? Promise<z.output<T["searchParams"]>>
     : undefined;
   routeParams: T["routeParams"] extends z.AnyZodObject
-    ? z.infer<T["routeParams"]>
+    ? Promise<z.output<T["routeParams"]>>
     : undefined;
 };
 ```
@@ -129,7 +129,7 @@ Infers the prop types for `layout.tsx` top level components when wrapped with `w
 
 ```ts
 type InferLayoutPropsType<T extends DynamicLayout, K extends string = never> = {
-  routeParams: z.infer<T["routeParams"]>;
+  routeParams: Promise<z.infer<T["routeParams"]>>;
   children: React.ReactNode;
 } & { [P in K]: React.ReactNode };
 ```
