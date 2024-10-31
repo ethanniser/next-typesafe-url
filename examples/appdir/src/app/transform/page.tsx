@@ -6,13 +6,14 @@ import {
   type RouterOutputs,
 } from "next-typesafe-url";
 import { Route, RouteType } from "./routeType";
+import { Suspense } from "react";
 
 type _TestInput = RouterInputs["/transform"];
 type _TestOutput = RouterOutputs["/transform"];
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = async ({ searchParams }: PageProps) => {
+const Inner = async ({ searchParams }: PageProps) => {
   const _test = $path({
     route: "/transform",
     searchParams: {
@@ -24,6 +25,13 @@ const Page = async ({ searchParams }: PageProps) => {
     <>
       <div>{`data: ${JSON.stringify(await searchParams)}`}</div>
     </>
+  );
+};
+const Page = (props: PageProps) => {
+  return (
+    <Suspense>
+      <Inner {...props} />
+    </Suspense>
   );
 };
 

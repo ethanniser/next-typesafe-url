@@ -11,20 +11,25 @@ const LayoutRoute = {
 type LayoutType = typeof LayoutRoute;
 
 type Props = InferLayoutPropsType<LayoutType, "modal">;
-async function Layout({ children, routeParams, modal }: Props) {
+async function Inner({ children, routeParams, modal }: Props) {
   const params = await routeParams;
   return (
-    <Suspense>
+    <div className="border border-black">
+      <h1>THIS IS A LAYOUT</h1>
+      <p>{JSON.stringify(params)}</p>
+      <div className="border border-black">{children}</div>
       <div className="border border-black">
-        <h1>THIS IS A LAYOUT</h1>
-        <p>{JSON.stringify(params)}</p>
-        <div className="border border-black">{children}</div>
-        <div className="border border-black">
-          <h1>MODAL</h1>
-          <div className="border border-green">{modal}</div>
-        </div>
-        <p>bottom</p>
+        <h1>MODAL</h1>
+        <div className="border border-green">{modal}</div>
       </div>
+      <p>bottom</p>
+    </div>
+  );
+}
+function Layout(props: Props) {
+  return (
+    <Suspense>
+      <Inner {...props} />
     </Suspense>
   );
 }

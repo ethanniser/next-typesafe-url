@@ -11,7 +11,7 @@ const LayoutRoute = {
 type LayoutType = typeof LayoutRoute;
 
 type Props = InferLayoutPropsType<LayoutType>;
-async function Layout({ children, routeParams }: Props) {
+async function Inner({ children, routeParams }: Props) {
   return (
     <Suspense>
       <div>
@@ -20,6 +20,13 @@ async function Layout({ children, routeParams }: Props) {
         <div className="border border-black">{children}</div>
         <p>bottom</p>
       </div>
+    </Suspense>
+  );
+}
+function Layout(props: Props) {
+  return (
+    <Suspense>
+      <Inner {...props} />
     </Suspense>
   );
 }

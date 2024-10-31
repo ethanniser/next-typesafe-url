@@ -2,11 +2,19 @@
 
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouteParams } from "next-typesafe-url/app";
 import { Route } from "./routeType";
 
 export const Client = () => {
+  return (
+    <Suspense>
+      <Inner />
+    </Suspense>
+  );
+};
+
+export const Inner = () => {
   useEffect(() => {
     console.log("Component has been rendered");
   }, []);

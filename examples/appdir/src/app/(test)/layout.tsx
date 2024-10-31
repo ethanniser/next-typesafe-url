@@ -1,8 +1,4 @@
-export default function Layout({
-  children,
-}: {
-    children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <h1>THIS IS GROUPED LAYOUT</h1>

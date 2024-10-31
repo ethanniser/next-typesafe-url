@@ -5,14 +5,20 @@ import { Suspense } from "react";
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = async ({ routeParams }: PageProps) => {
+const Inner = async ({ routeParams }: PageProps) => {
   const params = await routeParams;
   return (
+    <div className="border border-black">
+      <h1>PARALLELROUTE</h1>
+      <div>{`route: ${JSON.stringify(params)}`}</div>
+    </div>
+  );
+};
+
+const Page = (props: PageProps) => {
+  return (
     <Suspense>
-      <div className="border border-black">
-        <h1>PARALLELROUTE</h1>
-        <div>{`route: ${JSON.stringify(params)}`}</div>
-      </div>
+      <Inner {...props} />
     </Suspense>
   );
 };

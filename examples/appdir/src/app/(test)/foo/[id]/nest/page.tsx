@@ -5,16 +5,21 @@ import { Suspense } from "react";
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = async ({ routeParams }: PageProps) => {
+const Inner = async ({ routeParams }: PageProps) => {
   const params = await routeParams;
   return (
-    <Suspense>
-      <div className="border border-black">
-        <h1>NORMAL NEST PAGE</h1>
-        <div>{`route: ${JSON.stringify(params)}`}</div>
-      </div>
-    </Suspense>
+    <div className="border border-black">
+      <h1>NORMAL NEST PAGE</h1>
+      <div>{`route: ${JSON.stringify(params)}`}</div>
+    </div>
   );
 };
 
+const Page = (props: PageProps) => {
+  return (
+    <Suspense>
+      <Inner {...props} />
+    </Suspense>
+  );
+};
 export default withParamValidation(Page, Route);

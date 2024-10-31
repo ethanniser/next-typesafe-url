@@ -6,7 +6,7 @@ import { Suspense } from "react";
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = async ({ routeParams, searchParams }: PageProps) => {
+const Inner = async ({ routeParams, searchParams }: PageProps) => {
   const params = await routeParams;
   const search = await searchParams;
   console.log(JSON.stringify(params));
@@ -18,6 +18,13 @@ const Page = async ({ routeParams, searchParams }: PageProps) => {
       <br />
       <div>{`data: ${JSON.stringify(search)}`}</div>
       <Client />
+    </Suspense>
+  );
+};
+const Page = (props: PageProps) => {
+  return (
+    <Suspense>
+      <Inner {...props} />
     </Suspense>
   );
 };
