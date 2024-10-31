@@ -38,38 +38,42 @@ export function withParamValidation<Validator extends DynamicRoute>(
       searchParams: searchParamsPromise,
       ...otherProps
     } = props;
-    const routeParams = paramsPromise.then((rawParams) => {
-      // if the validator has routeParams, parse them
-      let parsedRouteParamsResult = undefined;
-      if (validator.routeParams) {
-        parsedRouteParamsResult = parseServerSideParams({
-          params: rawParams,
-          validator: validator.routeParams,
-        });
-      }
-      // if there are parsing errors, throw them
-      if (parsedRouteParamsResult?.isError) {
-        throw parsedRouteParamsResult.error;
-      } else {
-        return parsedRouteParamsResult?.data;
-      }
-    });
-    const searchParams = searchParamsPromise.then((rawSearchParams) => {
-      // if the validator has searchParams, parse them
-      let parsedSearchParamsResult = undefined;
-      if (validator.searchParams) {
-        parsedSearchParamsResult = parseServerSideParams({
-          params: rawSearchParams ?? {},
-          validator: validator.searchParams,
-        });
-      }
-      // if there are parsing errors, throw them
-      if (parsedSearchParamsResult?.isError) {
-        throw parsedSearchParamsResult.error;
-      } else {
-        return parsedSearchParamsResult?.data;
-      }
-    });
+    const routeParams = paramsPromise
+      .then((rawParams) => {
+        // if the validator has routeParams, parse them
+        let parsedRouteParamsResult = undefined;
+        if (validator.routeParams) {
+          parsedRouteParamsResult = parseServerSideParams({
+            params: rawParams,
+            validator: validator.routeParams,
+          });
+        }
+        // if there are parsing errors, throw them
+        if (parsedRouteParamsResult?.isError) {
+          throw parsedRouteParamsResult.error;
+        } else {
+          return parsedRouteParamsResult?.data;
+        }
+      })
+      .catch(() => void 0);
+    const searchParams = searchParamsPromise
+      .then((rawSearchParams) => {
+        // if the validator has searchParams, parse them
+        let parsedSearchParamsResult = undefined;
+        if (validator.searchParams) {
+          parsedSearchParamsResult = parseServerSideParams({
+            params: rawSearchParams ?? {},
+            validator: validator.searchParams,
+          });
+        }
+        // if there are parsing errors, throw them
+        if (parsedSearchParamsResult?.isError) {
+          throw parsedSearchParamsResult.error;
+        } else {
+          return parsedSearchParamsResult?.data;
+        }
+      })
+      .catch(() => void 0);
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
@@ -120,23 +124,25 @@ export function withLayoutParamValidation<
   ) => {
     // pull out the params and children from the props
     const { params: paramsPromise, children, ...otherProps } = props;
-    const routeParams = paramsPromise.then((rawParams) => {
-      // if the validator has routeParams, parse them
-      let parsedRouteParamsResult = undefined;
-      if (validator.routeParams) {
-        parsedRouteParamsResult = parseServerSideParams({
-          params: rawParams,
-          validator: validator.routeParams,
-        });
-      }
+    const routeParams = paramsPromise
+      .then((rawParams) => {
+        // if the validator has routeParams, parse them
+        let parsedRouteParamsResult = undefined;
+        if (validator.routeParams) {
+          parsedRouteParamsResult = parseServerSideParams({
+            params: rawParams,
+            validator: validator.routeParams,
+          });
+        }
 
-      // if the parsing result is an error, throw it
-      if (parsedRouteParamsResult?.isError) {
-        throw parsedRouteParamsResult.error;
-      } else {
-        return parsedRouteParamsResult?.data;
-      }
-    });
+        // if the parsing result is an error, throw it
+        if (parsedRouteParamsResult?.isError) {
+          throw parsedRouteParamsResult.error;
+        } else {
+          return parsedRouteParamsResult?.data;
+        }
+      })
+      .catch(() => void 0);
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
