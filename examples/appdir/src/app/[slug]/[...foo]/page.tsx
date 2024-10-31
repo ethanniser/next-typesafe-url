@@ -13,12 +13,12 @@ const Inner = async ({ routeParams, searchParams }: PageProps) => {
   console.log(JSON.stringify(search));
 
   return (
-    <Suspense>
+    <>
       <div>{`data: ${JSON.stringify(params)}`}</div>
       <br />
       <div>{`data: ${JSON.stringify(search)}`}</div>
       <Client />
-    </Suspense>
+    </>
   );
 };
 const Page = (props: PageProps) => {
