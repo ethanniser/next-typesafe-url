@@ -1,0 +1,31 @@
+{
+  "name": "appdir-custom-filename",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"next-typesafe-url -w --filename route-type --pageExtensions js,jsx,mdx,ts,tsx\" \"next dev\"",
+    "build": "next-typesafe-url --filename route-type --pageExtensions js,jsx,mdx,ts,tsx && next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@mdx-js/loader": "^3.0.1",
+    "@mdx-js/react": "^3.0.1",
+    "@next/mdx": "^14.2.4",
+    "@types/mdx": "^2.0.13",
+    "@types/node": "18.16.3",
+    "@types/react": "18.2.5",
+    "@types/react-dom": "18.2.3",
+    "autoprefixer": "10.4.14",
+    "concurrently": "^8.0.1",
+    "eslint": "8.39.0",
+    "eslint-config-next": "13.4.0",
+    "next": "13.4.12",
+    "next-typesafe-url": "workspace:*",
+    "postcss": "8.4.23",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "3.3.2",
+    "typescript": "5.0.4",
+    "zod": "^3.20.2"
+  }
+}

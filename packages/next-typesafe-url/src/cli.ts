@@ -18,6 +18,7 @@ Options:
 --srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
 --outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./_next-typesafe-url_.d.ts"
 --pageExtensions, A comma separated list of file extensions to consider as. DEFAULT: "tsx,ts,jsx,js"
+--filename, Override the default name of the RouteType file in the app directory. DEFAULT: "routeType.ts"
 --help,  Show this help message
 `;
 
@@ -39,6 +40,10 @@ const cli = meow(helpText, {
       type: "string",
       default: "tsx,ts,jsx,js",
     },
+    filename: {
+      type: "string",
+      default: "routeType",
+    }
   },
 });
 
@@ -55,28 +60,32 @@ export type RouteInformation = {
 };
 
 function build({
-  paths,
-  pageExtensions,
-}: {
+                 paths,
+                 pageExtensions,
+                 filename
+               }: {
   paths: Paths;
   pageExtensions: string[];
+  filename: string;
 }) {
   const { absoluteAppPath, absolutePagesPath } = paths;
 
   const appRoutesInfo = absoluteAppPath
-    ? getAPPRoutesWithExportedRoute({
+      ? getAPPRoutesWithExportedRoute({
         basePath: absoluteAppPath,
         dir: absoluteAppPath,
         pageExtensions,
+        filename,
       })
-    : null;
+      : null;
   const pagesRoutesInfo = absolutePagesPath
-    ? getPAGESRoutesWithExportedRoute({
+      ? getPAGESRoutesWithExportedRoute({
         basePath: absolutePagesPath,
         dir: absolutePagesPath,
         pageExtensions,
+        filename,
       })
-    : null;
+      : null;
 
   generateTypesFile({
     appRoutesInfo,
@@ -87,34 +96,36 @@ function build({
 }
 
 function watch({
-  paths,
-  pageExtensions,
-}: {
+                 paths,
+                 pageExtensions,
+                 filename
+               }: {
   paths: Paths;
   pageExtensions: string[];
+  filename: string;
 }) {
   const { absoluteAppPath, absolutePagesPath } = paths;
 
   if (absoluteAppPath) {
     chokidar
-      .watch([`${absoluteAppPath}/**/*.{${pageExtensions.join(",")}}`])
-      .on("change", () => {
-        build({ paths, pageExtensions });
-      });
+        .watch([`${absoluteAppPath}/**/*.{${pageExtensions.join(",")}}`])
+        .on("change", () => {
+          build({filename, paths, pageExtensions });
+        });
   }
   if (absolutePagesPath) {
     chokidar
-      .watch([`${absolutePagesPath}/**/*.{${pageExtensions.join(",")}}`])
-      .on("change", () => {
-        build({ paths, pageExtensions });
-      });
+        .watch([`${absolutePagesPath}/**/*.{${pageExtensions.join(",")}}`])
+        .on("change", () => {
+          build({ filename, paths, pageExtensions });
+        });
   }
 
   console.log(`Watching for route changes`);
 }
 
 if (require.main === module) {
-  const { srcPath, outputPath } = cli.flags;
+  const {filename, srcPath, outputPath } = cli.flags;
   const pageExtensions = cli.flags.pageExtensions.split(",");
 
   const absoluteSrcPath = path.join(process.cwd(), srcPath);
@@ -126,8 +137,8 @@ if (require.main === module) {
 
   const absoluteOutputPath = path.join(process.cwd(), outputPath);
   const relativePathFromOutputToSrc = path.relative(
-    path.dirname(absoluteOutputPath),
-    absoluteSrcPath,
+      path.dirname(absoluteOutputPath),
+      absoluteSrcPath
   );
 
   const appPath = path.join(absoluteSrcPath, "app");
@@ -144,10 +155,10 @@ if (require.main === module) {
   };
 
   if (cli.flags.watch) {
-    build({ paths, pageExtensions });
-    watch({ paths, pageExtensions });
+    build({filename, paths, pageExtensions });
+    watch({filename, paths, pageExtensions });
   } else {
-    build({ paths, pageExtensions });
+    build({filename, paths, pageExtensions });
   }
 }
 

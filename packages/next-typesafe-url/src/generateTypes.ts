@@ -3,17 +3,19 @@ import path from "path";
 import type { Paths, RouteInformation } from "./cli";
 
 export function getPAGESRoutesWithExportedRoute({
-  basePath,
-  dir,
-  hasRoute = [],
-  doesntHaveRoute = [],
-  pageExtensions,
-}: {
+                                                  basePath,
+                                                  dir,
+                                                  hasRoute = [],
+                                                  doesntHaveRoute = [],
+                                                  pageExtensions,
+                                                  filename,
+                                                }: {
   basePath: string;
   dir: string;
   hasRoute?: string[];
   doesntHaveRoute?: string[];
   pageExtensions: string[];
+  filename: string;
 }): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
@@ -24,28 +26,29 @@ export function getPAGESRoutesWithExportedRoute({
         hasRoute,
         doesntHaveRoute,
         pageExtensions,
+        filename
       });
     } else {
       const fileName = path.basename(fullPath);
       if (
-        fileName === "_app.tsx" ||
-        fileName === "_document.tsx" ||
-        fileName.startsWith("_") ||
-        ![".tsx", ".js"].includes(path.extname(fullPath))
+          fileName === "_app.tsx" ||
+          fileName === "_document.tsx" ||
+          fileName.startsWith("_") ||
+          ![".tsx", ".js"].includes(path.extname(fullPath))
       ) {
         return;
       }
 
       const fileContent = fs.readFileSync(fullPath, "utf8");
       const hasExportedRouteType = /export\s+type\s+RouteType\b/.test(
-        fileContent,
+          fileContent
       );
 
       let routePath = fullPath
-        .replace(basePath, "")
-        .replace(/\\/g, "/")
-        .replace(/\/index\.(tsx|js)$/, "")
-        .replace(/\.(tsx|js)$/, "");
+          .replace(basePath, "")
+          .replace(/\\/g, "/")
+          .replace(/\/index\.(tsx|js)$/, "")
+          .replace(/\.(tsx|js)$/, "");
 
       // Matches all the index files with extensions from the pageExtensions
       if (pageExtensions.map((ext) => `index.${ext}`).includes(fileName)) {
@@ -71,17 +74,19 @@ export function getPAGESRoutesWithExportedRoute({
 }
 
 export function getAPPRoutesWithExportedRoute({
-  basePath,
-  dir = basePath,
-  hasRoute = [],
-  doesntHaveRoute = [],
-  pageExtensions,
-}: {
+                                                basePath,
+                                                dir = basePath,
+                                                hasRoute = [],
+                                                doesntHaveRoute = [],
+                                                pageExtensions,
+                                                filename
+                                              }: {
   basePath: string;
   dir: string;
   hasRoute?: string[];
   doesntHaveRoute?: string[];
   pageExtensions: string[];
+  filename: string;
 }): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
@@ -94,9 +99,9 @@ export function getAPPRoutesWithExportedRoute({
 
       //intercepted routes- "(.)" "(..)" "(...)"
       if (
-        /^\(\.\)(.+)$/.test(file) ||
-        /^\(\.\.\)(.+)$/.test(file) ||
-        /^\(\.\.\.\)(.+)$/.test(file)
+          /^\(\.\)(.+)$/.test(file) ||
+          /^\(\.\.\)(.+)$/.test(file) ||
+          /^\(\.\.\.\)(.+)$/.test(file)
       ) {
         return;
       }
@@ -107,23 +112,24 @@ export function getAPPRoutesWithExportedRoute({
         hasRoute,
         doesntHaveRoute,
         pageExtensions,
+        filename
       });
     } else if (
-      // Matches page files with the extensions from pageExtensions
-      pageExtensions.map((p) => `page.${p}`).includes(file)
+        // Matches page files with the extensions from pageExtensions
+        pageExtensions.map((p) => `page.${p}`).includes(file)
     ) {
       // With custom pageExtension
       let routePath = fullPath
-        .replace(basePath, "")
-        .replace(/\\/g, "/")
-        .replace(new RegExp(`/page\\.(${pageExtensions.join("|")})$`), "");
+          .replace(basePath, "")
+          .replace(/\\/g, "/")
+          .replace(new RegExp(`/page\\.(${pageExtensions.join("|")})$`), "");
 
       if (dir === basePath) {
         routePath = "/";
       }
 
       const routeTypePaths = ["ts", "tsx"].map((ext) =>
-        path.join(dir, `routeType.${ext}`),
+          path.join(dir, `${filename}.${ext}`)
       );
       const didAddRoute = routeTypePaths.reduce((didAdd, routeTypePath) => {
         // Avoid adding the same route twice
@@ -147,10 +153,10 @@ export function getAPPRoutesWithExportedRoute({
 }
 
 export function generateTypesFile({
-  appRoutesInfo,
-  pagesRoutesInfo,
-  paths,
-}: {
+                                    appRoutesInfo,
+                                    pagesRoutesInfo,
+                                    paths,
+                                  }: {
   appRoutesInfo: RouteInformation | null;
   pagesRoutesInfo: RouteInformation | null;
   paths: Paths;
