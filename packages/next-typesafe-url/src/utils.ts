@@ -25,7 +25,7 @@ export function encodeValue(value: unknown): string {
   } else {
     // if its anything else, throw
     throw new Error(
-      "only null, non-empty string, number, boolean, array, and object are able to be encoded"
+      "only null, non-empty string, number, boolean, array, and object are able to be encoded",
     );
   }
 }
@@ -45,7 +45,7 @@ export function encodeValue(value: unknown): string {
  *
  */
 export function generateSearchParamStringFromObj(
-  obj: Record<string, unknown>
+  obj: Record<string, unknown>,
 ): string {
   // array to collect the encoded params
   const params: string[] = [];
@@ -88,7 +88,7 @@ export function decodeAndTryJSONParse(value: string | undefined): unknown {
  * If passed a string, calls decodeAndTryJSONParse on it.
  */
 export function parseOrMapParse(
-  obj: string | string[] | undefined
+  obj: string | string[] | undefined,
 ): unknown | unknown[] {
   if (Array.isArray(obj)) {
     return obj.map(decodeAndTryJSONParse);
@@ -102,7 +102,7 @@ export function parseOrMapParse(
  * Maps over the object, calling parseOrMapParse on each value.
  */
 export function parseMapObject(
-  obj: Record<string, string | string[] | undefined>
+  obj: Record<string, string | string[] | undefined>,
 ): Record<string, unknown | unknown[]> {
   const result: Record<string, unknown | unknown[]> = {};
 
@@ -125,7 +125,7 @@ export function parseMapObject(
  * @example handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux")) -> { foo: "bar", baz: ["lux", "flux"] }
  */
 export function handleSearchParamMultipleKeys(
-  urlParams: URLSearchParams | ReadonlyURLSearchParams
+  urlParams: URLSearchParams | ReadonlyURLSearchParams,
 ): Record<string, string | string[] | undefined> {
   const result: Record<string, string | string[] | undefined> = {};
 
@@ -162,7 +162,7 @@ export function handleSearchParamMultipleKeys(
  * @example parseObjectFromParamString("?foo=true&baz=56&bar=hello") -> { foo: true, baz: 56, bar: "hello" }
  */
 export function parseObjectFromParamString(
-  paramString: string
+  paramString: string,
 ): Record<string, unknown> {
   const params = new URLSearchParams(paramString);
   const handledParams = handleSearchParamMultipleKeys(params);
@@ -176,7 +176,7 @@ export function parseObjectFromParamString(
  * @example parseObjectFromReadonlyURLParams(new ReadonlyURLSearchParams("?foo=true&baz=56&bar=hello")) -> { foo: true, baz: 56, bar: "hello" }
  */
 export function parseObjectFromReadonlyURLParams(
-  params: ReadonlyURLSearchParams
+  params: ReadonlyURLSearchParams,
 ): Record<string, unknown> {
   const handledParams = handleSearchParamMultipleKeys(params);
   return parseMapObject(handledParams);
@@ -189,7 +189,7 @@ export function parseObjectFromReadonlyURLParams(
  * @example parseObjectFromStringRecord({ foo: "true", baz: "56", bar: "hello" }) -> { foo: true, baz: 56, bar: "hello" }
  */
 export function parseObjectFromStringRecord(
-  params: Record<string, string | string[] | undefined>
+  params: Record<string, string | string[] | undefined>,
 ): Record<string, unknown> {
   return parseMapObject(params);
 }
@@ -259,7 +259,7 @@ export function parseSegment(segment: string): Segment {
  */
 export function encodeAndFillRoute(
   route: string,
-  routeParams: Record<string, unknown>
+  routeParams: Record<string, unknown>,
 ): string {
   // split the route into its segments
   const segments = route.split("/");
@@ -293,7 +293,7 @@ export function encodeAndFillRoute(
         parts.push(encodeValue(paramValue));
       } else {
         throw new Error(
-          `Missing value for catch-all segment "${segment.value}"`
+          `Missing value for catch-all segment "${segment.value}"`,
         );
       }
     } else if (segment.type === "optionalCatchAll") {

@@ -22,7 +22,7 @@ type ServerSideProps = RouterOutputs["/[slug]/server"]["searchParams"] &
   RouterOutputs["/[slug]/server"]["routeParams"];
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
-  context
+  context,
 ) => {
   await Promise.resolve();
   const routeParams = parseServerSideParams({

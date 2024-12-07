@@ -50,37 +50,37 @@ describe("encodeAndFillRoute", () => {
 
   test("dynamic route with multiple segments", () => {
     expect(
-      encodeAndFillRoute("/foo/[bar]/[baz]", { bar: "baz", baz: "qux" })
+      encodeAndFillRoute("/foo/[bar]/[baz]", { bar: "baz", baz: "qux" }),
     ).toBe("/foo/baz/qux");
   });
 
   test("catch all route- not array passed", () => {
     expect(encodeAndFillRoute("/foo/[...bar]", { bar: "baz" })).toBe(
-      "/foo/baz"
+      "/foo/baz",
     );
   });
 
   test("catch all route- array passed", () => {
     expect(encodeAndFillRoute("/foo/[...bar]", { bar: ["baz", "qux"] })).toBe(
-      "/foo/baz/qux"
+      "/foo/baz/qux",
     );
   });
 
   test("optional catch all route- undefined", () => {
     expect(encodeAndFillRoute("/foo/[[...bar]]", { bar: undefined })).toBe(
-      "/foo"
+      "/foo",
     );
   });
 
   test("optional catch all route- not array passed", () => {
     expect(encodeAndFillRoute("/foo/[[...bar]]", { bar: "baz" })).toBe(
-      "/foo/baz"
+      "/foo/baz",
     );
   });
 
   test("optional catch all route- array passed", () => {
     expect(encodeAndFillRoute("/foo/[[...bar]]", { bar: ["baz", "qux"] })).toBe(
-      "/foo/baz/qux"
+      "/foo/baz/qux",
     );
   });
 
@@ -101,12 +101,12 @@ describe("encodeValue", () => {
   test("string", () => {
     expect(
       encodeValue(
-        "Hello, this is a string with special characters like !@#$%^&*()_-+=[]{}|;:'\",.<>?/ and spaces."
-      )
+        "Hello, this is a string with special characters like !@#$%^&*()_-+=[]{}|;:'\",.<>?/ and spaces.",
+      ),
     ).toBe(
       encodeURIComponent(
-        "Hello, this is a string with special characters like !@#$%^&*()_-+=[]{}|;:'\",.<>?/ and spaces."
-      )
+        "Hello, this is a string with special characters like !@#$%^&*()_-+=[]{}|;:'\",.<>?/ and spaces.",
+      ),
     );
   });
 
@@ -124,13 +124,13 @@ describe("encodeValue", () => {
 
   test("array", () => {
     expect(encodeValue(["foo"])).toBe(
-      encodeURIComponent(JSON.stringify(["foo"]))
+      encodeURIComponent(JSON.stringify(["foo"])),
     );
   });
 
   test("object", () => {
     expect(encodeValue({ foo: "bar" })).toBe(
-      encodeURIComponent(JSON.stringify({ foo: "bar" }))
+      encodeURIComponent(JSON.stringify({ foo: "bar" })),
     );
   });
 
@@ -203,7 +203,7 @@ describe("generateSearchParamStringFromObj", () => {
 
   test("multiple key-value pairs", () => {
     expect(generateSearchParamStringFromObj({ foo: [1, 2], baz: true })).toBe(
-      "?foo=%5B1%2C2%5D&baz=true"
+      "?foo=%5B1%2C2%5D&baz=true",
     );
   });
 
@@ -223,7 +223,7 @@ describe("generateSearchParamStringFromObj", () => {
         qux: true,
         lux: undefined,
         flux: "",
-      })
+      }),
     ).toBe("?foo=bar&baz=%5B1%2C2%5D&qux=true&lux&flux");
   });
 });
@@ -252,7 +252,7 @@ describe("parseMapObject", () => {
         foo: "foo",
         bar: "%5B1%2C2%5D",
         baz: ["%5B1%2C2%5D", "%5B1%2C2%5D"],
-      })
+      }),
     ).toStrictEqual({
       foo: "foo",
       bar: [1, 2],
@@ -268,8 +268,8 @@ describe("handleSearchParamMultipleKeys", () => {
   test("multiple keys with multiple and single values", () => {
     expect(
       handleSearchParamMultipleKeys(
-        new URLSearchParams("?foo=bar&baz=flux&baz=corge")
-      )
+        new URLSearchParams("?foo=bar&baz=flux&baz=corge"),
+      ),
     ).toStrictEqual({
       foo: "bar",
       baz: ["flux", "corge"],
@@ -278,7 +278,7 @@ describe("handleSearchParamMultipleKeys", () => {
 
   test("key without value", () => {
     expect(
-      handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz"))
+      handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz")),
     ).toStrictEqual({
       foo: "bar",
       baz: undefined,
@@ -287,7 +287,9 @@ describe("handleSearchParamMultipleKeys", () => {
 
   test("key without value but appearing multiple times", () => {
     expect(
-      handleSearchParamMultipleKeys(new URLSearchParams("?foo=bar&baz&baz=lux"))
+      handleSearchParamMultipleKeys(
+        new URLSearchParams("?foo=bar&baz&baz=lux"),
+      ),
     ).toStrictEqual({
       foo: "bar",
       baz: "lux",
@@ -297,8 +299,8 @@ describe("handleSearchParamMultipleKeys", () => {
   test("key without value but appearing multiple times with other keys", () => {
     expect(
       handleSearchParamMultipleKeys(
-        new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux")
-      )
+        new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux"),
+      ),
     ).toStrictEqual({
       foo: "bar",
       baz: ["lux", "flux"],
@@ -309,7 +311,7 @@ describe("handleSearchParamMultipleKeys", () => {
 describe("parseObjectFromParamString", () => {
   test("standard use case", () => {
     expect(
-      parseObjectFromParamString("?foo=bar&baz=%5B1%2C2%5D&qux=true&lux")
+      parseObjectFromParamString("?foo=bar&baz=%5B1%2C2%5D&qux=true&lux"),
     ).toStrictEqual({
       foo: "bar",
       baz: [1, 2],
@@ -324,9 +326,9 @@ describe("parseObjectFromReadonlyURLParams", () => {
     expect(
       handleSearchParamMultipleKeys(
         new ReadonlyURLSearchParams(
-          new URLSearchParams("?foo=bar&baz=flux&baz=corge")
-        )
-      )
+          new URLSearchParams("?foo=bar&baz=flux&baz=corge"),
+        ),
+      ),
     ).toStrictEqual({
       foo: "bar",
       baz: ["flux", "corge"],
@@ -336,8 +338,8 @@ describe("parseObjectFromReadonlyURLParams", () => {
   test("key without value", () => {
     expect(
       handleSearchParamMultipleKeys(
-        new ReadonlyURLSearchParams(new URLSearchParams("?foo=bar&baz"))
-      )
+        new ReadonlyURLSearchParams(new URLSearchParams("?foo=bar&baz")),
+      ),
     ).toStrictEqual({
       foo: "bar",
       baz: undefined,
@@ -347,8 +349,10 @@ describe("parseObjectFromReadonlyURLParams", () => {
   test("key without value but appearing multiple times", () => {
     expect(
       handleSearchParamMultipleKeys(
-        new ReadonlyURLSearchParams(new URLSearchParams("?foo=bar&baz&baz=lux"))
-      )
+        new ReadonlyURLSearchParams(
+          new URLSearchParams("?foo=bar&baz&baz=lux"),
+        ),
+      ),
     ).toStrictEqual({
       foo: "bar",
       baz: "lux",
@@ -359,9 +363,9 @@ describe("parseObjectFromReadonlyURLParams", () => {
     expect(
       handleSearchParamMultipleKeys(
         new ReadonlyURLSearchParams(
-          new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux")
-        )
-      )
+          new URLSearchParams("?foo=bar&baz&baz=lux&baz=flux"),
+        ),
+      ),
     ).toStrictEqual({
       foo: "bar",
       baz: ["lux", "flux"],
@@ -375,7 +379,7 @@ describe("parseObjectFromStringRecord", () => {
       parseObjectFromStringRecord({
         foo: "foo",
         bar: "%5B1%2C2%5D",
-      })
+      }),
     ).toStrictEqual({
       foo: "foo",
       bar: [1, 2],
@@ -386,7 +390,7 @@ describe("parseObjectFromStringRecord", () => {
       parseObjectFromStringRecord({
         foo: "foo",
         bar: ["1", "2"],
-      })
+      }),
     ).toStrictEqual({
       foo: "foo",
       bar: [1, 2],
@@ -416,7 +420,7 @@ describe("parseServerSideParams", () => {
           object: z.object({ foo: z.string() }),
           nestedObject: z.object({ foo: z.object({ bar: z.string() }) }),
         }),
-      })
+      }),
     ).toStrictEqual({
       data: {
         string: "foo",
@@ -446,7 +450,7 @@ describe("parseServerSideParams", () => {
           boolean: z.boolean(),
           null: z.null(),
         }),
-      }).error
+      }).error,
     ).toBeInstanceOf(ZodError);
   });
 });

@@ -21,7 +21,7 @@ export { parseServerSideParams } from "./utils";
  * const { data, isLoading, isError, error } = routeParams;
  */
 export function useRouteParams<T extends z.AnyZodObject>(
-  validator: T
+  validator: T,
 ): UseParamsResult<T> {
   const router = useRouter();
   const [isError, setIsError] = useState(false);
@@ -89,7 +89,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
  * const { data, isLoading, isError, error } = searchParams;
  */
 export function useSearchParams<T extends z.AnyZodObject>(
-  searchValidator: T
+  searchValidator: T,
 ): UseParamsResult<T> {
   const router = useRouter();
   const [isError, setIsError] = useState(false);

@@ -38,7 +38,7 @@ export function getPAGESRoutesWithExportedRoute({
 
       const fileContent = fs.readFileSync(fullPath, "utf8");
       const hasExportedRouteType = /export\s+type\s+RouteType\b/.test(
-        fileContent
+        fileContent,
       );
 
       let routePath = fullPath
@@ -123,7 +123,7 @@ export function getAPPRoutesWithExportedRoute({
       }
 
       const routeTypePaths = ["ts", "tsx"].map((ext) =>
-        path.join(dir, `routeType.${ext}`)
+        path.join(dir, `routeType.${ext}`),
       );
       const didAddRoute = routeTypePaths.reduce((didAdd, routeTypePath) => {
         // Avoid adding the same route twice
@@ -172,7 +172,7 @@ export function generateTypesFile({
       const pathAfterSrc = path.join(
         type,
         route === "/" ? "" : route,
-        type === "app" ? "routeType" : ""
+        type === "app" ? "routeType" : "",
       );
       const finalRelativePath = path
         .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
@@ -188,7 +188,7 @@ export function generateTypesFile({
 
   const staticRoutesDeclarations = [
     ...allDoesntHaveRoute_app.map(
-      (route) => `  "${route.replace(/\/\([^()]+\)/g, "")}": StaticRoute;`
+      (route) => `  "${route.replace(/\/\([^()]+\)/g, "")}": StaticRoute;`,
     ),
     ...allDoesntHaveRoute_pages.map((route) => `  "${route}": StaticRoute;`),
   ].join("\n  ");
