@@ -46,6 +46,10 @@ The path to your `src` directory relative to the cwd the cli is run from. DEFAUL
 
 The path of the generated `.d.ts` file relative to the cwd the cli is run from. DEFAULT: `"./next-typesafe-url_.d.ts"`
 
+#### --filename
+
+Override the default filename for the `routeType.ts` file in the app directory. DEFAULT: `routeType`
+
 #### --help
 
 Show this information

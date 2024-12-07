@@ -18,6 +18,7 @@ Options:
 --srcPath, The path to your src directory relative to the cwd the cli is run from. DEFAULT: "./src"
 --outputPath, The path of the generated .d.ts file relative to the cwd the cli is run from. DEFAULT: "./_next-typesafe-url_.d.ts"
 --pageExtensions, A comma separated list of file extensions to consider as. DEFAULT: "tsx,ts,jsx,js"
+--filename, Override the default name of the RouteType file in the app directory. DEFAULT: "routeType.ts"
 --help,  Show this help message
 `;
 
@@ -39,6 +40,10 @@ const cli = meow(helpText, {
       type: "string",
       default: "tsx,ts,jsx,js",
     },
+    filename: {
+      type: "string",
+      default: "routeType",
+    },
   },
 });
 
@@ -57,9 +62,11 @@ export type RouteInformation = {
 function build({
   paths,
   pageExtensions,
+  filename,
 }: {
   paths: Paths;
   pageExtensions: string[];
+  filename: string;
 }) {
   const { absoluteAppPath, absolutePagesPath } = paths;
 
@@ -68,6 +75,7 @@ function build({
         basePath: absoluteAppPath,
         dir: absoluteAppPath,
         pageExtensions,
+        filename,
       })
     : null;
   const pagesRoutesInfo = absolutePagesPath
@@ -75,6 +83,7 @@ function build({
         basePath: absolutePagesPath,
         dir: absolutePagesPath,
         pageExtensions,
+        filename,
       })
     : null;
 
@@ -82,6 +91,7 @@ function build({
     appRoutesInfo,
     pagesRoutesInfo,
     paths,
+    filename,
   });
   console.log(`Generated route types`);
 }
@@ -89,9 +99,11 @@ function build({
 function watch({
   paths,
   pageExtensions,
+  filename,
 }: {
   paths: Paths;
   pageExtensions: string[];
+  filename: string;
 }) {
   const { absoluteAppPath, absolutePagesPath } = paths;
 
@@ -99,14 +111,14 @@ function watch({
     chokidar
       .watch([`${absoluteAppPath}/**/*.{${pageExtensions.join(",")}}`])
       .on("change", () => {
-        build({ paths, pageExtensions });
+        build({ filename, paths, pageExtensions });
       });
   }
   if (absolutePagesPath) {
     chokidar
       .watch([`${absolutePagesPath}/**/*.{${pageExtensions.join(",")}}`])
       .on("change", () => {
-        build({ paths, pageExtensions });
+        build({ filename, paths, pageExtensions });
       });
   }
 
@@ -114,7 +126,7 @@ function watch({
 }
 
 if (require.main === module) {
-  const { srcPath, outputPath } = cli.flags;
+  const { filename, srcPath, outputPath } = cli.flags;
   const pageExtensions = cli.flags.pageExtensions.split(",");
 
   const absoluteSrcPath = path.join(process.cwd(), srcPath);
@@ -144,10 +156,10 @@ if (require.main === module) {
   };
 
   if (cli.flags.watch) {
-    build({ paths, pageExtensions });
-    watch({ paths, pageExtensions });
+    build({ filename, paths, pageExtensions });
+    watch({ filename, paths, pageExtensions });
   } else {
-    build({ paths, pageExtensions });
+    build({ filename, paths, pageExtensions });
   }
 }
 

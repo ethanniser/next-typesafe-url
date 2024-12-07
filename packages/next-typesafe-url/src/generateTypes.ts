@@ -8,12 +8,14 @@ export function getPAGESRoutesWithExportedRoute({
   hasRoute = [],
   doesntHaveRoute = [],
   pageExtensions,
+  filename,
 }: {
   basePath: string;
   dir: string;
   hasRoute?: string[];
   doesntHaveRoute?: string[];
   pageExtensions: string[];
+  filename: string;
 }): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
@@ -24,6 +26,7 @@ export function getPAGESRoutesWithExportedRoute({
         hasRoute,
         doesntHaveRoute,
         pageExtensions,
+        filename,
       });
     } else {
       const fileName = path.basename(fullPath);
@@ -76,12 +79,14 @@ export function getAPPRoutesWithExportedRoute({
   hasRoute = [],
   doesntHaveRoute = [],
   pageExtensions,
+  filename,
 }: {
   basePath: string;
   dir: string;
   hasRoute?: string[];
   doesntHaveRoute?: string[];
   pageExtensions: string[];
+  filename: string;
 }): RouteInformation {
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
@@ -107,6 +112,7 @@ export function getAPPRoutesWithExportedRoute({
         hasRoute,
         doesntHaveRoute,
         pageExtensions,
+        filename,
       });
     } else if (
       // Matches page files with the extensions from pageExtensions
@@ -123,7 +129,7 @@ export function getAPPRoutesWithExportedRoute({
       }
 
       const routeTypePaths = ["ts", "tsx"].map((ext) =>
-        path.join(dir, `routeType.${ext}`),
+        path.join(dir, `${filename}.${ext}`),
       );
       const didAddRoute = routeTypePaths.reduce((didAdd, routeTypePath) => {
         // Avoid adding the same route twice
@@ -150,10 +156,12 @@ export function generateTypesFile({
   appRoutesInfo,
   pagesRoutesInfo,
   paths,
+  filename,
 }: {
   appRoutesInfo: RouteInformation | null;
   pagesRoutesInfo: RouteInformation | null;
   paths: Paths;
+  filename: string;
 }): void {
   let routeCounter = 0;
 
@@ -172,7 +180,7 @@ export function generateTypesFile({
       const pathAfterSrc = path.join(
         type,
         route === "/" ? "" : route,
-        type === "app" ? "routeType" : "",
+        type === "app" ? filename : "",
       );
       const finalRelativePath = path
         .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
