@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.0
+
+### Minor Changes
+
+- ead4092: updates the cli to allow for a custom filename to be set under the --filename flag to replace the default of 'routeType.ts' - Thank you @JasonPaff !
+
 ## 5.0.0
 
 ### Major Changes
