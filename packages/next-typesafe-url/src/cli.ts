@@ -43,7 +43,7 @@ const cli = meow(helpText, {
     filename: {
       type: "string",
       default: "routeType",
-    }
+    },
   },
 });
 
@@ -62,7 +62,7 @@ export type RouteInformation = {
 function build({
   paths,
   pageExtensions,
-  filename
+  filename,
 }: {
   paths: Paths;
   pageExtensions: string[];
@@ -91,7 +91,7 @@ function build({
     appRoutesInfo,
     pagesRoutesInfo,
     paths,
-    filename
+    filename,
   });
   console.log(`Generated route types`);
 }
@@ -99,7 +99,7 @@ function build({
 function watch({
   paths,
   pageExtensions,
-  filename
+  filename,
 }: {
   paths: Paths;
   pageExtensions: string[];
@@ -111,7 +111,7 @@ function watch({
     chokidar
       .watch([`${absoluteAppPath}/**/*.{${pageExtensions.join(",")}}`])
       .on("change", () => {
-        build({filename, paths, pageExtensions });
+        build({ filename, paths, pageExtensions });
       });
   }
   if (absolutePagesPath) {
@@ -126,7 +126,7 @@ function watch({
 }
 
 if (require.main === module) {
-  const {filename, srcPath, outputPath } = cli.flags;
+  const { filename, srcPath, outputPath } = cli.flags;
   const pageExtensions = cli.flags.pageExtensions.split(",");
 
   const absoluteSrcPath = path.join(process.cwd(), srcPath);
@@ -139,7 +139,7 @@ if (require.main === module) {
   const absoluteOutputPath = path.join(process.cwd(), outputPath);
   const relativePathFromOutputToSrc = path.relative(
     path.dirname(absoluteOutputPath),
-    absoluteSrcPath
+    absoluteSrcPath,
   );
 
   const appPath = path.join(absoluteSrcPath, "app");
@@ -156,10 +156,10 @@ if (require.main === module) {
   };
 
   if (cli.flags.watch) {
-    build({filename, paths, pageExtensions });
-    watch({filename, paths, pageExtensions });
+    build({ filename, paths, pageExtensions });
+    watch({ filename, paths, pageExtensions });
   } else {
-    build({filename, paths, pageExtensions });
+    build({ filename, paths, pageExtensions });
   }
 }
 

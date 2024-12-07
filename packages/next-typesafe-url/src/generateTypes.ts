@@ -26,7 +26,7 @@ export function getPAGESRoutesWithExportedRoute({
         hasRoute,
         doesntHaveRoute,
         pageExtensions,
-        filename
+        filename,
       });
     } else {
       const fileName = path.basename(fullPath);
@@ -41,7 +41,7 @@ export function getPAGESRoutesWithExportedRoute({
 
       const fileContent = fs.readFileSync(fullPath, "utf8");
       const hasExportedRouteType = /export\s+type\s+RouteType\b/.test(
-        fileContent
+        fileContent,
       );
 
       let routePath = fullPath
@@ -79,7 +79,7 @@ export function getAPPRoutesWithExportedRoute({
   hasRoute = [],
   doesntHaveRoute = [],
   pageExtensions,
-  filename
+  filename,
 }: {
   basePath: string;
   dir: string;
@@ -112,7 +112,7 @@ export function getAPPRoutesWithExportedRoute({
         hasRoute,
         doesntHaveRoute,
         pageExtensions,
-        filename
+        filename,
       });
     } else if (
       // Matches page files with the extensions from pageExtensions
@@ -129,7 +129,7 @@ export function getAPPRoutesWithExportedRoute({
       }
 
       const routeTypePaths = ["ts", "tsx"].map((ext) =>
-        path.join(dir, `${filename}.${ext}`)
+        path.join(dir, `${filename}.${ext}`),
       );
       const didAddRoute = routeTypePaths.reduce((didAdd, routeTypePath) => {
         // Avoid adding the same route twice
