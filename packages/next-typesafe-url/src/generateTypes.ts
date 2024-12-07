@@ -180,7 +180,7 @@ export function generateTypesFile({
       const pathAfterSrc = path.join(
         type,
         route === "/" ? "" : route,
-        type === "app" ? "routeType" : "",
+        type === "app" ? filename : "",
       );
       const finalRelativePath = path
         .join(paths.relativePathFromOutputToSrc, pathAfterSrc)

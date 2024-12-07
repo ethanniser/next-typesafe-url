@@ -21,25 +21,6 @@ export default function Page() {
       >
         server component!
       </Link>
-      <Link
-        href={$path({
-          route: "/client/[...client]",
-          routeParams: { client: ["string", 123] },
-          searchParams: {
-            location: "us",
-          },
-        })}
-      >
-        link2
-      </Link>
-      <Link
-        href={$path({
-          route: "/jsonRoute/[foo]",
-          routeParams: { foo: { foo: "bar" } },
-        })}
-      >
-        json
-      </Link>
     </>
   );
 }
