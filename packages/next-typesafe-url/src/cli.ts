@@ -60,10 +60,10 @@ export type RouteInformation = {
 };
 
 function build({
-                 paths,
-                 pageExtensions,
-                 filename
-               }: {
+  paths,
+  pageExtensions,
+  filename
+}: {
   paths: Paths;
   pageExtensions: string[];
   filename: string;
@@ -71,35 +71,36 @@ function build({
   const { absoluteAppPath, absolutePagesPath } = paths;
 
   const appRoutesInfo = absoluteAppPath
-      ? getAPPRoutesWithExportedRoute({
+    ? getAPPRoutesWithExportedRoute({
         basePath: absoluteAppPath,
         dir: absoluteAppPath,
         pageExtensions,
         filename,
       })
-      : null;
+    : null;
   const pagesRoutesInfo = absolutePagesPath
-      ? getPAGESRoutesWithExportedRoute({
+    ? getPAGESRoutesWithExportedRoute({
         basePath: absolutePagesPath,
         dir: absolutePagesPath,
         pageExtensions,
         filename,
       })
-      : null;
+    : null;
 
   generateTypesFile({
     appRoutesInfo,
     pagesRoutesInfo,
     paths,
+    filename
   });
   console.log(`Generated route types`);
 }
 
 function watch({
-                 paths,
-                 pageExtensions,
-                 filename
-               }: {
+  paths,
+  pageExtensions,
+  filename
+}: {
   paths: Paths;
   pageExtensions: string[];
   filename: string;
@@ -108,17 +109,17 @@ function watch({
 
   if (absoluteAppPath) {
     chokidar
-        .watch([`${absoluteAppPath}/**/*.{${pageExtensions.join(",")}}`])
-        .on("change", () => {
-          build({filename, paths, pageExtensions });
-        });
+      .watch([`${absoluteAppPath}/**/*.{${pageExtensions.join(",")}}`])
+      .on("change", () => {
+        build({filename, paths, pageExtensions });
+      });
   }
   if (absolutePagesPath) {
     chokidar
-        .watch([`${absolutePagesPath}/**/*.{${pageExtensions.join(",")}}`])
-        .on("change", () => {
-          build({ filename, paths, pageExtensions });
-        });
+      .watch([`${absolutePagesPath}/**/*.{${pageExtensions.join(",")}}`])
+      .on("change", () => {
+        build({ filename, paths, pageExtensions });
+      });
   }
 
   console.log(`Watching for route changes`);
@@ -137,8 +138,8 @@ if (require.main === module) {
 
   const absoluteOutputPath = path.join(process.cwd(), outputPath);
   const relativePathFromOutputToSrc = path.relative(
-      path.dirname(absoluteOutputPath),
-      absoluteSrcPath
+    path.dirname(absoluteOutputPath),
+    absoluteSrcPath
   );
 
   const appPath = path.join(absoluteSrcPath, "app");
