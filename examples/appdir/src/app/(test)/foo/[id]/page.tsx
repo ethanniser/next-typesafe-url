@@ -3,25 +3,33 @@ import { InferPagePropsType } from "next-typesafe-url";
 import { Route, RouteType } from "./routeType";
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
+import { Suspense } from "react";
 
 type PageProps = InferPagePropsType<RouteType>;
 
-const Page = ({ routeParams }: PageProps) => {
+const Inner = async ({ routeParams }: PageProps) => {
+  const params = await routeParams;
   return (
-    <>
-      <div className="border border-black">
-        <h1>page</h1>
-        <div>{`route: ${JSON.stringify(routeParams)}`}</div>
-        <Link
-          href={$path({
-            route: "/foo/[id]/nest",
-            routeParams: { id: routeParams.id },
-          })}
-        >
-          LINK
-        </Link>
-      </div>
-    </>
+    <div className="border border-black">
+      <h1>page</h1>
+      <div>{`route: ${JSON.stringify(params)}`}</div>
+      <Link
+        href={$path({
+          route: "/foo/[id]/nest",
+          routeParams: { id: params.id },
+        })}
+      >
+        LINK
+      </Link>
+    </div>
+  );
+};
+
+const Page = (props: PageProps) => {
+  return (
+    <Suspense>
+      <Inner {...props} />
+    </Suspense>
   );
 };
 

@@ -2,11 +2,19 @@
 
 import { $path } from "next-typesafe-url";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouteParams } from "next-typesafe-url/app";
 import { Route } from "./routeType";
 
 export const Client = () => {
+  return (
+    <Suspense>
+      <Inner />
+    </Suspense>
+  );
+};
+
+export const Inner = () => {
   useEffect(() => {
     console.log("Component has been rendered");
   }, []);
@@ -18,7 +26,7 @@ export const Client = () => {
   const routeParams = useRouteParams(Route.routeParams);
 
   return (
-    <>
+    <div className="flex flex-col space-y-5">
       <Link href={$path({ route: "/" })}>Back</Link>
       <br />
       <input value={input} onChange={(e) => setInput(e.target.value)} />
@@ -40,6 +48,6 @@ export const Client = () => {
       <div>{`data: ${JSON.stringify(params)}`}</div>
       <h1>routeParams</h1>
       <div>{`data: ${JSON.stringify(routeParams)}`}</div>
-    </>
+    </div>
   );
 };

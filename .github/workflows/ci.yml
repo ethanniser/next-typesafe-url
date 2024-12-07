@@ -1,15 +1,13 @@
 name: CI
-on:
-  push:
-    branches:
-      - "**"
+on: 
+  pull_request:
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,6 +34,9 @@ jobs:
 
       - name: Test, lint and type-check
         run: pnpm turbo lint typecheck test
+        
+      - name: Publish snapshot package
+        run: pnpm release:snapshot
 
       # manypkg doesnt work with workspaces
       # - name: Check workspaces

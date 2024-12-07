@@ -3,7 +3,7 @@ title: "next-typesafe-url"
 description: "a search param and routing library for next.js"
 ---
 
-_Now with full support for app directory and server components!_
+_Now with full support for Next.js 15! (Dynamic IO and PPR)_
 
 ![next-typesafe-url-example](https://github.com/ethanniser/next-typesafe-url/assets/100045248/682e2a01-7e7f-4e44-adb5-6512b22eaadf)
 

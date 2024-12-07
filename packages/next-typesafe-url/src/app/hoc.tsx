@@ -1,18 +1,19 @@
-import type { ReactElement, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { parseServerSideParams } from "../utils";
-import type { DynamicRoute, DynamicLayout } from "../types";
+import type {
+  DynamicRoute,
+  DynamicLayout,
+  InferPagePropsType,
+  InferLayoutPropsType,
+} from "../types";
 
 // the props passed to a page component by Next.js
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
 type NextAppPageProps = {
-  params: Record<string, string | string[]>;
-  searchParams: { [key: string]: string | string[] | undefined };
-} & Record<string, unknown>;
-
-type SomeReactComponent = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- describing a generic component
-  ...args: any[]
-) => ReactNode | Promise<ReactNode>;
+  params: Promise<Record<string, string | string[]>>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  // [key: string]: unknown;
+};
 
 /**
  * A HOC that validates the params passed to a page component.
@@ -23,57 +24,81 @@ type SomeReactComponent = (
  *
  * @example export default withParamValidation(Page, Route);
  */
-export function withParamValidation(
-  Component: SomeReactComponent,
-  validator: DynamicRoute
-): SomeReactComponent {
+export function withParamValidation<Validator extends DynamicRoute>(
+  Component: (
+    props: InferPagePropsType<Validator>,
+  ) => ReactNode | Promise<ReactNode>,
+  validator: Validator,
+): (props: NextAppPageProps) => JSX.Element {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = (
-    props: NextAppPageProps
-  ) => {
+  const ValidatedPageComponent = (props: NextAppPageProps) => {
     // pull out the params and searchParams from the props
-    const { params, searchParams, ...otherProps } = props;
-
-    // if the validator has routeParams, parse them
-    let parsedRouteParamsResult = undefined;
-    if (validator.routeParams) {
-      parsedRouteParamsResult = parseServerSideParams({
-        params,
-        validator: validator.routeParams,
-      });
-    }
-
-    // if the validator has searchParams, parse them
-    let parsedSearchParamsResult = undefined;
-    if (validator.searchParams) {
-      parsedSearchParamsResult = parseServerSideParams({
-        params: searchParams ?? {},
-        validator: validator.searchParams,
-      });
-    }
-
-    // if either of the parsing results are errors, throw them
-    if (parsedRouteParamsResult?.isError) {
-      throw parsedRouteParamsResult.error;
-    } else if (parsedSearchParamsResult?.isError) {
-      throw parsedSearchParamsResult.error;
-    }
+    const {
+      params: paramsPromise,
+      searchParams: searchParamsPromise,
+      ...otherProps
+    } = props;
+    const routeParams = paramsPromise
+      .then((rawParams) => {
+        // if the validator has routeParams, parse them
+        let parsedRouteParamsResult = undefined;
+        if (validator.routeParams) {
+          parsedRouteParamsResult = parseServerSideParams({
+            params: rawParams,
+            validator: validator.routeParams,
+          });
+        }
+        // if there are parsing errors, throw them
+        if (parsedRouteParamsResult?.isError) {
+          throw parsedRouteParamsResult.error;
+        } else {
+          return parsedRouteParamsResult?.data;
+        }
+      })
+      .catch(() => void 0);
+    const searchParams = searchParamsPromise
+      .then((rawSearchParams) => {
+        // if the validator has searchParams, parse them
+        let parsedSearchParamsResult = undefined;
+        if (validator.searchParams) {
+          parsedSearchParamsResult = parseServerSideParams({
+            params: rawSearchParams ?? {},
+            validator: validator.searchParams,
+          });
+        }
+        // if there are parsing errors, throw them
+        if (parsedSearchParamsResult?.isError) {
+          throw parsedSearchParamsResult.error;
+        } else {
+          return parsedSearchParamsResult?.data;
+        }
+      })
+      .catch(() => void 0);
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
-      routeParams: parsedRouteParamsResult?.data,
-      searchParams: parsedSearchParamsResult?.data,
+      routeParams,
+      searchParams,
       ...otherProps,
     };
 
     // render the original component with the new props
+    // return Component(newProps);
     // @ts-expect-error async server component
     return <Component {...newProps} />;
   };
-
   // return the new component
   return ValidatedPageComponent;
 }
+
+type NextAppLayoutProps<AdditionalKeys extends string = never> = Pick<
+  NextAppPageProps,
+  "params"
+> & {
+  children: ReactNode;
+} & {
+  [key in AdditionalKeys]: ReactNode;
+};
 
 /**
  * A HOC that validates the route params passed to a layout component.
@@ -84,34 +109,44 @@ export function withParamValidation(
  *
  * @example export default withLayoutParamValidation(Layout, LayoutRoute);
  */
-export function withLayoutParamValidation(
-  Component: SomeReactComponent,
-  validator: DynamicLayout
-): SomeReactComponent {
+export function withLayoutParamValidation<
+  Validator extends DynamicLayout,
+  const AdditionalKeys extends string = never,
+>(
+  Component: (
+    props: InferLayoutPropsType<Validator, AdditionalKeys>,
+  ) => ReactNode | Promise<ReactNode>,
+  validator: DynamicLayout,
+): (props: NextAppLayoutProps<AdditionalKeys>) => JSX.Element {
   // the new component that will be returned
-  const ValidatedPageComponent: SomeReactComponent = (
-    props: Pick<NextAppPageProps, "params"> & { children: ReactElement }
+  const ValidatedLayoutComponent = (
+    props: NextAppLayoutProps<AdditionalKeys>,
   ) => {
     // pull out the params and children from the props
-    const { params, children, ...otherProps } = props;
+    const { params: paramsPromise, children, ...otherProps } = props;
+    const routeParams = paramsPromise
+      .then((rawParams) => {
+        // if the validator has routeParams, parse them
+        let parsedRouteParamsResult = undefined;
+        if (validator.routeParams) {
+          parsedRouteParamsResult = parseServerSideParams({
+            params: rawParams,
+            validator: validator.routeParams,
+          });
+        }
 
-    // if the validator has routeParams, parse them
-    let parsedRouteParamsResult = undefined;
-    if (validator.routeParams) {
-      parsedRouteParamsResult = parseServerSideParams({
-        params,
-        validator: validator.routeParams,
-      });
-    }
-
-    // if the parsing result is an error, throw it
-    if (parsedRouteParamsResult?.isError) {
-      throw parsedRouteParamsResult.error;
-    }
+        // if the parsing result is an error, throw it
+        if (parsedRouteParamsResult?.isError) {
+          throw parsedRouteParamsResult.error;
+        } else {
+          return parsedRouteParamsResult?.data;
+        }
+      })
+      .catch(() => void 0);
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
-      routeParams: parsedRouteParamsResult?.data,
+      routeParams,
       children,
       ...otherProps,
     };
@@ -122,5 +157,5 @@ export function withLayoutParamValidation(
   };
 
   // return the new component
-  return ValidatedPageComponent;
+  return ValidatedLayoutComponent;
 }

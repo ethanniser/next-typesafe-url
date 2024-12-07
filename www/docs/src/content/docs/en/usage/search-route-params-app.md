@@ -20,9 +20,9 @@ View the `pages` version [here](search-route-params-pages)
 
 ### Forced Dynamic Rendering
 
-In `page.tsx`, search params are accessible through props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering (SSR)**. This is a behavior enforced by Next ([see the "good to know" section at the very bottom](https://nextjs.org/docs/app/api-reference/file-conventions/page#good-to-know))
+In `page.tsx`, search params are accessible through asynchronous props on the top level exported component. However, accessing search params in this way **will force you into dynamic rendering**.
 
-If you do not want this behavior (_i.e. you want some part of your page to be statically generated at build time or ISR'd_), you are forced to place the search param logic **in a client component**. [Check out the 'Client Components' section below](#client-components) to see more.
+If you do not want this behavior (_i.e. you want some part of your page to be statically generated at build time or ISR'd_), you can either cache your component with [`"use cache"`](https://nextjs.org/docs/app/api-reference/directives/use-cache), or can place the search param logic **in a client component**. [Check out the 'Client Components' section below](#client-components) to see more.
 
 ### Usage in page.tsx
 
@@ -51,8 +51,8 @@ type PageProps = InferPagePropsType<RouteType>;
 async function Page({ routeParams, searchParams }: PageProps) {
   return (
     <>
-      <div>{JSON.stringify(routeParams)}</div>
-      <div>{JSON.stringify(searchParams)}</div>
+      <div>{JSON.stringify(await routeParams)}</div>
+      <div>{JSON.stringify(await searchParams)}</div>
     </>
   );
 }
@@ -62,7 +62,7 @@ export default withParamValidation(Page, Route);
 
 #### Errors
 
-If the zod validation fails, `withParamValidation` will throw a `ZodError`. Use Next's `error.tsx` to handle these thrown errors.
+If the zod validation fails, the promise for `searchParams`/`routeParams` will reject with a `ZodError`.
 
 ### Usage in layout.tsx
 
@@ -103,7 +103,7 @@ type Props = InferLayoutPropsType<LayoutType>;
 async function Layout({ children, routeParams }: Props) {
   return (
     <div>
-      <p>{JSON.stringify(routeParams)}</p>
+      <p>{JSON.stringify(await routeParams)}</p>
       <div>{children}</div>
     </div>
   );
@@ -114,7 +114,7 @@ export default withLayoutParamValidation(Layout, LayoutRoute);
 
 #### Errors
 
-If the zod validation fails, `withLayoutParamValidation` will throw a `ZodError`. Use Next's `error.tsx` to handle these thrown errors.
+If the zod validation fails, the promise for `searchParams`/`routeParams` will reject with a `ZodError`.
 
 ## Client Components
 
@@ -180,7 +180,7 @@ app
 
 #### Adjusting Layout Props
 
-`InferLayoutPropsType` takes an optional second generic of `string` or a union of `string`s (for multiple parallel routes) that should represent any parallel routes beneath the layout.
+`InferLayoutPropsType` and `withLayoutParamValidation` take an optional second generic of `string` or a union of `string`s (for multiple parallel routes) that should represent any parallel routes beneath the layout.
 
 ```tsx
 type Props = InferLayoutPropsType<LayoutType, "analytics">;
@@ -193,7 +193,7 @@ function Layout({ children, routeParams, analytics }: Props) {
     </div>
   );
 }
-export default withLayoutParamValidation(Layout, LayoutRoute);
+export default withLayoutParamValidation<"analytics">(Layout, LayoutRoute);
 ```
 
 ### Intercepted Routes
