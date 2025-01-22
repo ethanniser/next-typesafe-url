@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.1
+
+### Patch Changes
+
+- 38a7e77: Fix peer dep issue for nextjs 15
+
 ## 5.1.0
 
 ### Minor Changes
