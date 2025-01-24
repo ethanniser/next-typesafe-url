@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.2
+
+### Patch Changes
+
+- c69cb20: bump react peer dep
+
 ## 5.1.1
 
 ### Patch Changes
