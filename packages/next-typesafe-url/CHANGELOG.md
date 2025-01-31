@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.3
+
+### Patch Changes
+
+- 5ff950a: Add support for nextjs<15 where search/route params are not promises
+
 ## 5.1.2
 
 ### Patch Changes
