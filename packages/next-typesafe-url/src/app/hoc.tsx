@@ -10,8 +10,10 @@ import type {
 // the props passed to a page component by Next.js
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
 type NextAppPageProps = {
-  params: Promise<Record<string, string | string[]>>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<Record<string, string | string[]>> | Record<string, string>;
+  searchParams:
+    | Promise<{ [key: string]: string | string[] | undefined }>
+    | { [key: string]: string | string[] | undefined };
   // [key: string]: unknown;
 };
 
@@ -26,9 +28,9 @@ type NextAppPageProps = {
  */
 export function withParamValidation<Validator extends DynamicRoute>(
   Component: (
-    props: InferPagePropsType<Validator>,
+    props: InferPagePropsType<Validator>
   ) => ReactNode | Promise<ReactNode>,
-  validator: Validator,
+  validator: Validator
 ): (props: NextAppPageProps) => JSX.Element {
   // the new component that will be returned
   const ValidatedPageComponent = (props: NextAppPageProps) => {
@@ -38,7 +40,12 @@ export function withParamValidation<Validator extends DynamicRoute>(
       searchParams: searchParamsPromise,
       ...otherProps
     } = props;
-    const routeParams = paramsPromise
+    const params =
+      paramsPromise instanceof Promise
+        ? paramsPromise
+        : Promise.resolve(paramsPromise);
+
+    const routeParams = params
       .then((rawParams) => {
         // if the validator has routeParams, parse them
         let parsedRouteParamsResult = undefined;
@@ -56,7 +63,11 @@ export function withParamValidation<Validator extends DynamicRoute>(
         }
       })
       .catch(() => void 0);
-    const searchParams = searchParamsPromise
+    const search =
+      searchParamsPromise instanceof Promise
+        ? searchParamsPromise
+        : Promise.resolve(searchParamsPromise);
+    const searchParams = search
       .then((rawSearchParams) => {
         // if the validator has searchParams, parse them
         let parsedSearchParamsResult = undefined;
@@ -114,17 +125,21 @@ export function withLayoutParamValidation<
   const AdditionalKeys extends string = never,
 >(
   Component: (
-    props: InferLayoutPropsType<Validator, AdditionalKeys>,
+    props: InferLayoutPropsType<Validator, AdditionalKeys>
   ) => ReactNode | Promise<ReactNode>,
-  validator: DynamicLayout,
+  validator: DynamicLayout
 ): (props: NextAppLayoutProps<AdditionalKeys>) => JSX.Element {
   // the new component that will be returned
   const ValidatedLayoutComponent = (
-    props: NextAppLayoutProps<AdditionalKeys>,
+    props: NextAppLayoutProps<AdditionalKeys>
   ) => {
     // pull out the params and children from the props
     const { params: paramsPromise, children, ...otherProps } = props;
-    const routeParams = paramsPromise
+    const params =
+      paramsPromise instanceof Promise
+        ? paramsPromise
+        : Promise.resolve(paramsPromise);
+    const routeParams = params
       .then((rawParams) => {
         // if the validator has routeParams, parse them
         let parsedRouteParamsResult = undefined;
