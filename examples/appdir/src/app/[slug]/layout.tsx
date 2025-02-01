@@ -31,4 +31,4 @@ function Layout(props: Props) {
   );
 }
 
-export default withLayoutParamValidation<LayoutType>(Layout, LayoutRoute);
+export default withLayoutParamValidation(Layout, LayoutRoute);
