@@ -197,7 +197,7 @@ function Layout({ children, routeParams, analytics }: Props) {
 }
 export default withLayoutParamValidation<LayoutType, "analytics">(
   Layout,
-  LayoutRoute
+  LayoutRoute,
 );
 ```
 
