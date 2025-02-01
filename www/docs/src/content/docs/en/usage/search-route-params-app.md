@@ -80,8 +80,6 @@ The `InferLayoutPropsType` helper type is passed the type of your LayoutRoute as
 
 ---
 
-**Note:** It is required to pass the type of your LayoutRoute to `withLayoutParamValidation` due to type inference limitations.
-
 **Note:** If no error is thrown, your PageProps will always be the types you defined in your schema.
 
 **Note:** If your layout does not consume any route params, there is no need to use `withLayoutParamValidation`
@@ -111,7 +109,7 @@ async function Layout({ children, routeParams }: Props) {
   );
 }
 
-export default withLayoutParamValidation<LayoutType>(Layout, LayoutRoute);
+export default withLayoutParamValidation(Layout, LayoutRoute);
 ```
 
 #### Errors
@@ -182,7 +180,7 @@ app
 
 #### Adjusting Layout Props
 
-`InferLayoutPropsType` and `withLayoutParamValidation` take an optional second generic of `string` or a union of `string`s (for multiple parallel routes) that should represent any parallel routes beneath the layout.
+`InferLayoutPropsType` and `withLayoutParamValidation` take an optional second type parameter of `string` or a union of `string`s (for multiple parallel routes) that should represent any parallel routes beneath the layout.
 
 ```tsx
 type Props = InferLayoutPropsType<LayoutType, "analytics">;
