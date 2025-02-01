@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.5
+
+### Patch Changes
+
+- 0e88246: Fix: correctly use generic dynamic layout type in withLayoutParamValidation - (Thanks @TmLev)
+
 ## 5.1.4
 
 ### Patch Changes
