@@ -28,9 +28,9 @@ type NextAppPageProps = {
  */
 export function withParamValidation<Validator extends DynamicRoute>(
   Component: (
-    props: InferPagePropsType<Validator>
+    props: InferPagePropsType<Validator>,
   ) => ReactNode | Promise<ReactNode>,
-  validator: Validator
+  validator: Validator,
 ): (props: NextAppPageProps) => JSX.Element {
   // the new component that will be returned
   const ValidatedPageComponent = (props: NextAppPageProps) => {
@@ -125,13 +125,13 @@ export function withLayoutParamValidation<
   const AdditionalKeys extends string = never,
 >(
   Component: (
-    props: InferLayoutPropsType<Validator, AdditionalKeys>
+    props: InferLayoutPropsType<Validator, AdditionalKeys>,
   ) => ReactNode | Promise<ReactNode>,
-  validator: DynamicLayout
+  validator: DynamicLayout,
 ): (props: NextAppLayoutProps<AdditionalKeys>) => JSX.Element {
   // the new component that will be returned
   const ValidatedLayoutComponent = (
-    props: NextAppLayoutProps<AdditionalKeys>
+    props: NextAppLayoutProps<AdditionalKeys>,
   ) => {
     // pull out the params and children from the props
     const { params: paramsPromise, children, ...otherProps } = props;
