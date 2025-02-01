@@ -127,7 +127,7 @@ export function withLayoutParamValidation<
   Component: (
     props: InferLayoutPropsType<Validator, AdditionalKeys>,
   ) => ReactNode | Promise<ReactNode>,
-  validator: DynamicLayout,
+  validator: Validator,
 ): (props: NextAppLayoutProps<AdditionalKeys>) => JSX.Element {
   // the new component that will be returned
   const ValidatedLayoutComponent = (
