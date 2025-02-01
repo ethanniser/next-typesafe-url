@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.4
+
+### Patch Changes
+
+- ea127fd: Fix bug with index route under a route group where the generate type file route string is blank
+
 ## 5.1.3
 
 ### Patch Changes
