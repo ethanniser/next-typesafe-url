@@ -1,5 +1,5 @@
 name: CI
-on: 
+on:
   pull_request:
 
 env:
@@ -32,9 +32,12 @@ jobs:
       - name: Build
         run: pnpm turbo --filter "./packages/*" build
 
+      - name: Check formatting
+        run: pnpm fmt:check
+
       - name: Test, lint and type-check
         run: pnpm turbo lint typecheck test
-        
+
       - name: Publish snapshot package
         run: pnpm release:snapshot
 

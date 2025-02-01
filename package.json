@@ -13,7 +13,8 @@
     "lint": "turbo lint & manypkg check",
     "test": "turbo test",
     "typecheck": "turbo  typecheck",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "fmt": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "fmt:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "release:actual": "changeset version && changeset publish",
     "release:snapshot": "pnpx pkg-pr-new publish './packages/next-typesafe-url/'"
   },

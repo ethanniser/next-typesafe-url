@@ -189,20 +189,19 @@ export function generateTypesFile({
         // ensure relative paths start with "./"
         .replace(/^(?!\.\.\/)/, "./");
       return `  "${
-        type === "app" ? route.replace(/\/\([^()]+\)/g, "") : route
+        type === "app" ? route.replace(/\/\([^()]+\)/g, "") || "/" : route
       }": InferRoute<import("${finalRelativePath}").RouteType>;`;
     })
     .join("\n  ");
 
   const staticRoutesDeclarations = [
-    ...allDoesntHaveRoute_app.map(
-      (route) => `  "${route.replace(/\/\([^()]+\)/g, "")}": StaticRoute;`,
-    ),
+    ...allDoesntHaveRoute_app.map((route) => {
+      return `  "${route.replace(/\/\([^()]+\)/g, "") || "/"}": StaticRoute;`;
+    }),
     ...allDoesntHaveRoute_pages.map((route) => `  "${route}": StaticRoute;`),
   ].join("\n  ");
 
   const fileContentString = `${infoText.trim()}\n
-
 declare module "@@@next-typesafe-url" {
   import type { InferRoute, StaticRoute } from "next-typesafe-url";
   
