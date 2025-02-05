@@ -1,5 +1,12 @@
 # next-typesafe-url
 
+## 5.1.6
+
+### Patch Changes
+
+- 7be60d1: update withLayoutParamValidation to expose only valid argument types
+- 25c2ad5: Handle underscores escaped as %5F
+
 ## 5.1.5
 
 ### Patch Changes
