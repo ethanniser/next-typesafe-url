@@ -176,35 +176,45 @@ export function generateTypesFile({
   const allDoesntHaveRoute_pages = pagesRoutesInfo?.doesntHaveRoute ?? [];
 
   const routeTypeDeclarations = allHasRoute
-    .map(({ route, type }) => {
+    .map(({ route: rawRoute, type }) => {
+      const route = unescapeUnderscores(rawRoute);
+
+      // For app routes, remove intercepted route segments.
+      const finalRoute =
+        type === "app" ? route.replace(/\/\([^()]+\)/g, "") || "/" : route;
+
       const pathAfterSrc = path.join(
         type,
         route === "/" ? "" : route,
         type === "app" ? filename : "",
       );
+
       const finalRelativePath = path
         .join(paths.relativePathFromOutputToSrc, pathAfterSrc)
         // replace backslashes with forward slashes
         .replace(/\\/g, "/")
         // ensure relative paths start with "./"
         .replace(/^(?!\.\.\/)/, "./");
-      return `  "${
-        type === "app" ? route.replace(/\/\([^()]+\)/g, "") || "/" : route
-      }": InferRoute<import("${finalRelativePath}").RouteType>;`;
+
+      return `  "${finalRoute}": InferRoute<import("${finalRelativePath}").RouteType>;`;
     })
     .join("\n  ");
 
   const staticRoutesDeclarations = [
-    ...allDoesntHaveRoute_app.map((route) => {
+    ...allDoesntHaveRoute_app.map((rawRoute) => {
+      const route = unescapeUnderscores(rawRoute);
       return `  "${route.replace(/\/\([^()]+\)/g, "") || "/"}": StaticRoute;`;
     }),
-    ...allDoesntHaveRoute_pages.map((route) => `  "${route}": StaticRoute;`),
+    ...allDoesntHaveRoute_pages.map((rawRoute) => {
+      const route = unescapeUnderscores(rawRoute);
+      return `  "${route}": StaticRoute;`;
+    }),
   ].join("\n  ");
 
   const fileContentString = `${infoText.trim()}\n
 declare module "@@@next-typesafe-url" {
   import type { InferRoute, StaticRoute } from "next-typesafe-url";
-  
+
   interface DynamicRouter {
   ${routeTypeDeclarations}
   }
@@ -218,6 +228,17 @@ declare module "@@@next-typesafe-url" {
   // Ensure the directory exists, create it if it doesn't
   fs.mkdirSync(path.dirname(paths.absoluteOutputPath), { recursive: true });
   fs.writeFileSync(paths.absoluteOutputPath, fileContentString);
+}
+
+// Helper function to normalize routes by replacing `%5F` with `_`.
+//
+// From the Next.js docs:
+// ```
+// You can create URL segments that start with an underscore by prefixing
+// the folder name with %5F (the URL-encoded form of an underscore): %5FfolderName.
+// ```
+function unescapeUnderscores(route: string): string {
+  return route.replace(/%5F/g, "_");
 }
 
 // thank you next-static-paths <3
