@@ -185,7 +185,7 @@ export function generateTypesFile({
 
       const pathAfterSrc = path.join(
         type,
-        route === "/" ? "" : route,
+        rawRoute === "/" ? "" : rawRoute,
         type === "app" ? filename : "",
       );
 
