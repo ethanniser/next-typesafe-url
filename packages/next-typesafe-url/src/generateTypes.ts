@@ -232,7 +232,7 @@ declare module "@@@next-typesafe-url" {
 
 // Helper function to normalize routes by replacing `%5F` with `_`.
 //
-// From the Next.js docs:
+// From the Next.js docs (https://nextjs.org/docs/app/getting-started/project-structure):
 // ```
 // You can create URL segments that start with an underscore by prefixing
 // the folder name with %5F (the URL-encoded form of an underscore): %5FfolderName.
