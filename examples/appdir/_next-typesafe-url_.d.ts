@@ -7,8 +7,9 @@
 
 declare module "@@@next-typesafe-url" {
   import type { InferRoute, StaticRoute } from "next-typesafe-url";
-  
+
   interface DynamicRouter {
+    "/_internal/__very-internal/[slug]": InferRoute<import("./src/app/%5Finternal/%5F%5Fvery-internal/[slug]/routeType").RouteType>;
     "/foo/[id]/nest": InferRoute<import("./src/app/(test)/foo/[id]/nest/routeType").RouteType>;
     "/foo/[id]": InferRoute<import("./src/app/(test)/foo/[id]/routeType").RouteType>;
     "/[slug]/[...foo]": InferRoute<import("./src/app/[slug]/[...foo]/routeType").RouteType>;
@@ -19,6 +20,7 @@ declare module "@@@next-typesafe-url" {
   }
 
   interface StaticRouter {
+    "/_internal/__very-internal": StaticRoute;
     "/": StaticRoute;
     "/bar": StaticRoute;
     "/mdx-route": StaticRoute;
