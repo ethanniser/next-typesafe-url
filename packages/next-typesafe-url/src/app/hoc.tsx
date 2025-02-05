@@ -102,13 +102,18 @@ export function withParamValidation<Validator extends DynamicRoute>(
   return ValidatedPageComponent;
 }
 
+type ExcludeKnownKeys<Keys extends string> = Exclude<
+  Keys,
+  "routeParams" | "searchParams"
+>;
+
 type NextAppLayoutProps<AdditionalKeys extends string = never> = Pick<
   NextAppPageProps,
   "params"
 > & {
   children: ReactNode;
 } & {
-  [key in AdditionalKeys]: ReactNode;
+  [key in ExcludeKnownKeys<AdditionalKeys>]: ReactNode;
 };
 
 /**
