@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.7
+
+### Patch Changes
+
+- 48dd1b9: Fix #134: non promise page arguments in Next 15
+
 ## 5.1.6
 
 ### Patch Changes
