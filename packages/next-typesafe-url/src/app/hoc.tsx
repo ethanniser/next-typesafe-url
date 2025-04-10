@@ -10,10 +10,10 @@ import type {
 // the props passed to a page component by Next.js
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
 type NextAppPageProps = {
-  params: Promise<Record<string, string | string[]>> | Record<string, string>;
+  params: Promise<Record<string, string | string[]>>;
   searchParams:
-    | Promise<{ [key: string]: string | string[] | undefined }>
-    | { [key: string]: string | string[] | undefined };
+     Promise<{ [key: string]: string | string[] | undefined }>
+   ;
   // [key: string]: unknown;
 };
 
