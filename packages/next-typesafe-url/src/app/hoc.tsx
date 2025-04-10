@@ -11,9 +11,7 @@ import type {
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
 type NextAppPageProps = {
   params: Promise<Record<string, string | string[]>>;
-  searchParams:
-     Promise<{ [key: string]: string | string[] | undefined }>
-   ;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
   // [key: string]: unknown;
 };
 
