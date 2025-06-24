@@ -17,42 +17,13 @@ type RouterOutputs = {
 // allof the static routes
 type StaticRoutes = keyof StaticRouter;
 
-// all of the dynamic routes
-type DynamicRoutes = keyof DynamicRouter;
-
 // converts a DynamicRoute into its inferred input and output types
 type InferRoute<T extends DynamicRoute> = {
-  input: HandleUndefined<InferInput<T>>;
-  output: HandleUndefined<InferOutput<T>>;
+  input: HandleUndefined<T, "input">;
+  output: HandleUndefined<T, "output">;
 };
 
-// checks if a type has a property
-type HasProperty<T, K extends string> = K extends keyof T ? true : false;
-
-// zod validators may have different input and output types
-// this type infers the input types from a DynamicRoute
-type InferInput<T extends DynamicRoute> = {
-  searchParams: HasProperty<T, "searchParams"> extends true
-    ? z.input<T["searchParams"]>
-    : undefined;
-  routeParams: HasProperty<T, "routeParams"> extends true
-    ? z.input<T["routeParams"]>
-    : undefined;
-};
-
-// same thing as HelperInput but infers the output types instead of the input types
-type InferOutput<T extends DynamicRoute> = {
-  searchParams: HasProperty<T, "searchParams"> extends true
-    ? z.output<T["searchParams"]>
-    : undefined;
-  routeParams: HasProperty<T, "routeParams"> extends true
-    ? z.output<T["routeParams"]>
-    : undefined;
-};
-
-// The Infer* types above set the keys unoptionally to undefined if no validator is provided
-// However, we want to make them optional so you don't have to explicitly set them to undefined
-// This type handles each of the 4 possible cases:
+// The HandleUndefined type handles each of the 4 possible cases:
 // both are undefined, only routeParams is undefined,
 // only searchParams is undefined, and neither are undefined
 
@@ -62,48 +33,90 @@ type InferOutput<T extends DynamicRoute> = {
 // This is so you can leave the entire object undefined if you want to
 // We don't do this for routeParams because it doesn't really make sense to have optional routeParams
 
-type HandleUndefined<T extends DynamicRoute> =
-  T["routeParams"] extends undefined
-    ? T["searchParams"] extends undefined
-      ? // Both are undefined
-        Option4
-      : // Only routeParams is undefined
-        Option2<T>
-    : T["searchParams"] extends undefined
-      ? // Only searchParams is undefined
-        Option3<T>
-      : // Neither are undefined
-        Option1<T>;
+type HandleUndefined<
+  T extends DynamicRoute,
+  Mode extends "input" | "output",
+> = T["routeParams"] extends undefined
+  ? T["searchParams"] extends undefined
+    ? // Both are undefined
+      Option4
+    : // Only routeParams is undefined
+      Option2<T, Mode>
+  : T["searchParams"] extends undefined
+    ? // Only searchParams is undefined
+      Option3<T, Mode>
+    : // Neither are undefined
+      Option1<T, Mode>;
 
 // Neither are undefined
-type Option1<T extends DynamicRoute> =
-  AllPossiblyUndefined<T["searchParams"]> extends undefined
+type Option1<
+  T extends DynamicRoute,
+  Mode extends "input" | "output",
+> = Mode extends "input"
+  ? AllPossiblyUndefined<
+      z.input<NonNullable<T["searchParams"]>>
+    > extends undefined
     ? {
-        searchParams?: T["searchParams"] | undefined;
-        routeParams: T["routeParams"];
+        searchParams?: z.input<NonNullable<T["searchParams"]>> | undefined;
+        routeParams: z.input<NonNullable<T["routeParams"]>>;
       }
     : {
-        searchParams: T["searchParams"];
-        routeParams: T["routeParams"];
+        searchParams: z.input<NonNullable<T["searchParams"]>>;
+        routeParams: z.input<NonNullable<T["routeParams"]>>;
+      }
+  : AllPossiblyUndefined<
+        z.output<NonNullable<T["searchParams"]>>
+      > extends undefined
+    ? {
+        searchParams?: z.output<NonNullable<T["searchParams"]>> | undefined;
+        routeParams: z.output<NonNullable<T["routeParams"]>>;
+      }
+    : {
+        searchParams: z.output<NonNullable<T["searchParams"]>>;
+        routeParams: z.output<NonNullable<T["routeParams"]>>;
       };
 
 // Only routeParams is undefined
-type Option2<T extends DynamicRoute> =
-  AllPossiblyUndefined<T["searchParams"]> extends undefined
+type Option2<
+  T extends DynamicRoute,
+  Mode extends "input" | "output",
+> = Mode extends "input"
+  ? AllPossiblyUndefined<
+      z.input<NonNullable<T["searchParams"]>>
+    > extends undefined
     ? {
-        searchParams?: T["searchParams"] | undefined;
+        searchParams?: z.input<NonNullable<T["searchParams"]>> | undefined;
         routeParams?: undefined;
       }
     : {
-        searchParams: T["searchParams"];
+        searchParams: z.input<NonNullable<T["searchParams"]>>;
+        routeParams?: undefined;
+      }
+  : AllPossiblyUndefined<
+        z.output<NonNullable<T["searchParams"]>>
+      > extends undefined
+    ? {
+        searchParams?: z.output<NonNullable<T["searchParams"]>> | undefined;
+        routeParams?: undefined;
+      }
+    : {
+        searchParams: z.output<NonNullable<T["searchParams"]>>;
         routeParams?: undefined;
       };
 
 // Only searchParams is undefined
-type Option3<T extends DynamicRoutes> = {
-  searchParams?: undefined;
-  routeParams: T["routeParams"];
-};
+type Option3<
+  T extends DynamicRoute,
+  Mode extends "input" | "output",
+> = Mode extends "input"
+  ? {
+      searchParams?: undefined;
+      routeParams: z.input<NonNullable<T["routeParams"]>>;
+    }
+  : {
+      searchParams?: undefined;
+      routeParams: z.output<NonNullable<T["routeParams"]>>;
+    };
 
 // Both are undefined
 type Option4 = {
