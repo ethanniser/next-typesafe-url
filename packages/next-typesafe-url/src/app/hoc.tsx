@@ -6,6 +6,7 @@ import type {
   InferPagePropsType,
   InferLayoutPropsType,
 } from "../types";
+import { z } from "zod";
 
 // the props passed to a page component by Next.js
 // https://nextjs.org/docs/app/api-reference/file-conventions/page
@@ -60,7 +61,7 @@ export function withParamValidation<Validator extends DynamicRoute>(
           return parsedRouteParamsResult?.data;
         }
       })
-      .catch(() => void 0);
+      .catch(catchHandler);
     const search =
       searchParamsPromise instanceof Promise
         ? searchParamsPromise
@@ -82,7 +83,7 @@ export function withParamValidation<Validator extends DynamicRoute>(
           return parsedSearchParamsResult?.data;
         }
       })
-      .catch(() => void 0);
+      .catch(catchHandler);
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
@@ -160,7 +161,7 @@ export function withLayoutParamValidation<
           return parsedRouteParamsResult?.data;
         }
       })
-      .catch(() => void 0);
+      .catch(catchHandler);
 
     // combine the parsed params and searchParams into a single object with the rest of the props passed to the component
     const newProps = {
@@ -176,4 +177,11 @@ export function withLayoutParamValidation<
 
   // return the new component
   return ValidatedLayoutComponent;
+}
+
+function catchHandler(error: unknown) {
+  if (error instanceof z.ZodError) {
+    throw error;
+  }
+  return void 0;
 }
