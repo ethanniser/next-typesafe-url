@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 5.1.8
+
+### Patch Changes
+
+- 8429ec1: fix catch for prerendering catching zoderror
+
 ## 5.1.7
 
 ### Patch Changes
