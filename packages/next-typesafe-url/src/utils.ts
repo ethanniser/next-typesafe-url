@@ -327,7 +327,7 @@ export function encodeAndFillRoute(
  * })
  * const { data, isError, error } = result;
  */
-export function parseServerSideParams<T extends z.AnyZodObject>({
+export function parseServerSideParams<T extends z.ZodObject<z.ZodRawShape>>({
   params,
   validator,
 }: {

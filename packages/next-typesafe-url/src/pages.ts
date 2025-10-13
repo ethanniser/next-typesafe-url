@@ -20,7 +20,7 @@ export { parseServerSideParams } from "./utils";
  * const routeParams = useRouteParams(Route.routeParams);
  * const { data, isLoading, isError, error } = routeParams;
  */
-export function useRouteParams<T extends z.AnyZodObject>(
+export function useRouteParams<T extends z.ZodObject<z.ZodRawShape>>(
   validator: T,
 ): UseParamsResult<T> {
   const router = useRouter();
@@ -88,7 +88,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
  * const searchParams = useSearchParams(Route.searchParams);
  * const { data, isLoading, isError, error } = searchParams;
  */
-export function useSearchParams<T extends z.AnyZodObject>(
+export function useSearchParams<T extends z.ZodObject<z.ZodRawShape>>(
   searchValidator: T,
 ): UseParamsResult<T> {
   const router = useRouter();
