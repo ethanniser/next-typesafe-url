@@ -1,5 +1,11 @@
 # next-typesafe-url
 
+## 6.0.0
+
+### Major Changes
+
+- f7f02f8: Updated to Zod 4
+
 ## 5.1.8
 
 ### Patch Changes
