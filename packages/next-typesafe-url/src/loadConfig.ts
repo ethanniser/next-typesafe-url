@@ -68,7 +68,9 @@ function createTypeScriptLoader() {
 
     try {
       // load the config file by its basename
-      const loaded = jiti(`./${path.basename(filepath)}`) as { default?: unknown };
+      const loaded = jiti(`./${path.basename(filepath)}`) as {
+        default?: unknown;
+      };
       // handle both default exports and named exports
       return loaded.default || loaded;
     } catch (error) {
