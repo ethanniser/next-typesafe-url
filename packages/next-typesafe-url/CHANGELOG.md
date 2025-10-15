@@ -156,7 +156,6 @@
 ### Major Changes
 
 - 88cdd83: - major changes
-
   - significant refactor to internal encoding + decoding logic- now simpler and easier to follow
   - complete documentation rewrite
   - code generation overhaul

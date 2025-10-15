@@ -7,11 +7,17 @@ import {
   getAPPRoutesWithExportedRoute,
   generateTypesFile,
 } from "./generateTypes";
+import { loadConfig } from "./loadConfig";
+import { defaultConfig } from "./config";
 
 const helpText = `
 Usage:
 $ npx next-typesafe-url (...options)
 Scans for routes in your app and pages directories and generates a types file for next-typesafe-url
+
+Configuration:
+You can use a next-typesafe-url.config.ts file for fully typesafe configuration.
+CLI options will override config file values.
 
 Options:
 --watch / -w,  Watch for file changes in src/app and src/pages and regenerate the types file
@@ -30,19 +36,15 @@ const cli = meow(helpText, {
     },
     outputPath: {
       type: "string",
-      default: "./_next-typesafe-url_.d.ts",
     },
     srcPath: {
       type: "string",
-      default: "./src",
     },
     pageExtensions: {
       type: "string",
-      default: "tsx,ts,jsx,js",
     },
     filename: {
       type: "string",
-      default: "routeType",
     },
   },
 });
@@ -126,41 +128,72 @@ function watch({
 }
 
 if (require.main === module) {
-  const { filename, srcPath, outputPath } = cli.flags;
-  const pageExtensions = cli.flags.pageExtensions.split(",");
+  (async () => {
+    // load config from the file
+    const fileConfig = await loadConfig();
 
-  const absoluteSrcPath = path.join(process.cwd(), srcPath);
+    // helper function to normalize pageExtensions to an array
+    const normalizePageExtensions = (
+      extensions: string | string[] | undefined,
+    ): string[] => {
+      if (!extensions) return defaultConfig.pageExtensions;
+      if (typeof extensions === "string") {
+        return extensions.split(",").map((ext) => ext.trim());
+      }
+      return extensions;
+    };
 
-  if (!directoryExistsSync(absoluteSrcPath)) {
-    console.log("srcPath is not a directory or does not exist");
-    process.exit(1);
-  }
+    // merge config: CLI flags > config file > defaults
+    const mergedConfig = {
+      watch: cli.flags.watch ?? fileConfig?.watch ?? defaultConfig.watch,
+      srcPath:
+        cli.flags.srcPath ?? fileConfig?.srcPath ?? defaultConfig.srcPath,
+      outputPath:
+        cli.flags.outputPath ??
+        fileConfig?.outputPath ??
+        defaultConfig.outputPath,
+      filename:
+        cli.flags.filename ?? fileConfig?.filename ?? defaultConfig.filename,
+      pageExtensions: normalizePageExtensions(
+        cli.flags.pageExtensions ?? fileConfig?.pageExtensions,
+      ),
+    };
 
-  const absoluteOutputPath = path.join(process.cwd(), outputPath);
-  const relativePathFromOutputToSrc = path.relative(
-    path.dirname(absoluteOutputPath),
-    absoluteSrcPath,
-  );
+    const { filename, srcPath, outputPath, pageExtensions } = mergedConfig;
 
-  const appPath = path.join(absoluteSrcPath, "app");
-  const pagesPath = path.join(absoluteSrcPath, "pages");
+    const absoluteSrcPath = path.join(process.cwd(), srcPath);
 
-  const absoluteAppPath = directoryExistsSync(appPath) ? appPath : null;
-  const absolutePagesPath = directoryExistsSync(pagesPath) ? pagesPath : null;
+    if (!directoryExistsSync(absoluteSrcPath)) {
+      console.log("srcPath is not a directory or does not exist");
+      process.exit(1);
+    }
 
-  const paths = {
-    absolutePagesPath,
-    absoluteAppPath,
-    absoluteOutputPath,
-    relativePathFromOutputToSrc,
-  };
+    const absoluteOutputPath = path.join(process.cwd(), outputPath);
+    const relativePathFromOutputToSrc = path.relative(
+      path.dirname(absoluteOutputPath),
+      absoluteSrcPath,
+    );
 
-  if (cli.flags.watch) {
-    build({ filename, paths, pageExtensions });
-    watch({ filename, paths, pageExtensions });
-  } else {
-    build({ filename, paths, pageExtensions });
-  }
+    const appPath = path.join(absoluteSrcPath, "app");
+    const pagesPath = path.join(absoluteSrcPath, "pages");
+
+    const absoluteAppPath = directoryExistsSync(appPath) ? appPath : null;
+    const absolutePagesPath = directoryExistsSync(pagesPath) ? pagesPath : null;
+
+    const paths = {
+      absolutePagesPath,
+      absoluteAppPath,
+      absoluteOutputPath,
+      relativePathFromOutputToSrc,
+    };
+
+    if (mergedConfig.watch) {
+      build({ filename, paths, pageExtensions });
+      watch({ filename, paths, pageExtensions });
+    } else {
+      build({ filename, paths, pageExtensions });
+    }
+  })();
 }
 
 import fs from "fs";
