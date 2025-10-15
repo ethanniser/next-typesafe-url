@@ -38,16 +38,14 @@ export async function loadConfig(searchFrom?: string): Promise<Config | null> {
       return null;
     }
 
-    const config = result.config;
-
     // validate that the config is an object
-    if (typeof config !== "object" || config === null) {
+    if (typeof result.config !== "object" || result.config === null) {
       throw new Error(
-        `Invalid config file at ${result.filepath}: Expected an object, got ${typeof config}`,
+        `Invalid config file at ${result.filepath}: Expected an object, got ${typeof result.config}`,
       );
     }
 
-    return config as Config;
+    return result.config as Config;
   } catch (error) {
     if (error instanceof Error) {
       console.error(`Error loading config: ${error.message}`);
@@ -70,7 +68,7 @@ function createTypeScriptLoader() {
 
     try {
       // load the config file by its basename
-      const loaded = jiti(`./${path.basename(filepath)}`);
+      const loaded = jiti(`./${path.basename(filepath)}`) as { default?: unknown };
       // handle both default exports and named exports
       return loaded.default || loaded;
     } catch (error) {

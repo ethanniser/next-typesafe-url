@@ -128,7 +128,7 @@ function watch({
 }
 
 if (require.main === module) {
-  (async () => {
+  void (async () => {
     // load config from the file
     const fileConfig = await loadConfig();
 
