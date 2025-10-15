@@ -9,8 +9,8 @@ description: "API Reference for next-typesafe-url"
 
 ```ts
 type DynamicRoute = {
-  searchParams?: z.AnyZodObject;
-  routeParams?: z.AnyZodObject;
+  searchParams?: z.ZodObject<z.ZodRawShape>;
+  routeParams?: z.ZodObject<z.ZodRawShape>;
 };
 ```
 
@@ -18,7 +18,7 @@ type DynamicRoute = {
 
 ```ts
 type DynamicLayout = {
-  routeParams: z.AnyZodObject;
+  routeParams: z.ZodObject<z.ZodRawShape>;
 };
 ```
 
@@ -114,10 +114,10 @@ Infers the prop types for `page.tsx` top level components when wrapped with `wit
 
 ```ts
 type InferPagePropsType<T extends DynamicRoute> = {
-  searchParams: T["searchParams"] extends z.AnyZodObject
+  searchParams: T["searchParams"] extends z.ZodObject<z.ZodRawShape>
     ? Promise<z.output<T["searchParams"]>>
     : undefined;
-  routeParams: T["routeParams"] extends z.AnyZodObject
+  routeParams: T["routeParams"] extends z.ZodObject<z.ZodRawShape>
     ? Promise<z.output<T["routeParams"]>>
     : undefined;
 };
@@ -159,7 +159,7 @@ declare function $path<T extends AllRoutes>({
 Return type for all of the `use<Search/Route>Params` hooks.
 
 ```ts
-type UseParamsResult<T extends z.AnyZodObject> =
+type UseParamsResult<T extends z.ZodObject<z.ZodRawShape>> =
   | {
       data: undefined;
       isLoading: true;
@@ -185,7 +185,7 @@ type UseParamsResult<T extends z.AnyZodObject> =
 Return type for all `parseServerSide<Search/Route>Params`.
 
 ```ts
-type ServerParseParamsResult<T extends z.AnyZodObject> =
+type ServerParseParamsResult<T extends z.ZodObject<z.ZodRawShape>> =
   | {
       data: z.infer<T>;
       isError: false;
@@ -208,8 +208,8 @@ Be careful if using this in a component that is used in multiple routes,
 making sure you pass the correct validator for the current route.
 
 ```ts
-declare function useSearchParams<T extends z.AnyZodObject>(
-  searchValidator: T,
+declare function useSearchParams<T extends z.ZodObject<z.ZodRawShape>>(
+  searchValidator: T
 ): UseParamsResult<T>;
 ```
 
@@ -220,8 +220,8 @@ Be careful if using this in a component that is used in multiple routes,
 making sure you pass the correct validator for the current route.
 
 ```ts
-declare function useRouteParams<T extends z.AnyZodObject>(
-  validator: T,
+declare function useRouteParams<T extends z.ZodObject<z.ZodRawShape>>(
+  validator: T
 ): UseParamsResult<T>;
 ```
 
@@ -244,7 +244,7 @@ It should be the default export of `page.tsx`.
 ```ts
 declare function withParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicRoute,
+  validator: DynamicRoute
 ): SomeReactComponent;
 ```
 
@@ -257,7 +257,7 @@ The component you wrap with this should use `InferLayoutPropsType` for its props
 ```ts
 declare function withLayoutParamValidation(
   Component: SomeReactComponent,
-  validator: DynamicLayout,
+  validator: DynamicLayout
 ): SomeReactComponent;
 ```
 
@@ -269,8 +269,8 @@ Parses the current search params and validates them against the provided zod sch
 Should only be used in the top level route component where your `Route` object is defined.
 
 ```ts
-declare function useSearchParams<T extends z.AnyZodObject>(
-  searchValidator: T,
+declare function useSearchParams<T extends z.ZodObject<z.ZodRawShape>>(
+  searchValidator: T
 ): UseParamsResult<T>;
 ```
 
@@ -280,8 +280,8 @@ Parses the current dynamic route params and validates them against the provided 
 Should only be used in the top level route component where your `Route` object is defined.
 
 ```ts
-declare function useRouteParams<T extends z.AnyZodObject>(
-  validator: T,
+declare function useRouteParams<T extends z.ZodObject<z.ZodRawShape>>(
+  validator: T
 ): UseParamsResult<T>;
 ```
 
@@ -291,7 +291,7 @@ Takes an object of route params and a validator and returns a object of the vali
 If using with in pages gssp, pass context.params (for route params) or context.query (for search params) as the params argument.
 
 ```ts
-declare function parseServerSideParams<T extends z.AnyZodObject>({
+declare function parseServerSideParams<T extends z.ZodObject<z.ZodRawShape>>({
   params,
   validator,
 }: {

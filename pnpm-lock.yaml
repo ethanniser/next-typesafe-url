@@ -52,7 +52,7 @@ importers:
       tailwindcss: 3.3.2
       typescript: 5.1.3
       webpack: ^5
-      zod: ^3.20.2
+      zod: ^4.1.12
     dependencies:
       '@mdx-js/loader': 3.1.0_webpack@5.95.0
       '@mdx-js/react': 3.1.0_ys4gee5prganpqdv5owctblfm4
@@ -73,7 +73,7 @@ importers:
       tailwindcss: 3.3.2
       typescript: 5.1.3
       webpack: 5.95.0
-      zod: 3.21.4
+      zod: 4.1.12
 
   examples/custom-filename:
     specifiers:
@@ -95,7 +95,7 @@ importers:
       react-dom: 18.2.0
       tailwindcss: 3.3.2
       typescript: 5.0.4
-      zod: ^3.20.2
+      zod: ^4.1.12
     dependencies:
       '@mdx-js/loader': 3.1.0
       '@mdx-js/react': 3.1.0_3pi6y6cylzraaxxtldk4o6b3zi
@@ -115,7 +115,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       tailwindcss: 3.3.2
       typescript: 5.0.4
-      zod: 3.21.4
+      zod: 4.1.12
 
   examples/pagesdir:
     specifiers:
@@ -133,7 +133,7 @@ importers:
       react-dom: 18.2.0
       tailwindcss: 3.3.2
       typescript: 5.0.4
-      zod: ^3.20.2
+      zod: ^4.1.12
     dependencies:
       '@types/node': 18.16.3
       '@types/react': 18.2.5
@@ -149,7 +149,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       tailwindcss: 3.3.2
       typescript: 5.0.4
-      zod: 3.21.4
+      zod: 4.1.12
 
   packages/next-typesafe-url:
     specifiers:
@@ -163,7 +163,7 @@ importers:
       react-dom: 18.2.0
       tsup: 7.1.0
       typescript: 5.1.3
-      zod: 3.21.4
+      zod: 4.1.12
     dependencies:
       chokidar: 3.6.0
       meow: 9.0.0
@@ -176,7 +176,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       tsup: 7.1.0_typescript@5.1.3
       typescript: 5.1.3
-      zod: 3.21.4
+      zod: 4.1.12
 
   www/docs:
     specifiers:
@@ -9618,7 +9618,9 @@ packages:
 
   /zod/3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-    dev: true
+
+  /zod/4.1.12:
+    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
   /zwitch/2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}

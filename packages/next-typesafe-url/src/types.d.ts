@@ -119,8 +119,8 @@ type StaticRoute = {
 
 // Represents a route that has dynamic parameters
 type DynamicRoute = {
-  searchParams?: z.AnyZodObject;
-  routeParams?: z.AnyZodObject;
+  searchParams?: z.ZodObject<z.ZodRawShape>;
+  routeParams?: z.ZodObject<z.ZodRawShape>;
 };
 
 // basically just an object with a routeParams property that has a zod validator
@@ -157,7 +157,7 @@ type StaticPathOptions<T extends StaticRoutes> = {
 type AllRoutes = keyof AppRouter;
 
 // a discriminated  union representing the return states of use*Params
-type UseParamsResult<T extends z.AnyZodObject> =
+type UseParamsResult<T extends z.ZodObject<z.ZodRawShape>> =
   | {
       data: undefined;
       isLoading: true;
@@ -178,7 +178,7 @@ type UseParamsResult<T extends z.AnyZodObject> =
     };
 
 // a discriminated  union representing the return states of parseServerSideParams
-type ServerParseParamsResult<T extends z.AnyZodObject> =
+type ServerParseParamsResult<T extends z.ZodObject<z.ZodRawShape>> =
   | {
       data: z.output<T>;
       isError: false;
@@ -193,10 +193,10 @@ type ServerParseParamsResult<T extends z.AnyZodObject> =
 // infers the props for a validated page component
 // infers the output types from the Route object
 type InferPagePropsType<T extends DynamicRoute> = {
-  searchParams: T["searchParams"] extends z.AnyZodObject
+  searchParams: T["searchParams"] extends z.ZodObject<z.ZodRawShape>
     ? Promise<z.output<T["searchParams"]>>
     : undefined;
-  routeParams: T["routeParams"] extends z.AnyZodObject
+  routeParams: T["routeParams"] extends z.ZodObject<z.ZodRawShape>
     ? Promise<z.output<T["routeParams"]>>
     : undefined;
 };

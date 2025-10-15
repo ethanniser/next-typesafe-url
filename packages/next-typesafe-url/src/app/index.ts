@@ -1,12 +1,11 @@
 // !!! huge credit to yesmeck https://github.com/yesmeck/remix-routes as well as Tanner Linsley https://tanstack.com/router/v1 for the inspiration for this
 
 import type { UseParamsResult } from "../types";
-import { useRef } from "react";
 import {
   useParams,
   useSearchParams as useNextSearchParams,
 } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import {
   parseObjectFromReadonlyURLParams,
@@ -36,7 +35,7 @@ function usePrevious<T>(value: T) {
  * const routeParams = useRouteParams(Route.routeParams);
  * const { data, isLoading, isError, error } = routeParams;
  */
-export function useRouteParams<T extends z.AnyZodObject>(
+export function useRouteParams<T extends z.ZodObject<z.ZodRawShape>>(
   validator: T,
 ): UseParamsResult<T> {
   const params = useParams();
@@ -107,7 +106,7 @@ export function useRouteParams<T extends z.AnyZodObject>(
  * const searchParams = useSearchParams(Route.searchParams);
  * const { data, isLoading, isError, error } = searchParams;
  */
-export function useSearchParams<T extends z.AnyZodObject>(
+export function useSearchParams<T extends z.ZodObject<z.ZodRawShape>>(
   searchValidator: T,
 ): UseParamsResult<T> {
   const params = useNextSearchParams();
