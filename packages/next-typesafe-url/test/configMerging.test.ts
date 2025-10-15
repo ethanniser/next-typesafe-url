@@ -33,7 +33,8 @@ function mergeConfig(
     srcPath: cliFlags.srcPath ?? fileConfig?.srcPath ?? defaultConfig.srcPath,
     outputPath:
       cliFlags.outputPath ?? fileConfig?.outputPath ?? defaultConfig.outputPath,
-    filename: cliFlags.filename ?? fileConfig?.filename ?? defaultConfig.filename,
+    filename:
+      cliFlags.filename ?? fileConfig?.filename ?? defaultConfig.filename,
     pageExtensions: normalizePageExtensions(
       cliFlags.pageExtensions ?? fileConfig?.pageExtensions,
     ),
@@ -237,10 +238,8 @@ describe("config merging", () => {
         "./cli-src",
       );
       expect(
-        mergeConfig(
-          { srcPath: "./cli-src" },
-          { srcPath: "./config-src" },
-        ).srcPath,
+        mergeConfig({ srcPath: "./cli-src" }, { srcPath: "./config-src" })
+          .srcPath,
       ).toBe("./cli-src");
     });
 
@@ -269,10 +268,8 @@ describe("config merging", () => {
         "cli-route",
       );
       expect(
-        mergeConfig(
-          { filename: "cli-route" },
-          { filename: "config-route" },
-        ).filename,
+        mergeConfig({ filename: "cli-route" }, { filename: "config-route" })
+          .filename,
       ).toBe("cli-route");
     });
   });

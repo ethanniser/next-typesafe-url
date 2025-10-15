@@ -6,11 +6,7 @@ export const metadata: Metadata = {
   description: "Demonstrating config file usage with next-typesafe-url",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>

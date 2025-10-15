@@ -1,5 +1,5 @@
-import {PageProps, Route} from "./route-type";
-import { withParamValidation } from 'next-typesafe-url/app/hoc';
+import { PageProps, Route } from "./route-type";
+import { withParamValidation } from "next-typesafe-url/app/hoc";
 
 async function BlogPost({ routeParams }: PageProps) {
   const { slug } = await routeParams;
