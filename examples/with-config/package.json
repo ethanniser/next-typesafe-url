@@ -1,0 +1,22 @@
+{
+  "name": "with-config",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"next-typesafe-url -w\" \"next dev\"",
+    "build": "next-typesafe-url && next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@types/node": "22.0.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "concurrently": "^8.0.1",
+    "next": "15.0.0",
+    "next-typesafe-url": "workspace:*",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "typescript": "^5",
+    "zod": "^4.1.12"
+  }
+}

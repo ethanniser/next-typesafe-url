@@ -14,6 +14,7 @@ import type {
   UseParamsResult,
   ServerParseParamsResult,
 } from "./types";
+import type { Config } from "./config";
 
 export type {
   AllRoutes,
@@ -28,6 +29,7 @@ export type {
   StaticRoute,
   UseParamsResult,
   ServerParseParamsResult,
+  Config,
 };
 
 // * TESTED
