@@ -44,11 +44,12 @@ export function getPAGESRoutesWithExportedRoute({
         fileContent,
       );
 
+      const extPattern = pageExtensions.join("|");
       let routePath = fullPath
         .replace(basePath, "")
         .replace(/\\/g, "/")
-        .replace(/\/index\.(tsx|js)$/, "")
-        .replace(/\.(tsx|js)$/, "");
+        .replace(new RegExp(`\\/index\\.(${extPattern})$`), "")
+        .replace(new RegExp(`\\.(${extPattern})$`), "");
 
       // Matches all the index files with extensions from the pageExtensions
       if (pageExtensions.map((ext) => `index.${ext}`).includes(fileName)) {
