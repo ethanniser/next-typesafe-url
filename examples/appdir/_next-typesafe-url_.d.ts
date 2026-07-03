@@ -12,10 +12,10 @@ declare module "@@@next-typesafe-url" {
     "/_internal/__very-internal/[slug]": InferRoute<import("./src/app/%5Finternal/%5F%5Fvery-internal/[slug]/routeType").RouteType>;
     "/foo/[id]/nest": InferRoute<import("./src/app/(test)/foo/[id]/nest/routeType").RouteType>;
     "/foo/[id]": InferRoute<import("./src/app/(test)/foo/[id]/routeType").RouteType>;
-    "/[slug]/[...foo]": InferRoute<import("./src/app/[slug]/[...foo]/routeType").RouteType>;
     "/client/[...client]": InferRoute<import("./src/app/client/[...client]/routeType").RouteType>;
     "/jsonRoute/[foo]": InferRoute<import("./src/app/jsonRoute/[foo]/routeType").RouteType>;
     "/transform": InferRoute<import("./src/app/transform/routeType").RouteType>;
+    "/[slug]/[...foo]": InferRoute<import("./src/app/[slug]/[...foo]/routeType").RouteType>;
     "/dynamic": InferRoute<import("./src/pages/dynamic").RouteType>;
   }
 
