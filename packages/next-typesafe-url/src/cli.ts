@@ -201,7 +201,7 @@ function directoryExistsSync(path: string): boolean {
   try {
     const stats = fs.statSync(path);
     return stats.isDirectory();
-  } catch (error) {
+  } catch {
     return false;
   }
 }
