@@ -14,7 +14,7 @@ import {
 
 // todo: this breaks react compiler right?
 function usePrevious<T>(value: T) {
-  const ref = useRef<T>();
+  const ref = useRef<T | undefined>(undefined);
   // Store current value in ref
   useEffect(() => {
     ref.current = value;
