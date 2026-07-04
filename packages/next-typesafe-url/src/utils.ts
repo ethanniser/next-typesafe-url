@@ -87,9 +87,7 @@ export function decodeAndTryJSONParse(value: string | undefined): unknown {
  * If passed an array, maps over it and calls decodeAndTryJSONParse on each item.
  * If passed a string, calls decodeAndTryJSONParse on it.
  */
-export function parseOrMapParse(
-  obj: string | string[] | undefined,
-): unknown | unknown[] {
+export function parseOrMapParse(obj: string | string[] | undefined): unknown {
   if (Array.isArray(obj)) {
     return obj.map(decodeAndTryJSONParse);
   } else {
@@ -103,8 +101,8 @@ export function parseOrMapParse(
  */
 export function parseMapObject(
   obj: Record<string, string | string[] | undefined>,
-): Record<string, unknown | unknown[]> {
-  const result: Record<string, unknown | unknown[]> = {};
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(obj)) {
     result[key] = parseOrMapParse(value);
